@@ -2,13 +2,18 @@ import mysql from "mysql2/promise";
 import { NextResponse } from "next/server";
 import { SignJWT } from "jose";
 import { jwtVerify } from "jose"; 
+import fs from "fs";
+
 
 const dbConfig = {
-    host: "172.20.10.3",  // Phải là string
-    port: 3306,           // Cổng mặc định của MySQL
-    user: "root",
-    password: "Password01@",
+    host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
+    port: 4000,
+    user: "23RJwZS9wrfiKxq.root",
+    password: "SxywZGpysG9CqoUA",
     database: "testdbnextjs",
+    ssl: {
+        ca: fs.readFileSync("/etc/ssl/cert.pem"), // Đọc file chứng chỉ CA
+    },
   };
   
 
