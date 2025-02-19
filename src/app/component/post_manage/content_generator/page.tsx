@@ -20,9 +20,9 @@ function ContentGeneratorPage() {
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
 
-    const handleDateChange = (event: any) => {
+    const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedDate(event.target.value);
-    };
+    };    
 
     useEffect(() => {
         const token = Cookies.get("token");
@@ -118,7 +118,7 @@ function ContentGeneratorPage() {
                     </div>
                     <p className={styles.text_number_of_week}>{t("number_of_week")}</p>
                 </div>
-                <input type="number" className={styles.input_number} value={selectedNumber} onChange={(e: any) => setSelectedNumber(e.target.value)} />
+                <input type="number" className={styles.input_number} value={selectedNumber} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSelectedNumber(Number(e.target.value))}/>
             </div>
             <div className={styles.topic}>
                 <div className={styles.title_topic}>

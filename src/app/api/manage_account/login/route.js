@@ -37,10 +37,11 @@ export async function GET(request) {
     try {
         const { payload } = await jwtVerify(token, secretKey);
         console.log("Payload: ",payload);
-        return NextResponse.json({ user: payload });
-    } catch (error) {
-        return NextResponse.json({ message: "Invalid token" }, { status: 401 });
-    }
+        return NextResponse.json({ user: payload });    
+    }catch (error) {
+            console.error("JWT Verification Error: ", error); // Thêm dòng này
+            return NextResponse.json({ message: "Invalid token" }, { status: 401 });
+    }  
 }
 
 

@@ -34,7 +34,7 @@ function Register() {
             }
         }
         try{
-            const response = await fetch("/api/manage_account/register",{
+            fetch("/api/manage_account/register",{
                 method: "POST",
                 headers:{
                     Accept: "application/json, text/plain,*/*",

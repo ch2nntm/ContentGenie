@@ -3,7 +3,7 @@ import Image from "next/image";
 import styles from "../../../styles/login.module.css";
 import Link from "next/link";
 import { toast, ToastContainer } from "react-toastify";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -16,7 +16,7 @@ function Login() {
 
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const [user, setUser] = useState<string | null>(null);
+    // const [user, setUser] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
 
     // useEffect(() => {
@@ -73,29 +73,29 @@ function Login() {
         })
     };
     
-    const handleLogout = async () => {
-        try {
-            // Kiểm tra token trước khi gửi request logout
-            const token = Cookies.get("token");
+    // const handleLogout = async () => {
+    //     try {
+    //         // Kiểm tra token trước khi gửi request logout
+    //         const token = Cookies.get("token");
     
-            if (!token) {
-                toast.error(noti_toast("pls_login"));
-                return;
-            }
+    //         if (!token) {
+    //             toast.error(noti_toast("pls_login"));
+    //             return;
+    //         }
     
-            const res = await fetch("/api/manage_account/logout", { method: "POST" });
+    //         const res = await fetch("/api/manage_account/logout", { method: "POST" });
     
-            if (res) {
-                Cookies.remove("token", { path: "/" }); // Xóa token phía client
-                setUser(null); // Xóa thông tin user
-                toast.success(noti_toast("signout_success"));
-            } else {
-                toast.error(noti_toast("signout_fail"));
-            }
-        } catch (error) {
-            toast.error(noti_toast("error"));
-        }
-    };
+    //         if (res) {
+    //             Cookies.remove("token", { path: "/" }); // Xóa token phía client
+    //             // setUser(null); // Xóa thông tin user
+    //             toast.success(noti_toast("signout_success"));
+    //         } else {
+    //             toast.error(noti_toast("signout_fail"));
+    //         }
+    //     } catch (error) {
+    //         toast.error(noti_toast("error"));
+    //     }
+    // };
 
 
     return(

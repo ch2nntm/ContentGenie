@@ -1,7 +1,6 @@
 'use client';
 
 import setLanguageValue from '@/actions/set-language-actions';
-import { useTranslations } from 'next-intl';
 import React, { useState, useEffect } from 'react';
 
 const Topbar = () => {
@@ -10,8 +9,6 @@ const Topbar = () => {
   useEffect(() => {
     setLanguageValue(language);
   }, [language]);
-
-  const t = useTranslations();
 
   return (
     <div style={{ position: 'fixed', display: 'flex', justifyContent: 'space-between', padding: '10px', right: 0, zIndex: 1000, top: 10 }}>
