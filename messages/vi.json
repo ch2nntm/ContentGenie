@@ -1,0 +1,59 @@
+{
+    "toast": {
+        "enter_not_full": "Vui lòng nhập đầy đủ!",
+        "password_not_match": "Mật khẩu không khớp!",
+        "account_exists": "Tài khoản đã tồn tại!",
+        "error": "Đã xảy ra lỗi, vui lòng thử lại!",
+        "wrong_account": "Sai tài khoản hoặc mật khẩu!" ,
+        "pls_login": "Vui lòng đăng nhập!",
+        "signout_success": "Đăng xuất thành công!",
+        "signout_fail": "Đăng xuất thất bại!"
+    },
+    "homepage": {
+        "main_text": "ContentGenie",
+        "title_text": "Ứng dụng Streamline",
+        "hello": "Xin chào",
+        "account": "Tài khoản",
+        "signout": "Đăng xuất",
+        "create": "Tạo"
+    },
+    "login": {
+        "label_username": "Tên tài khoản",
+        "label_password": "Mật khẩu",
+        "input_username": "Nhập tên tài khoản",
+        "input_password": "Nhập mật khẩu",
+        "signin": "Đăng Nhập",
+        "signup": "Đăng Ký",
+        "have_account": "Không có tài khoản?",
+        "signinGG": "Đăng nhập với Google"
+    },
+    "register": {
+        "label_name": "Họ tên",
+        "input_name":"Nhập họ tên",
+        "label_username": "Tên tài khoản",
+        "label_password": "Mật khẩu",
+        "input_username": "Nhập tên tài khoản",
+        "input_password": "Nhập mật khẩu",
+        "label_confirm_password": "Nhập lại mật khẩu",
+        "input_confirm_password": "Nhập lại mật khẩu",
+        "create_account": "Tạo tài khoản",
+        "have_account": "Có tài khoản?",
+        "signin": "Đăng Nhập"
+    },
+    "preview": {
+        "time": "giờ trước",
+        "share": "Chia sẻ",
+        "scheduled_post": "Bài đăng theo lịch trình",
+        "btn_edit": "Chỉnh sửa bài đăng",
+        "account_management": "Quản lý tài khoản"
+    },
+    "content_generator": {
+        "social_media": "Chọn Nền Tảng Truyền Thông Xã Hội:",
+        "post_time": "Chọn Thời Gian Đăng Bài:",
+        "number_of_week": "Số Lượng Bài Viết Mỗi Tuần:",
+        "topic": "Chủ Đề Hoặc Từ Khóa:",
+        "enter_topic": "Nhập Chủ Đề Hoặc Từ Khóa",
+        "enable_trend": "Bật Nội Dung Dựa Trên Xu Hướng:",
+        "btn_generate_content": "Tạo Nội Dung"
+    }
+}

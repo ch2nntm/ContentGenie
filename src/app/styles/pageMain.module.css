@@ -1,0 +1,109 @@
+.container{
+  display: flex;
+  font-family: "Roboto";
+}
+
+.card {
+  top: 48px;
+  left: 48px;
+  width: 672px;
+  height: 710px;
+  background-color: #eaecf0;
+  border-radius: 6px;
+}
+
+.img_card_container {
+  position: relative;
+  left: 12%;
+  top: 12%;
+  width: 512px;
+  height: 512px;
+  border-radius: 6px;
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.text{
+  display: flex;
+  flex-direction: column;
+  white-space: normal;
+  overflow: visible;
+}
+
+.navbar{
+  display: flex;
+  position: relative;
+  float: right;
+  margin-left: 70%;
+  margin-top: 5px;
+  gap: 10px;
+  width: 350px;
+}
+
+.labelUser{
+  width: 400px;
+}
+
+.buttonLogout{
+  cursor: pointer;
+  width: 150px;
+  height: 35px;
+  background-color: #0b54e4;
+  border: none;
+  color: #fff;
+  border-radius: 10px;
+  margin-top: -5px;
+}
+
+.img_text_container {
+  position: relative;
+  top: 20%;
+  left: 70%;
+  width: 96px;
+  height: 96px;
+  border-radius: 6px;
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.main_text{
+  margin-top: 40%;
+  margin-left: 40%;
+  color: #030303;
+  font-size: 64px;
+  font-family: "Roboto";
+  font-weight: 600;
+  line-height: 72px;
+}
+
+.tilte_text{
+  margin-top: 3%;
+  margin-left: 50%;
+  width: 300px;
+  color: #030303;
+  font-size: 24px;
+  font-family: "Roboto";
+  line-height: 30px;
+  text-align: center;
+}
+
+.btnCreate{
+  cursor: pointer;
+  margin-top: 13%;
+  margin-left: 65%;
+  width: 162px;
+  height: 48px;
+  padding: 0px 8px;
+  border: 0;
+  box-sizing: border-box;
+  border-radius: 6px;
+  background-color: #ff0001;
+  color: #ffffff;
+  font-size: 24px;
+  font-family: "Roboto";
+  font-weight: 500;
+  line-height: 20px;
+  outline: none;
+}

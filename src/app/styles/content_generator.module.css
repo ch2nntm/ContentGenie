@@ -1,0 +1,316 @@
+.container{
+    max-height: 100vh;
+    width: 100vw;
+    top: 0;
+}
+
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 64px;
+    left: 0;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px #7c7575f1;
+    padding: 0px 16px;
+    top: 0;
+    position: fixed;
+    z-index: 9;
+}
+
+.title_logo{
+    display: flex;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.icon_logo{
+    position: relative;
+    font-size: 24px;
+    top: 16px;
+    width: 24px;
+    height: 32px;
+}
+
+.title_navbar{
+    color: #030303;
+    font-size: 24px;
+    font-family: "Open Sans";
+    line-height: 28px;
+}
+
+
+.icon_navbar{
+    display: flex;
+    align-items: center;
+    margin-right: 150px;
+    gap: 16px;
+}
+
+.icon_bell{
+    cursor: pointer;
+    position: relative;
+    border: none;
+    background-color: none;
+    font-size: 18px;
+    width: 18px;
+    height: 28px;
+}
+
+.button_user{
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    font-size: 19px;
+    top: 18px;
+    height: 28px;
+    gap: 10px;
+}
+
+.icon_user{
+    position: relative;
+    width: 19px;
+    height: 28px;
+}
+
+.name_user{
+    font-size: 14px;
+}
+
+.manage_user_hide{
+    display: none;
+}
+
+.manage_user_show{
+    display: block;
+    position: absolute;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    background-color: #ffffff;
+    border-radius: 5px;
+    width: 200px;
+    height: 200px;
+    margin-top: 250px;
+    margin-left: -30px;
+    padding-top: 10px;
+}
+
+.edit_profile{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #030303;
+    padding: 0 15px;
+    height: 30px;
+    border-bottom: 1px solid gainsboro;
+    transition: all 0.3s ease;
+}
+
+.edit_profile:hover{
+    color: #816161;
+}
+
+.icon_edit_profile{
+    position: relative;
+    width: 20px;
+    height: 20px;
+}
+
+.post{
+    margin-top: 88px;
+    margin-left: 312px;
+    width: 860px;
+    height: 550px;
+    background-color: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+}
+
+.title{
+    color: #030303;
+    font-size: 32px;
+    font-family: "Roboto";
+    font-weight: bold;
+    line-height: 38px;
+    padding-top: 30px;
+    text-align: center;
+}
+
+.social_media,
+.post_time,
+.number_of_week,
+.topic,
+.enable_trend{
+    display: flex;
+    margin-left: 24px;
+    margin-right: 24px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.post_time,
+.number_of_week,
+.topic,
+.enable_trend{
+    margin-top: 12px;
+}
+
+.title_social_media,
+.title_post_time,
+.title_number_of_week,
+.title_topic,
+.title_enable_trend{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.icon_social_media,
+.icon_post_time,
+.icon_number_of_week,
+.icon_topic,
+.icon_enable_trend{
+    position: relative;
+    font-size: 14px;
+    width: 14px;
+    height: 16px;
+}
+
+.platform_social_media{
+    display: flex;
+    gap: 43px;
+}
+
+.btn_platform_social_media{
+    cursor: pointer;
+    border: none;
+    width: 100px;
+    height: 30px;
+    border-radius: 5px;
+    background-color: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn_platform_social_media:hover{
+    background-color: rgb(228, 126, 146);
+    color: #ffffff;
+}
+
+.platform_facebook,
+.platform_tiktok,
+.platform_instagram{
+    cursor: pointer;
+    border: none;
+    width: 100px;
+    height: 30px;
+    border-radius: 5px;
+    background-color: rgb(228, 126, 146);
+    color: #ffffff;
+}
+
+.input_date{
+    top: 290px;
+    left: 960px;
+    width: 160px;
+    height: 40px;
+    padding: 0px 8px;
+    border: 1px solid #8c8c8c;
+    box-sizing: border-box;
+    border-radius: 6px;
+    background-color: #ffffff;
+    text-transform: uppercase;
+    color: #94a3b8;
+    font-size: 14px;
+    font-family: "Open Sans";
+    line-height: 40px;
+    outline: none;
+}
+
+.input_number{
+    top: 354px;
+    left: 1048px;
+    width: 72px;
+    height: 38px;
+    padding: 0px 8px;
+    border: 1px solid #8c8c8c;
+    box-sizing: border-box;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #94a3b8;
+    font-size: 14px;
+    font-family: "Open Sans";
+    line-height: 38px;
+    outline: none;
+}
+
+.input_topic{
+    top: 416px;
+    left: 931px;
+    width: 189px;
+    height: 38px;
+    padding: 0px 8px;
+    border: 1px solid #8c8c8c;
+    box-sizing: border-box;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #94a3b8;
+    font-size: 14px;
+    font-family: "Open Sans";
+    line-height: 38px;
+    outline: none;
+}
+
+.toggle {
+    width: 50px;
+    height: 25px;
+    background-color: gray;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .circle {
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+  }
+  
+  .on {
+    background-color: #4CAF50; 
+  }
+  
+  .on .circle {
+    transform: translateX(25px);
+    background-color: white;
+  }
+  
+.generate_content {
+    display: flex;
+    justify-content: center;
+    margin-top: 70px;
+}
+
+
+.btn_generate_content{
+    cursor: pointer;
+    width: 174px;
+    height: 44px;
+    padding: 0px 8px;
+    border: 0;
+    box-sizing: border-box;
+    border-radius: 6px;
+    background-color: #ff0001;
+    color: #ffffff;
+    font-size: 14px;
+    font-family: "Open Sans";
+    font-weight: 700;
+    line-height: 20px;
+    outline: none;
+}

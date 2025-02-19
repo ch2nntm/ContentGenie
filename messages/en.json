@@ -1,0 +1,61 @@
+{
+    "toast": {
+        "enter_not_full": "Please enter full name!",
+        "password_not_match": "Passwords do not match!",
+        "account_exists": "Account already exists!",
+        "error": "An error occurred, please try again!",
+        "wrong_account": "Wrong account or password!" ,
+        "pls_login": "Please sign in!",
+        "signout_success": "Sign out successfully!",
+        "signout_fail": "Sign out failed!"
+    },
+    "homepage": {
+        "main_text": "ContentGenie",
+        "title_text": "Streamline App",
+        "hello": "Hello",
+        "account": "Account",
+        "signout": "Sign out",
+        "create": "Create"
+    },
+    "login": {
+        "label_username": "Username",
+        "label_password": "Password",
+        "input_username": "Enter your username",
+        "input_password": "Enter your password",
+        "signin": "Sign In",
+        "signup": "Sign Up",
+        "have_account": "Don't have an account?",
+        "signinGG": "Sign in with Google"
+    },
+    "register": {
+        "label_name": "Name",
+        "input_name":"Enter your name",
+        "label_username": "Username",
+        "label_password": "Password",
+        "input_username": "Enter your username",
+        "input_password": "Enter your password",
+        "label_confirm_password": "Confirm Password",
+        "input_confirm_password": "Confirm your password",
+        "create_account": "Create Account",
+        "have_account": "Have an account?",
+        "signin": "Sign In"
+    },
+    "preview": {
+        "time": "hours ago",
+        "share": "Share",
+        "scheduled_post": "Scheduled Posts",
+        "btn_edit": "Edit Post",
+        "account_management": "Account management"
+    },
+    "content_generator": {
+        "social_media": "Select Social Media Platform:",
+        "post_time": "Choose Posting Time:",
+        "number_of_week": "Number of Posts Per Week:",
+        "topic": "Topic or Keywords:",
+        "enter_topic": "Enter topic or keywords",
+        "enable_trend": "Enable Trending-Based Content:",
+        "btn_generate_content": "Grenerate Content",
+        "btn_edit": "Edit Post",
+        "account_management": "Account management"
+    }
+}
