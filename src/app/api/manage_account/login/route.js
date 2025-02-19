@@ -4,12 +4,13 @@ import { SignJWT } from "jose";
 import { jwtVerify } from "jose"; 
 
 const dbConfig = {
-    host: "localhost",   
-    port: 3306,          
+    host: "172.20.10.3",  // Phải là string
+    port: 3306,           // Cổng mặc định của MySQL
     user: "root",
     password: "Password01@",
     database: "testdbnextjs",
-};
+  };
+  
 
 const secretKey = new TextEncoder().encode("your-secret-key"); //khóa bí mật dùng để ký JWT (JSON Web Token), thành một dạng Uint8Array (mảng byte).
 

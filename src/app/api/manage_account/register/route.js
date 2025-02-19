@@ -1,7 +1,7 @@
 import mysql from "mysql2/promise";
 
 const dbConfig = {
-  host: "localhost",   
+  host: "172.20.10.3",   
   port: 3306,          
   user: "root",
   password: "Password01@",
