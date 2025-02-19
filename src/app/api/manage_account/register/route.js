@@ -1,10 +1,11 @@
 import mysql from "mysql2/promise";
 
 const dbConfig = {
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "testdbnextjs",
+  host: "localhost",   
+  port: 3306,          
+  user: "root",
+  password: "Password01@",
+  database: "testdbnextjs",
 };
 
 export async function POST(req) {

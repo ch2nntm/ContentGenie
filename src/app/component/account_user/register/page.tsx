@@ -51,7 +51,7 @@ function Register() {
                     // redirect("/component/manage_account/login"); //Server Component
                 }
                 else if(res.error){
-                    // console.log("Res: ",res);
+                    console.log("Res: ",res);
                     toast.error(noti_toast('account_exists'));
                 }
             })

@@ -3,11 +3,11 @@ import { NextResponse } from "next/server";
 import { SignJWT } from "jose";
 import { jwtVerify } from "jose"; 
 
-
 const dbConfig = {
-    host: "localhost",
+    host: "localhost",   
+    port: 3306,          
     user: "root",
-    password: "",
+    password: "Password01@",
     database: "testdbnextjs",
 };
 
