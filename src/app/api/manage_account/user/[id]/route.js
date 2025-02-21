@@ -12,8 +12,9 @@ const dbConfig = {
     },
   };
 
-  export async function GET(req, { params }) {
-    const id = Number(params.id);
+  export async function GET(req, content) {
+    const {params} = await content;
+    const id = params?.id;
     
     if (isNaN(id)) {
         return new Response(JSON.stringify({ error: "Invalid user ID" }), {

@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import Cookies from "next/headers";
 
 export async function POST(req) {
     try {
