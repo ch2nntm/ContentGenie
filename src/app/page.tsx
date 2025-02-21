@@ -90,8 +90,8 @@ export default function Home() {
       </div>
       <div className={styles.text}>
         <div className={styles.navbar}>
-          <label className={styles.labelUser}>{user ? t("hello")+` ${user}!` : t("account")}</label>
-          <button onClick={handleLogout} className={styles.buttonLogout}>{t("signout")}</button>
+          <label className={user ? styles.label_user : styles.label_user_hide}>{user ? t("hello")+` ${user}!` : t("account")}</label>
+          <button onClick={handleLogout} className={user ? styles.btn_logout_show : styles.btn_logout_hide}>{t("signout")}</button>
         </div>
         <div className={styles.img_text_container}>
           <Image className={styles.image_text} src="/image_text.png" alt="Icon" fill priority />

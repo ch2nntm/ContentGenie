@@ -27,6 +27,12 @@
         "have_account": "Don't have an account?",
         "signinGG": "Sign in with Google"
     },
+    "navbar_user":{
+        "signout": "Sign out",
+        "account_management": "Account management",
+        "input_search": "Search...",
+        "dashboard": "Dashboard"
+    },
     "register": {
         "label_name": "Name",
         "input_name":"Enter your name",
@@ -55,7 +61,38 @@
         "enter_topic": "Enter topic or keywords",
         "enable_trend": "Enable Trending-Based Content:",
         "btn_generate_content": "Grenerate Content",
-        "btn_edit": "Edit Post",
         "account_management": "Account management"
+    },
+    "dashboard": {
+        "sidebar_dashboard": "Dashboard",
+        "sidebar_users": "Users",
+        "sidebar_posts": "Posts",
+        "sidebar_analytics": "Analytics",
+        "sidebar_settings": "Settings",
+        "section_user_management": "User Management",
+        "section_add_new_user": "Add New User",
+        "section_edit": "Edit",
+        "section_no_user": "No users found"
+    },
+    "change_password":{
+        "hi": "Hi",
+        "account_manage": "Account Management",
+        "edit_profile": "Edit Profile",
+        "change_password": "Change Password",
+        "old_password": "Old Password",
+        "new_password": "New Password",
+        "confirm_password": "Confirm Password",
+        "btn_refresh": "Refresh",
+        "btn_save": "Save"
+    },
+    "edit_profile":{
+        "hi": "Hi",
+        "account_manage": "Account Management",
+        "edit_profile": "Edit Profile",
+        "change_password": "Change Password",
+        "avt": "Avatar",
+        "name": "Name",
+        "username": "Username",
+        "btn_save": "Save"
     }
 }

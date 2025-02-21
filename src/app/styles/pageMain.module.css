@@ -36,16 +36,20 @@
   position: relative;
   float: right;
   margin-left: 70%;
-  margin-top: 5px;
+  margin-top: 10px;
   gap: 10px;
   width: 350px;
 }
 
-.labelUser{
+.label_user{
   width: 400px;
 }
 
-.buttonLogout{
+.label_user_hide{
+  margin-left: 250px;
+}
+
+.btn_logout_show{
   cursor: pointer;
   width: 150px;
   height: 35px;
@@ -54,6 +58,10 @@
   color: #fff;
   border-radius: 10px;
   margin-top: -5px;
+}
+
+.btn_logout_hide{
+  display: none;
 }
 
 .img_text_container {

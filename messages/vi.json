@@ -27,6 +27,11 @@
         "have_account": "Không có tài khoản?",
         "signinGG": "Đăng nhập với Google"
     },
+    "navbar_user":{
+        "signout": "Đăng xuất",
+        "account_management": "Quản lý tài khoản",
+        "input_search": "Tìm kiếm..."
+    },
     "register": {
         "label_name": "Họ tên",
         "input_name":"Nhập họ tên",
@@ -54,6 +59,39 @@
         "topic": "Chủ Đề Hoặc Từ Khóa:",
         "enter_topic": "Nhập Chủ Đề Hoặc Từ Khóa",
         "enable_trend": "Bật Nội Dung Dựa Trên Xu Hướng:",
-        "btn_generate_content": "Tạo Nội Dung"
+        "btn_generate_content": "Tạo Nội Dung",
+        "account_management": "Quản lý tài khoản"
+    },
+    "dashboard": {
+        "sidebar_dashboard": "Trang Tổng Quan",
+        "sidebar_users": "Người Dùng",
+        "sidebar_posts": "Bài Viết",
+        "sidebar_analytics": "Phân Tích",
+        "sidebar_settings": "Cài Đặt",
+        "section_user_management": "Quản lý người dùng",
+        "section_add_new_user": "Thêm người dùng mới",
+        "section_edit": "Sửa",
+        "section_no_user": "Không có người dùng nào được tìm thấy"
+    },
+    "change_password":{
+        "hi": "Xin chào",
+        "account_manage": "Quản lý tài khoản",
+        "edit_profile": "Chỉnh sửa hồ sơ",
+        "change_password": " Thay đổi mật khẩu",
+        "old_password": "Mật khẩu cũ",
+        "new_password": "Mật khẩu mới",
+        "confirm_password": "Xác nhận mật khẩu",
+        "btn_refresh": "Làm mới",
+        "btn_save": "Lưu"
+    },
+    "edit_profile":{
+        "hi": "Xin chào",
+        "account_manage": "Quản lý tài khoản",
+        "edit_profile": "Chỉnh sửa hồ sơ",
+        "change_password": " Thay đổi mật khẩu",
+        "avt": "Ảnh đại diện",
+        "name": "Họ tên",
+        "username": "Tên tài khoản",
+        "btn_save": "Lưu"
     }
 }

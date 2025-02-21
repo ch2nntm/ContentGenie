@@ -32,7 +32,7 @@ export async function POST(req) {
     }
 
     await connection.execute(
-      "INSERT INTO account (name, username, password) VALUES (?, ?, ?)",
+      "INSERT INTO account (name, username, password, role) VALUES (?, ?, ?, 0)",
       [name, username, password]
     );
 

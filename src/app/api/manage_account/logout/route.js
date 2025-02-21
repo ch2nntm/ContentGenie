@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
+import Cookies from "next/headers";
 
 export async function POST(req) {
     try {
-        const cookies = new Cookies(req);
+        const cookies = await new Cookies(req);
         // cookies.set("token", "", { expires: new Date(0), httpOnly: true });
         cookies.remove("token", { path: "/" }); 
 

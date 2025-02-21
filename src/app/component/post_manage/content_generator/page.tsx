@@ -4,18 +4,18 @@ import styles from "../../../styles/content_generator.module.css"
 import Image from 'next/image';
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import Link from "next/link";
+import NavbarUser from "@/single_file/navbar_user";
 
 function ContentGeneratorPage() {
 
-    const [user, setUser] = useState<string | null>(null);
+    // const [user, setUser] = useState<string | null>(null);
     const t = useTranslations("content_generator");
     const [selectedPlatform, setSelectedPlatform] = useState("");
     const [selectedDate, setSelectedDate] = useState("");
     const [selectedNumber, setSelectedNumber] = useState(0);
     const [enterTopic, setEnterTopic] = useState("");
     const [isOn, setIsOn] = useState(false);
-    const [showDropdownUser, setShowDropdownUser] = useState(false);
+    // const [showDropdownUser, setShowDropdownUser] = useState(false);
 
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
@@ -45,7 +45,7 @@ function ContentGeneratorPage() {
             })
             .then((data) => {
                 if (data.user) {
-                    setUser(data.user.name);
+                //     setUser(data.user.name);
                 }
             })
             .catch((error) => console.error("Lỗi lấy thông tin user:", error));
@@ -54,7 +54,7 @@ function ContentGeneratorPage() {
 
   return (
     <div className={styles.container}>
-        <div className={styles.navbar}>
+        {/* <div className={styles.navbar}>
             <div className={styles.title_logo}>
                 <div className={styles.icon_logo}>
                     <Image src="/wand_magic_sparkles.png" alt="logo" fill ></Image>
@@ -80,7 +80,8 @@ function ContentGeneratorPage() {
                         </Link>
                     </div>
                 </div>
-        </div>
+        </div> */}
+        <NavbarUser></NavbarUser>
         <div className={styles.post}>
             <p className={styles.title}>
                 {t("btn_generate_content")}
@@ -101,33 +102,33 @@ function ContentGeneratorPage() {
                 </div>
             </div>
             <div className={styles.post_time}>
-                <div className={styles.title_post_time}>
+                <label className={styles.title_post_time} htmlFor="post_time">
                     <div className={styles.icon_post_time}>
                         <Image src="/icon_clock.png" alt="Icon clock" fill></Image>
                     </div>
                     <p className={styles.text_post_time}>
                         {t("post_time")}
                     </p>
-                </div>
-                <input className={styles.input_date} min={formattedDate} type="date" value={selectedDate} onChange={handleDateChange} />
+                </label>
+                <input className={styles.input_date} id="post_time" min={formattedDate} type="date" value={selectedDate} onChange={handleDateChange} />
             </div>
             <div className={styles.number_of_week}>
-                <div className={styles.title_number_of_week}>
+                <label className={styles.title_number_of_week} htmlFor="number_of_week">
                     <div className={styles.icon_number_of_week}>
                         <Image src="/icon_calendar.png" alt="Icon calendar" fill></Image>
                     </div>
                     <p className={styles.text_number_of_week}>{t("number_of_week")}</p>
-                </div>
-                <input type="number" className={styles.input_number} value={selectedNumber} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSelectedNumber(Number(e.target.value))}/>
+                </label>
+                <input type="number" id="number_of_week" min="0" className={styles.input_number} value={selectedNumber} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSelectedNumber(Number(e.target.value))}/>
             </div>
             <div className={styles.topic}>
-                <div className={styles.title_topic}>
+                <label className={styles.title_topic} htmlFor="topic">
                     <div className={styles.icon_topic}>
                         <Image src="/icon_key.png" alt="Icon key" fill></Image>
                     </div>
                     <p className={styles.text_topic}>{t("topic")}</p>
-                </div>
-                <input type="text" className={styles.input_topic} placeholder={t("enter_topic")}
+                </label>
+                <input type="text" id="topic" className={styles.input_topic} placeholder={t("enter_topic")}
                 value={enterTopic} onChange={(e) => setEnterTopic(e.target.value)}/>
             </div>
             <div className={styles.enable_trend}>

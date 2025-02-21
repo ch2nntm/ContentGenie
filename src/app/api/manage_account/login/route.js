@@ -4,7 +4,6 @@ import { SignJWT } from "jose";
 import { jwtVerify } from "jose"; 
 import fs from "fs";
 
-
 const dbConfig = {
     host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
     port: 4000,
@@ -26,7 +25,7 @@ async function generateToken(payload) {
     return await new SignJWT(payload)
         .setProtectedHeader({ alg: "HS256" })
         .setIssuedAt()
-        .setExpirationTime("3m") 
+        .setExpirationTime("1h") 
         .sign(secretKey);
 }
 
@@ -45,7 +44,7 @@ export async function GET(request) {
         console.log("Payload: ",payload);
         return NextResponse.json({ user: payload });    
     }catch (error) {
-            console.error("JWT Verification Error: ", error); // Thêm dòng này
+            console.error("JWT Verification Error: ", error); 
             return NextResponse.json({ message: "Invalid token" }, { status: 401 });
     }  
 }
@@ -65,7 +64,7 @@ export async function POST(req) {
         if (rows.length > 0) {
             const user = rows[0];
             const token = await generateToken(user);
-
+            console.log("Authorization Header:", token);
             return NextResponse.json({ message: "Log in successfully!", user, token }, { status: 200 });
         } else {
             return new Response(

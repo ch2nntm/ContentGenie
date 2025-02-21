@@ -1,0 +1,239 @@
+.container{
+    max-height: 100vh;
+    width: 100vw;
+    top: 0;
+}
+
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 64px;
+    left: 0;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px #7c7575f1;
+    padding: 0px 16px;
+    top: 0;
+    position: fixed;
+    z-index: 9;
+}
+
+.title_logo{
+    display: flex;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.icon_logo{
+    position: relative;
+    font-size: 24px;
+    top: 16px;
+    width: 24px;
+    height: 32px;
+}
+
+.title_navbar{
+    color: #030303;
+    font-size: 24px;
+    font-family: "Open Sans";
+    line-height: 28px;
+}
+
+.input_search{
+    margin-top: 17px;
+    width: 400px;
+    height: 38px;
+    padding: 0px 8px;
+    border: 1px solid #8c8c8c;
+    box-sizing: border-box;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #94a3b8;
+    font-size: 14px;
+    font-family: "Open Sans";
+    line-height: 38px;
+    outline: none;
+}
+
+.icon_navbar{
+    display: flex;
+    align-items: center;
+    margin-right: 150px;
+    gap: 16px;
+}
+
+.icon_bell{
+    cursor: pointer;
+    position: relative;
+    border: none;
+    background-color: none;
+    font-size: 18px;
+    width: 18px;
+    height: 28px;
+}
+
+.button_user{
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    font-size: 19px;
+    top: 18px;
+    height: 28px;
+    gap: 10px;
+}
+
+.icon_user{
+    position: relative;
+    width: 19px;
+    height: 28px;
+}
+
+.content{
+    display: flex;
+}
+
+.sidebar{
+    margin-top: 80px;
+    width: 250px;
+    height: 624px;
+    background-color: #f7f7f7;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    padding-left: 16px;
+    padding-top: 16px;
+}
+
+.dashboard,
+.users,
+.posts,
+.analytics,
+.settings{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 20px;
+}
+
+.dashboard{
+    margin-top: 10px;
+}
+
+.users,
+.posts,
+.analytics,
+.settings{
+    margin-top: 18px;
+}
+
+.icon_dashboard,
+.icon_users,
+.icon_posts,
+.icon_analytics,
+.icon_settings{
+    position: relative;
+    width: 20px;
+    height: 20px;
+}
+
+.text_dashboard,
+.text_users,
+.text_posts,
+.text_analytics,
+.text_settings{
+    color: #030303;
+    font-size: 16px;
+    font-family: "Open Sans";
+    line-height: 19px;
+}
+
+.section{
+    margin-top: 60px;
+    margin-left: 24px;
+    width: 1090px;
+}
+
+.content_user_management{
+    height: 200px;
+    background-color: #eaecf0;
+    border-radius: 6px;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    padding: 16px 24px 0;
+    margin-top: -16px;
+}
+
+.text_user_management{
+    color: #030303;
+    font-size: 36px;
+    font-family: "Open Sans";
+    font-weight: 700;
+    line-height: 43px;
+}
+
+.item_user_management{
+    display: flex;
+    overflow-y: auto; 
+    white-space: nowrap;
+    gap: 15px;
+    margin-top: 16px;
+}
+
+.item_user_management > *{
+    flex-shrink: 0;
+}
+
+.item_user{
+    top: 228px;
+    left: 290px;
+    width: 360px;
+    height: 116px;
+    background-color: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn_add_new{
+    cursor: pointer;
+    top: 176px;
+    left: 290px;
+    width: 148px;
+    height: 36px;
+    padding: 0px 8px;
+    border: 0;
+    box-sizing: border-box;
+    border-radius: 6px;
+    background-color: #ff0001;
+    color: #ffffff;
+    font-size: 14px;
+    font-family: "Open Sans";
+    font-weight: 500;
+    line-height: 16px;
+    outline: none;
+}
+
+.item_name_user{
+    color: #030303;
+    font-size: 18px;
+    font-family: "Open Sans";
+    font-weight: 700;
+    line-height: 21px;
+    padding-left: 16px;
+}
+
+.btn_edit_user{
+    display: block;
+    cursor: pointer;
+    width: 50px;
+    padding: 5px 8px;
+    text-align: center;
+    box-sizing: border-box;
+    border-radius: 6px;
+    background-color: #ff0001;
+    color: #ffffff;
+    font-size: 14px;
+    font-family: "Open Sans";
+    line-height: 16px;
+    outline: none;
+    text-decoration: none;
+    margin-left: 16px;
+}

@@ -1,0 +1,147 @@
+
+.content{
+    display: flex;
+    margin-top: 75px;
+}
+
+.sidebar{
+    margin-left: -5px;
+    width: 250px;
+    height: 300px;
+    box-shadow: 0px 0px 4px grey;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.sidebar_name_user{
+    text-align: center;
+    margin-top: 30px;
+}
+
+.sidebar_account_manage{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: -20px;
+    padding: 16px 24px;
+}
+
+.icon_account_manage{
+    position: relative;
+    width: 20px;
+    height: 20px;
+}
+
+.sidebar_edit_profile,
+.sidebar_change_password{
+    text-decoration: none;
+    display: flex;
+    color: #000;
+    height: 30px;
+    margin-top: 10px;
+    align-items: center;
+    padding: 10px;
+    padding-left: 60px;
+}
+
+.sidebar_edit_profile{
+    margin-top: -10px;
+}
+
+.sidebar_change_password:hover,
+.sidebar_edit_profile{
+    background-color: #dedddd;
+}
+
+.section{
+    margin-left: 100px;
+    margin-top: -10px;
+    width: 950px;
+    height: 600px;
+    box-shadow: 0px 0px 4px grey;
+}
+
+.title_section{
+    margin-top: 34px;
+    margin-left: 34px;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.section_link{
+    display: flex;
+    border-bottom: 1px solid grey;
+    margin-left: 40px;
+    margin-right: 40px;
+    gap: 50px;
+    justify-content: center;
+}
+
+.section_change_password,
+.section_edit_profile{
+    color: #000;
+    text-decoration: none;
+}
+
+.section_change_password:hover,
+.section_edit_profile{
+    border-bottom: 1px solid red;
+}
+
+.title_link{
+    font-size: 24px;
+    font-weight: bold;
+    margin-left: 40px;
+    margin-top: 40px;
+}
+
+.form{
+    text-align: center;
+}
+
+.label{
+    display: flex;
+    align-items: center;
+    gap:5px;
+    margin-left: 250px;
+}
+
+.icon_start{
+    color: red;
+}
+
+.input{
+    width: 400px;
+    height: 35px;
+    border-radius: 10px;
+    background-color: #dcd8d8;
+    border: none;
+    padding-left: 20px;
+    margin-left: 270px;
+}
+
+.name{
+    margin-top: -20px;
+}
+
+.user_name{
+    margin-top: 20px;
+}
+
+.section_btn{
+    display: flex;
+    margin-top: 30px;
+    gap: 30px;
+    float: right;
+    margin-right: 300px;
+}
+
+.btn_save{
+    cursor: pointer;
+    width: 80px;
+    background-color: red;
+    border: none;
+    color: #fff;
+    border-radius: 5px;
+    padding: 7px 0px;
+}
