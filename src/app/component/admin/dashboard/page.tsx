@@ -99,7 +99,7 @@ function DashBoard(){
                             <div className={styles.item_user_management}>
                                 {users.length > 0 ? (
                                     users.map((item) => (
-                                        <div className={styles.item_user}>
+                                        <div key={item.id} className={styles.item_user}>
                                             <p className={styles.item_name_user}>{item.name}</p>
                                             <Link href={`dashboard/user/${item.id}`} className={styles.btn_edit_user}>{t("section_edit")}</Link>
                                         </div>

@@ -11,7 +11,7 @@ const ViewUserDetail = ({ params }: { params: { id: string } }) => {
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json",
-            },
+            }
         })
         .then((res) => res.json())
         .then((data) => {
@@ -19,7 +19,7 @@ const ViewUserDetail = ({ params }: { params: { id: string } }) => {
             setDetailUser(data || null);
         })
         .catch((err) => console.error("Error fetching user:", err));
-    }, []);
+    }, [params.id]);
 
     return (
         <div>
