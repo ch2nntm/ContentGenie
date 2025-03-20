@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import styles from "../../../styles/change_password.module.css";
-import Image from "next/image";
 import Cookies from "js-cookie";
 import { useTranslations } from "next-intl";
 import Link from "next/link";

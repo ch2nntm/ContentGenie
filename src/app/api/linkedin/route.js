@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import jwt from 'jsonwebtoken';
 
 //Lấy token
-export async function POST(req) {
+export async function POST() {
   const CLIENT_ID="8660xy4jt5qye8";
   const CLIENT_SECRET = "WPL_AP1.zXKedn8X5A1jLaA4.9+fuLA==";
   const REDIRECT_URI="https://dev.example.com/auth/linkedin/callback";

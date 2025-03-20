@@ -32,6 +32,7 @@ export async function GET(req, {params}) {
 
         const data = await response.json();
         return NextResponse.json({success: true, data}, {status:200});
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     }catch(error){
         return NextResponse.json({error: "Internal Server Error"},{status: 500});
     }
@@ -47,7 +48,7 @@ export async function DELETE(req, { params }) {
 
     try {
         const connection = await mysql.createConnection(dbConfig);
-        const [result] = await connection.execute(
+        const [] = await connection.execute(
             "DELETE FROM post WHERE id = ?",
             [statusId]
         );

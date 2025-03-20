@@ -23,7 +23,6 @@ function NavbarUser(){
     const [user, setUser] = useState<string | null>(null);
     const [roleUser, setRoleUser] = useState(0);
     const [avtUser, setAvtUser] = useState<string | null>(null);
-    const [email, setEmail] = useState("");
     const t = useTranslations("navbar_user");
     const router = useRouter();
     const pathname = usePathname();  
@@ -55,8 +54,6 @@ function NavbarUser(){
                     setUser(data.user.name);
                     setRoleUser(data.user.role);
                     setAvtUser(data.user.avatar);
-                    if(data.user.email)
-                        setEmail(data.user.email);
                 }
             })
             .catch((error) => console.error("Lỗi lấy thông tin user:", error));

@@ -11,7 +11,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import Form from "react-bootstrap/Form";
 import { Button } from "@mui/material";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";
 import { format } from "date-fns";
 import PublicIcon from '@mui/icons-material/Public';
@@ -41,7 +40,7 @@ function PreviewPage() {
     const formattedDate = today.toISOString().split('T')[0];
 
     const [imgUrl, setImgUrl] = useState("");
-    const [messages, setMessages] = useState([
+    const [messages] = useState([
         {
             role: "system", 
             content: `Tôi đang sử dụng AI trong việc marketing, hãy giúp tôi đưa ra caption tối đa 500 kí tự về chủ đề ${topic}....! Hãy trả lời bằng ngôn ngữ mà người dùng hỏi`
@@ -111,8 +110,6 @@ function PreviewPage() {
     useEffect(() => {
         fetchData(keyword);
     }, [keyword]);
-
-    const router = useRouter();
 
     const handleCancel = () => {
         setUpdateContent(content);

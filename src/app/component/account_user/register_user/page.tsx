@@ -60,6 +60,7 @@ function Register() {
                     toast.error(noti_toast('account_exists'));
                 }
             })
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             toast.error(noti_toast('error'));
         }

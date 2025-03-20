@@ -55,7 +55,7 @@ export async function POST(req) {
             return NextResponse.json({error: "Email exist"},{status: 400});
         }
 
-        const [result2] = await connection.execute(
+        const [] = await connection.execute(
             "INSERT INTO account (email, name, avatar, username, password, role, credits) VALUES (?, ?, '', ?, ?, 0, 20)",
             [email,name, username, password]
         );

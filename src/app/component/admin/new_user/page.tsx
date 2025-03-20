@@ -30,7 +30,7 @@ const SendEmailForm = () => {
         })
         console.log("Code: ",enterCode);
         if(responseNoti.ok){
-            const responseAdd = await fetch("http://localhost:3000/api/manage_account/add_new_user",{
+            fetch("http://localhost:3000/api/manage_account/add_new_user",{
                 method: "POST",
                 body: JSON.stringify({name, username, password, email})
             })
@@ -65,7 +65,7 @@ const SendEmailForm = () => {
         });
         
         if(responseEmail.ok){
-            const responseSendOTP = await fetch("http://localhost:3000/api/send_otp",{
+            fetch("http://localhost:3000/api/send_otp",{
                 method: "POST",
                 body: JSON.stringify({email})
             });

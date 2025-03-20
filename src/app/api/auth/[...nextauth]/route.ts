@@ -47,7 +47,7 @@ export const authOptions: NextAuthOptions = {
         console.log("Session data: ", session);
         return session;
       },
-      async jwt({ token, profile, trigger }) {
+      async jwt({ token, profile }) {
         if (profile) {
           const account = await prisma.account.findUnique({
             where: {

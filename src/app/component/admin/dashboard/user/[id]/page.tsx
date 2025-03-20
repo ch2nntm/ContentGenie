@@ -22,7 +22,6 @@ export default async function ViewUserDetail({ params }: { params: { id: string 
   console.log("User detail: ",detailUser);
 
   if (!detailUser) return notFound();
-  const proxy = "https://cors-anywhere.herokuapp.com/";
 
   return (
     <div className={styles.container}>
