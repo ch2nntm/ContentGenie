@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
 import styles from "../../../../../styles/detail_user.module.css";
 
-type PageProps = {
-  params: unknown;
-};
+
+type PageProps = Promise<{
+  id: string
+}>;
 
 const getUserDetail = async (id: string) => {
   try {
@@ -21,8 +22,8 @@ const getUserDetail = async (id: string) => {
   }
 };
 
-export default async function ViewUserDetail({ params }: PageProps) {
-  const detailUser = await getUserDetail(params.id);
+export default async function ViewUserDetail(props: { params: PageProps}) {
+  const detailUser = await getUserDetail((await props.params).id);
   console.log("User detail: ",detailUser);
 
   if (!detailUser) return notFound();

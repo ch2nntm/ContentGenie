@@ -1,12 +1,13 @@
-import NextAuth, { NextAuthOptions } from 'next-auth';
+import NextAuth, { NextAuthOptions, Profile } from 'next-auth';
 import prisma from '../../../../../lib/prisma';
 import GoogleProvider from 'next-auth/providers/google';
-import { SignJWT } from 'jose';
+import { JWTPayload, SignJWT } from 'jose';
 
 const secretKey = new TextEncoder().encode("your-secret-key");
 
-async function generateToken(payload) {
-    return await new SignJWT(payload)
+async function generateToken(payload: JWTPayload | Profile | undefined) {
+    const jwtPayload: JWTPayload = { ...payload } as JWTPayload;
+    return await new SignJWT(jwtPayload)
         .setProtectedHeader({ alg: "HS256" })
         .setIssuedAt()
         .setExpirationTime("1h") 
