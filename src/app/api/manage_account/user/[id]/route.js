@@ -14,7 +14,7 @@ const dbConfig = {
   };
 
   export async function GET(req, {params}) {
-      console.log("Params:", params); 
+    console.log("Params:", params); 
     const id = params?.id;
     
     if (isNaN(id)) {

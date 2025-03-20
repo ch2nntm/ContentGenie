@@ -1,6 +1,10 @@
 import { notFound } from "next/navigation";
 import styles from "../../../../../styles/detail_user.module.css";
 
+type PageProps = {
+  params: { id: string };
+};
+
 const getUserDetail = async (id: string) => {
   try {
     const res = await fetch(`http://localhost:3000/api/manage_account/user/${id}`, {
@@ -17,8 +21,7 @@ const getUserDetail = async (id: string) => {
   }
 };
 
-export default async function ViewUserDetail({ params }: { params: { id: string } }) {
-  if (!params?.id) return notFound();
+export default async function ViewUserDetail({ params }: PageProps) {
   const detailUser = await getUserDetail(params.id);
   console.log("User detail: ",detailUser);
 
