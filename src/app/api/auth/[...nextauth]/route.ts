@@ -13,7 +13,7 @@ async function generateToken(payload) {
         .sign(secretKey);
 }
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
     session: { strategy: 'jwt' },
     providers: [
       GoogleProvider({
