@@ -10,6 +10,14 @@ import dynamic from "next/dynamic";
 import { useAuth } from "../../authProvider"; 
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
+interface User {
+    name: string;
+    username: string;
+    password: string;
+    email: string;
+    avatar?: string;
+}
+
 function EditProfilePage() {
     const t = useTranslations("edit_profile");
     
@@ -39,7 +47,9 @@ function EditProfilePage() {
         }
     };
 
-    const auth = useAuth();
+    const auth = useAuth() as {
+        setUser(arg0: () => { name: string; avatar: string; }): unknown; user: User 
+};
 
     const fetchUserData = () => {
         if (auth?.user?.name) {

@@ -4,14 +4,14 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import Cookies from "js-cookie";
 
 interface AuthContextType {
-  user: object;
+  user: object | null;
   setUser: (user: object) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<unknown>(null);
+  const [user, setUser] = useState<object | null>(null);
 
   useEffect(() => {
 

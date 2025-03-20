@@ -22,7 +22,14 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import HttpsIcon from '@mui/icons-material/Https';
 
 function PreviewPage() {
-    const auth = useAuth();
+    interface User {
+        id: string;
+        avatar?: string;
+        name?: string;
+        username?: string;
+    }
+
+    const auth = useAuth() as { user: User };
     const t = useTranslations("preview");
     const searchParams = useSearchParams();
     const topic = searchParams.get("topic") || "";
@@ -277,7 +284,7 @@ function PreviewPage() {
                                 <button 
                                     type="button" 
                                     className={styles.item} 
-                                    onClick={() => document.getElementById("datePicker")?.showPicker()}
+                                    onClick={() => document.getElementById("datePicker")?.click()}
                                 >
                                     {format(postTime, "MMM d")}
                                 </button>

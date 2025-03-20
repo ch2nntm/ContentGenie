@@ -3,6 +3,20 @@ import prisma from '../../../../../lib/prisma';
 import GoogleProvider from 'next-auth/providers/google';
 import { JWTPayload, SignJWT } from 'jose';
 
+declare module "next-auth" {
+  interface Profile {
+    picture?: string;
+    id?: number;
+    role?: number;
+    avatar?: string
+  }
+
+  interface Session {
+    accessToken?: string;
+  }
+
+}
+
 const secretKey = new TextEncoder().encode("your-secret-key");
 
 async function generateToken(payload: JWTPayload | Profile | undefined) {
@@ -31,7 +45,7 @@ const authOptions: NextAuthOptions = {
           create: { 
             email: profile.email, 
             name: profile.name, 
-            avatar: profile.picture,
+            avatar: profile.picture || '',
             username: "", 
             password: "", 
             role: 0
@@ -44,7 +58,7 @@ const authOptions: NextAuthOptions = {
         return true;
       },
       async session({ session, token }) {
-        session.accessToken = token.accessToken || null;
+        session.accessToken = typeof token.accessToken === 'string' ? token.accessToken : undefined;
         console.log("Session data: ", session);
         return session;
       },
@@ -59,7 +73,7 @@ const authOptions: NextAuthOptions = {
             throw new Error('No user found');
           }
           token.id = account.id;
-          profile.id = token.id;
+          profile.id = token.id as number;
           profile.role = 0;
           profile.avatar = profile.picture || '';
           const payload = profile;

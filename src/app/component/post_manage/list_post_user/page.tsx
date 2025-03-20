@@ -21,25 +21,34 @@ import { toast, ToastContainer } from "react-toastify";
 
 const NavbarComponent = dynamic(() => import("@/single_file/navbar_user"));
 
+interface Post {
+    id: number;
+    content: string;
+    image: string;
+    posttime: Date;
+    audience: string;
+    status: number;
+}
+
 function ListPostUser() {
     const t = useTranslations("list_post_user");
-    const auth = useAuth();
+    const auth = useAuth() as { user: { avatar?: string; name: string; username: string;} };
 
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(true);
     const [isClickBtnEdit, setIsClickBtnEdit] = useState(false); 
-    const [activeDots, setActiveDots] = useState(null); 
-    const [activeEdit, setActiveEdit] = useState(null); 
+    const [activeDots, setActiveDots] = useState<number | null>(null); 
+    const [activeEdit, setActiveEdit] = useState<number | null>(null); 
     const [likes, setLikes] = useState<Record<number, number>>({});
     const [updateContent, setUpdateContent] = useState("");
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [image, setImage] = useState("");
 
-    const handleDots = (id) => {
+    const handleDots = (id: number) => {
         setActiveDots(activeDots === id ? null : id);
     };
 
-    const handleEdit = (id, content) => {
+    const handleEdit = (id: number, content: string) => {
         setActiveDots(null);
         setActiveEdit(id);
         setIsClickBtnEdit(true);
@@ -82,7 +91,8 @@ function ListPostUser() {
                 }
     
                 const data = await response.json();
-                const sortedPosts = data.posts.toSorted((a, b) => new Date(b.posttime) - new Date(a.posttime));
+                const sortedPosts = data.posts.sort((a: { posttime: string | number | Date; }, b: { posttime: string | number | Date; }
+                                    ) => new Date(b.posttime).getTime() - new Date(a.posttime).getTime());
                 setPosts(sortedPosts);
     
                 if (data.posts.length > 0) {
