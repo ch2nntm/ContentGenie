@@ -15,7 +15,8 @@
         "hello": "Xin chào",
         "account": "Tài khoản",
         "signout": "Đăng xuất",
-        "create": "Tạo"
+        "create": "Tạo",
+        "title_page": "Trang Chủ"
     },
     "login": {
         "label_username": "Tên tài khoản",
@@ -25,12 +26,18 @@
         "signin": "Đăng Nhập",
         "signup": "Đăng Ký",
         "have_account": "Không có tài khoản?",
-        "signinGG": "Đăng nhập với Google"
+        "signinGG": "Đăng nhập với Google",
+        "title_page": "Trang Đăng Nhập",
+        "forgot_password": "Quên mật khẩu",
+        "signinLinkedIn": "Đăng nhập với LinkedIn"
     },
     "navbar_user":{
         "signout": "Đăng xuất",
         "account_management": "Quản lý tài khoản",
-        "input_search": "Tìm kiếm..."
+        "input_search": "Tìm kiếm...",
+        "dashboard": "Trang Tổng Quan",
+        "post_management": "Quản lý bài đăng",
+        "create_content": "Tạo Nội Dung"
     },
     "register": {
         "label_name": "Họ tên",
@@ -43,14 +50,20 @@
         "input_confirm_password": "Nhập lại mật khẩu",
         "create_account": "Tạo tài khoản",
         "have_account": "Có tài khoản?",
-        "signin": "Đăng Nhập"
+        "signin": "Đăng Nhập",
+        "password_not_format":"Mật khẩu phải chứa ít nhất 8 ký tự, 1 chữ hoa, 1 chữ thường và 1 số!" 
     },
     "preview": {
         "time": "giờ trước",
         "share": "Chia sẻ",
         "scheduled_post": "Bài đăng theo lịch trình",
         "btn_edit": "Chỉnh sửa bài đăng",
-        "account_management": "Quản lý tài khoản"
+        "account_management": "Quản lý tài khoản",
+        "content": "Nội dung",
+        "btn_close": "Thoát",
+        "btn_save": "Lưu",
+        "img": "Hình ảnh",
+        "upload_post": "Đăng bài"
     },
     "content_generator": {
         "social_media": "Chọn Nền Tảng Truyền Thông Xã Hội:",
@@ -60,7 +73,17 @@
         "enter_topic": "Nhập Chủ Đề Hoặc Từ Khóa",
         "enable_trend": "Bật Nội Dung Dựa Trên Xu Hướng:",
         "btn_generate_content": "Tạo Nội Dung",
-        "account_management": "Quản lý tài khoản"
+        "account_management": "Quản lý tài khoản",
+        "audience":"Chọn Giới Hạn Đăng Bài",
+        "noti_error":"Vui lòng điền đầy đủ",
+        "option_music": "Âm Nhạc",
+        "option_shopping": "Mua Sắm",
+        "option_story": "Truyện Cổ Tích",
+        "public": "Công Khai",
+        "private": "Riêng Tư",
+        "error_http": "Lỗi HTTP",
+        "invalid_json": "Phản hồi không phải JSON hợp lệ",
+        "error_get_user": "Lỗi lấy thông tin user:"
     },
     "dashboard": {
         "sidebar_dashboard": "Trang Tổng Quan",
@@ -70,8 +93,13 @@
         "sidebar_settings": "Cài Đặt",
         "section_user_management": "Quản lý người dùng",
         "section_add_new_user": "Thêm người dùng mới",
-        "section_edit": "Sửa",
-        "section_no_user": "Không có người dùng nào được tìm thấy"
+        "section_view": "Xem",
+        "section_no_user": "Không có người dùng nào được tìm thấy",
+        "section_delete": "Xoá",
+        "delete_success":"Xoá người dùng thành công: ",
+        "delete_fail": "Xoá người dùng thất bại!",
+        "cancel_delete": "Huỷ bỏ xoá!",
+        "error_load": "Lỗi tải người dùng..."
     },
     "change_password":{
         "hi": "Xin chào",
@@ -82,7 +110,14 @@
         "new_password": "Mật khẩu mới",
         "confirm_password": "Xác nhận mật khẩu",
         "btn_refresh": "Làm mới",
-        "btn_save": "Lưu"
+        "btn_save": "Lưu",
+        "enter_full": "Vui lòng điền đầy đủ các trường!",
+        "password_not_match": "Mật khẩu mới và xác nhận mật khẩu không khớp!",
+        "password_incorrect": "Mật khẩu cũ không chính xác!",
+        "password_not_format": "Mật khẩu phải chứa ít nhất 8 ký tự, 1 chữ hoa, 1 chữ thường và 1 số!",
+        "invalid_json": "Phản hồi JSON không hợp lệ!",
+        "error_get_user": "Lỗi lấy thông tin người dùng!",
+        "error_change_password": "Lỗi thay đổi mật khẩu!"
     },
     "edit_profile":{
         "hi": "Xin chào",
@@ -91,7 +126,81 @@
         "change_password": " Thay đổi mật khẩu",
         "avt": "Ảnh đại diện",
         "name": "Họ tên",
+        "email": "Email",
         "username": "Tên tài khoản",
-        "btn_save": "Lưu"
+        "btn_save": "Lưu",
+        "invalid_email": "Định dạng email sai!",
+        "error_upload_img": "Lỗi tải ảnh lên!",
+        "enter_full": "Vui lòng điền đầy đủ các trường!",
+        "no_inf_change": "Không có thông tin nào thay đổi!",
+        "update_successful": "Cập nhật thành công!",
+        "error_update:":"Lỗi cập nhật thông tin!",
+        "email_exist":"Email đã tồn tại!",
+        "update_fail": "Cập nhật thất bại!",
+        "message": "Cập nhật email thành công!"
+    },
+    "forgot_password":{
+        "enter_full": "Vui lòng điền đầy đủ các trường!",
+        "username_wrong": "Tên người dùng sai!",
+        "error_register": "Lỗi trong quá trình đăng ký!",
+        "password_not_match": "Mật khẩu không khớp!",
+        "password_not_format" : "Mật khẩu phải dài ít nhất 8 ký tự, bao gồm chữ cái, số và ký tự đặc biệt!",
+        "title": "Quên mật khẩu",
+        "username": "Tên người dùng",
+        "btn_cancel": "Hủy bỏ",
+        "reset_password": "Đặt lại mật khẩu",
+        "password": "Mật khẩu",
+        "confirm_password": "Xác nhận mật khẩu"
+    },
+    "list_post_user":{
+        "title_page": "Danh sách bài đăng",
+        "no_post": "Không có bài đăng nào",
+        "posted": "Đã đăng",
+        "pending": "Chưa đăng",
+        "hours": "giờ trước",
+        "days": "ngày trước",
+        "months": "tháng trước",
+        "years": "năm trước",
+        "edit": "Sửa",
+        "delete": "Xoá",
+        "content": "Nội Dung",
+        "btn_close": "Đóng",
+        "btn_save": "Lưu",
+        "btn_edit": "Sửa bài đăng",
+        "img": "Hình Ảnh",
+        "upload_post": "Tải lên",
+        "image": "Hình Ảnh",
+        "error_http": "Lỗi HTTP! Trạng thái:",
+        "error_fetch": "Lỗi khi tìm kiếm thông tin chi tiết bài đăng:",
+        "confirm_delete": "Bạn có chắc chắn muốn xóa bài viết này không?",
+        "post_delete": "Bài viết đã bị xóa:",
+        "error_delete": "Lỗi xóa bài viết:",
+        "cancel_delete": "Hủy xóa!"
+    },
+    "new_user":{
+        "btn_add_new": "Thêm Người Dùng Mới",
+        "name": "Họ Tên",
+        "email": "Email",
+        "btn_close": "Đóng",
+        "btn_add": "Thêm",
+        "btn_send":"Gửi",
+        "btn_cancel": "Huỷ",
+        "enter_code": "Nhập Mã",
+        "code": "Mã",
+        "add_successful":"Thêm Người Dùng Mới Thành Công!",
+        "add_fail": "Gửi mã thất bại!",
+        "wrong_code":"Mã sai!",
+        "enter_full":"Vui lòng điền đầy đủ các trường!",
+        "enter_name":"Vui lòng điền họ tên!",
+        "enter_email":"Vui lòng điền email!",
+        "invalid_email":"Định dạng email sai!",
+        "send_code_successful":"Gửi mã thành công!",
+        "send_code_fail":"Gửi mã thất bại!",
+        "message1":"Đã xác nhận OTP thành công. Tài khoản của bạn là tên người dùng: ",
+        "message2":" và mật khẩu: ",
+        "placeholder_name":"Nhập họ tên",
+        "placeholder_email":"Nhập email",
+        "placeholder_code":"Nhập mã",
+        "exist_account": "Tài khoản đã tồn tại!"
     }
 }

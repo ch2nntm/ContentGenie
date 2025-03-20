@@ -7,6 +7,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import Head from "next/head";
 
 export default function Home() {
   const router = useRouter();
@@ -53,7 +54,7 @@ export default function Home() {
         const res = await fetch("/api/manage_account/logout", { method: "POST" });
 
         if (res) {
-            Cookies.remove("token", { path: "/" }); 
+            document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
             setUser(null); 
             toast.success("Đăng xuất thành công!");
         } else {
@@ -68,13 +69,12 @@ export default function Home() {
   const handleCreate = async () => {
     try {
       if (!user) {
-        router.push("/component/account_user/login");
-        return;
+        router.push("/component/account_user/login_user");
+        // return;
       }
       else{
         router.push("/component/post_manage/content_generator");
       }
-      // toast.success("Bạn có token, có thể tiếp tục!");
     } catch (error) {
       console.error(error);
       toast.error("Có lỗi xảy ra!");
@@ -82,26 +82,32 @@ export default function Home() {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.card}>
-        <div className={styles.img_card_container}>
-          <Image className={styles.image_card} src="/image_card.png" alt="Card" fill priority />
+    <>
+      <Head>
+        <title>Trang Chủ</title>
+        <meta name="description" content="Đây là trang chủ của website" />
+      </Head>
+      <div className={styles.container}>
+        <div className={styles.card}>
+          <div className={styles.img_card_container}>
+            <Image className={styles.image_card} src="/image_card.png" alt="Card" fill loading="lazy"/>
+          </div>
+        </div>
+        <div className={styles.text}>
+          <div className={styles.navbar}>
+            <label className={user ? styles.label_user : styles.label_user_hide}>{user ? t("hello")+` ${user}!` : t("account")}</label>
+            <button onClick={handleLogout} className={user ? styles.btn_logout_show : styles.btn_logout_hide}>{t("signout")}</button>
+          </div>
+          <div className={styles.img_text_container}>
+            <Image className={styles.image_text} src="/image_text.png" alt="Icon" fill loading="lazy" />
+          </div>
+          
+          <h1 className={styles.main_text}>{t("main_text")}</h1>
+          <h3 className={styles.tilte_text}>{t("title_text")}</h3>
+          <button onClick={handleCreate} className={styles.btnCreate}>{t("create")}</button>
+          <ToastContainer/>
         </div>
       </div>
-      <div className={styles.text}>
-        <div className={styles.navbar}>
-          <label className={user ? styles.label_user : styles.label_user_hide}>{user ? t("hello")+` ${user}!` : t("account")}</label>
-          <button onClick={handleLogout} className={user ? styles.btn_logout_show : styles.btn_logout_hide}>{t("signout")}</button>
-        </div>
-        <div className={styles.img_text_container}>
-          <Image className={styles.image_text} src="/image_text.png" alt="Icon" fill priority />
-        </div>
-        
-        <h1 className={styles.main_text}>{t("main_text")}</h1>
-        <h3 className={styles.tilte_text}>{t("title_text")}</h3>
-        <button onClick={handleCreate} className={styles.btnCreate}>{t("create")}</button>
-        <ToastContainer/>
-      </div>
-    </div>
+    </>
   );
 }

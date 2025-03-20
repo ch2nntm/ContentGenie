@@ -1,5 +1,6 @@
 import mysql from "mysql2/promise";
 import fs from "fs";
+import { NextResponse } from "next/server";
 
 const dbConfig = {
     host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
@@ -12,8 +13,8 @@ const dbConfig = {
     },
   };
 
-  export async function GET(req, content) {
-    const {params} = await content;
+  export async function GET(req, {params}) {
+      console.log("Params:", params); 
     const id = params?.id;
     
     if (isNaN(id)) {
@@ -45,4 +46,35 @@ const dbConfig = {
           { status: 500 }
         );
       }
+}
+
+export async function DELETE(req, { params }) {
+  const id = params?.id;
+  console.log("Id:", id); 
+  
+  if (!id) {
+      return NextResponse.json({ error: "Missing post ID" }, { status: 400 });
+  }
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [result] = await connection.execute(
+        "DELETE FROM account WHERE id = ?",
+        [id]
+    );
+
+    await connection.end();
+
+    if(result.affectedRows === 0) {
+        return NextResponse.json({ error: "User not found" }, { status: 400 });
+    }
+
+    return NextResponse({success: "Delete successful"}, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse(
+      JSON.stringify({ error: "Database connection failed" }),
+      { status: 500 }
+    );
+  }
 }

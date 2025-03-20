@@ -1,28 +1,35 @@
 "use client"
 import { useTranslations } from "next-intl";
 import styles from "../../../styles/content_generator.module.css"
-import Image from 'next/image';
 import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
+import Cookies from "js-cookie"; //Client component
 import NavbarUser from "@/single_file/navbar_user";
+import { useRouter } from "next/navigation";
+import ShareIcon from '@mui/icons-material/Share';
+import WatchLaterIcon from '@mui/icons-material/WatchLater';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import KeyIcon from '@mui/icons-material/Key';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import { toast, ToastContainer } from "react-toastify";
+import PersonIcon from '@mui/icons-material/Person';
 
 function ContentGeneratorPage() {
-
-    // const [user, setUser] = useState<string | null>(null);
     const t = useTranslations("content_generator");
     const [selectedPlatform, setSelectedPlatform] = useState("");
     const [selectedDate, setSelectedDate] = useState("");
     const [selectedNumber, setSelectedNumber] = useState(0);
-    const [enterTopic, setEnterTopic] = useState("");
+    const [selectTopic, setSelectTopic] = useState("");
+    const [enterKeyword, setEnterKeyword] = useState("");
+    const [selectedAudience, setSelectedAudience] = useState("public");
     const [isOn, setIsOn] = useState(false);
-    // const [showDropdownUser, setShowDropdownUser] = useState(false);
+    const router = useRouter();
 
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
 
     const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedDate(event.target.value);
-    };    
+    };   
 
     useEffect(() => {
         const token = Cookies.get("token");
@@ -35,11 +42,11 @@ function ContentGeneratorPage() {
             })
             .then(async (res) => {
                 if (!res) {
-                    throw new Error(`Lỗi HTTP: ${res}`);
+                    throw new Error(`t("error_http") ${res}`);
                 }
                 const contentType = res.headers.get("content-type");
                 if (!contentType || !contentType.includes("application/json")) {
-                    throw new Error("Phản hồi không phải JSON hợp lệ");
+                    throw new Error(t("invalid_json"));
                 }
                 return res.json();
             })
@@ -48,39 +55,31 @@ function ContentGeneratorPage() {
                 //     setUser(data.user.name);
                 }
             })
-            .catch((error) => console.error("Lỗi lấy thông tin user:", error));
+            .catch((error) => console.error(t("error_get_user"), error));
         }
       }, []);
 
+      const hanldeCreateContent = () => {
+        const queryParams = new URLSearchParams({
+            platform: selectedPlatform,
+            date: selectedDate,
+            number: selectedNumber.toString(),
+            topic: selectTopic,
+            keyword: enterKeyword,
+            audience: selectedAudience,
+            isOn: isOn.toString(),
+        }).toString();
+        if(selectedPlatform==="" || selectedDate==="" || selectedNumber==0 || enterKeyword==="" || selectedAudience===""){
+            toast.error(t("noti_error"));
+        }
+        else{
+            if(selectedPlatform === "Mastodon")
+                router.push(`/component/post_manage/preview?${queryParams}`);
+        }
+      };
+
   return (
     <div className={styles.container}>
-        {/* <div className={styles.navbar}>
-            <div className={styles.title_logo}>
-                <div className={styles.icon_logo}>
-                    <Image src="/wand_magic_sparkles.png" alt="logo" fill ></Image>
-                </div>
-                <h1 className={styles.title_navbar}>ContentGenie</h1>
-            </div>
-            <div className={styles.icon_navbar}>
-                    <button className={styles.icon_bell}>
-                        <Image src="/icon_bell.png" alt="Noti" fill ></Image>
-                    </button>
-                    <button className={styles.button_user} onClick={() => setShowDropdownUser(!showDropdownUser)}>
-                        <div className={styles.icon_user}>
-                            <Image src="/icon_circle_user.png" alt="User" fill ></Image>
-                        </div>
-                        <p className={styles.name_user}>{user}</p>
-                    </button>
-                    <div className={showDropdownUser ? styles.manage_user_show : styles.manage_user_hide}>
-                        <Link href="" className={styles.edit_profile}>
-                            <div className={styles.icon_edit_profile}>
-                                <Image src="/icon_edit_profile.png" alt="Icon edit profile" fill></Image>
-                            </div>
-                            <p>{t("account_management")}</p>
-                        </Link>
-                    </div>
-                </div>
-        </div> */}
         <NavbarUser></NavbarUser>
         <div className={styles.post}>
             <p className={styles.title}>
@@ -89,22 +88,22 @@ function ContentGeneratorPage() {
             <div className={styles.social_media}>
                 <div className={styles.title_social_media}>
                     <div className={styles.icon_social_media}>
-                        <Image src="/icon_share_alt.png" alt="Icon select social media" fill></Image>
+                        <ShareIcon></ShareIcon>
                     </div>
                     <p className={styles.text_social_media}>
                         {t("social_media")}
                     </p>
                 </div>
                 <div className={styles.platform_social_media}>
-                    <button className={selectedPlatform === "Facebook" ? styles.platform_facebook : styles.btn_platform_social_media} onClick={() => setSelectedPlatform("Facebook")}>Facebook</button>
+                    <button className={selectedPlatform === "Mastodon" ? styles.platform_facebook : styles.btn_platform_social_media} onClick={() => setSelectedPlatform("Mastodon")}>Mastodon</button>
                     <button className={selectedPlatform === "TikTok" ? styles.platform_tiktok : styles.btn_platform_social_media} onClick={() => setSelectedPlatform("TikTok")}>TikTok</button>
-                    <button className={selectedPlatform === "Instagram" ? styles.platform_instagram : styles.btn_platform_social_media} onClick={() => setSelectedPlatform("Instagram")}>Instagram</button>
+                    <button className={selectedPlatform === "Linkedin" ? styles.platform_instagram : styles.btn_platform_social_media} onClick={() => setSelectedPlatform("Linkedin")}>Linkedin</button>
                 </div>
             </div>
             <div className={styles.post_time}>
                 <label className={styles.title_post_time} htmlFor="post_time">
                     <div className={styles.icon_post_time}>
-                        <Image src="/icon_clock.png" alt="Icon clock" fill></Image>
+                        <WatchLaterIcon></WatchLaterIcon>
                     </div>
                     <p className={styles.text_post_time}>
                         {t("post_time")}
@@ -115,7 +114,7 @@ function ContentGeneratorPage() {
             <div className={styles.number_of_week}>
                 <label className={styles.title_number_of_week} htmlFor="number_of_week">
                     <div className={styles.icon_number_of_week}>
-                        <Image src="/icon_calendar.png" alt="Icon calendar" fill></Image>
+                        <CalendarMonthIcon></CalendarMonthIcon>
                     </div>
                     <p className={styles.text_number_of_week}>{t("number_of_week")}</p>
                 </label>
@@ -124,17 +123,38 @@ function ContentGeneratorPage() {
             <div className={styles.topic}>
                 <label className={styles.title_topic} htmlFor="topic">
                     <div className={styles.icon_topic}>
-                        <Image src="/icon_key.png" alt="Icon key" fill></Image>
+                        <KeyIcon></KeyIcon>
                     </div>
                     <p className={styles.text_topic}>{t("topic")}</p>
                 </label>
-                <input type="text" id="topic" className={styles.input_topic} placeholder={t("enter_topic")}
-                value={enterTopic} onChange={(e) => setEnterTopic(e.target.value)}/>
+                <div className={styles.content_topic}>
+                    <select className={styles.select_topic} onChange={(e) => setSelectTopic(e.target.value)} value={selectTopic}>
+                        <option value="Âm nhạc">{t("option_music")}</option>
+                        <option value="Mua sắm">{t("option_shopping")}</option>
+                        <option value="Truyện">{t("option_story")}</option>
+                    </select>
+                    <input disabled={selectTopic ? false : true} type="text"  id="topic" className={styles.input_topic} placeholder={t("enter_topic")}
+                    value={enterKeyword} onChange={(e) => setEnterKeyword(e.target.value)}/>
+                </div>
+            </div>
+            <div className={styles.audience}>
+                <label className={styles.title_audience} htmlFor="topic">
+                    <div className={styles.icon_audience}>
+                        <PersonIcon></PersonIcon>
+                    </div>
+                    <p className={styles.text_audience}>{t("audience")}</p>
+                </label>
+                <div className={styles.content_audience}>
+                    <select className={styles.select_audience} onChange={(e) => setSelectedAudience(e.target.value)} value={selectedAudience}>
+                        <option value="public">{t("public")}</option>
+                        <option value="private">{t("private")}</option>
+                    </select>
+                </div>
             </div>
             <div className={styles.enable_trend}>
                 <div className={styles.title_enable_trend}>
                     <div className={styles.icon_enable_trend}>
-                        <Image src="/icon_fire.png" alt="Icon fire" fill></Image>
+                        <LocalFireDepartmentIcon></LocalFireDepartmentIcon>
                     </div>
                     <p className={styles.text_enable_trend}>{t("enable_trend")}</p>
                 </div>
@@ -146,9 +166,10 @@ function ContentGeneratorPage() {
                 </div>
             </div>
             <div className={styles.generate_content}>
-                <button className={styles.btn_generate_content}>{t("btn_generate_content")}</button>
+                <button onClick={hanldeCreateContent} className={styles.btn_generate_content}>{t("btn_generate_content")}</button>
             </div>
         </div>
+        <ToastContainer></ToastContainer>
     </div>
   );
 }

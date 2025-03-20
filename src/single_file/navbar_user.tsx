@@ -5,8 +5,16 @@ import Image from "next/image";
 import Link from "next/link";
 import Cookies from "js-cookie";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { signOut } from "next-auth/react";
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import SearchIcon from '@mui/icons-material/Search';
+import MarkAsUnreadIcon from '@mui/icons-material/MarkAsUnread';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+
 
 function NavbarUser(){
 
@@ -14,11 +22,16 @@ function NavbarUser(){
     const [showDropdownUser, setShowDropdownUser] = useState(false);
     const [user, setUser] = useState<string | null>(null);
     const [roleUser, setRoleUser] = useState(0);
+    const [avtUser, setAvtUser] = useState<string | null>(null);
+    const [email, setEmail] = useState("");
     const t = useTranslations("navbar_user");
     const router = useRouter();
+    const pathname = usePathname();  
+    const isDashboard = pathname === "/component/admin/dashboard";
 
     useEffect(() => {
         const token = Cookies.get("token");
+        console.log("Pathname: ",pathname);
         if (token) {
             fetch("/api/manage_account/login", {
                 method: "GET",
@@ -38,8 +51,12 @@ function NavbarUser(){
             })
             .then((data) => {
                 if (data.user) {
+                    console.log("Data: ",data.user);
                     setUser(data.user.name);
                     setRoleUser(data.user.role);
+                    setAvtUser(data.user.avatar);
+                    if(data.user.email)
+                        setEmail(data.user.email);
                 }
             })
             .catch((error) => console.error("Lỗi lấy thông tin user:", error));
@@ -51,7 +68,7 @@ function NavbarUser(){
             const token = Cookies.get("token");
     
             if (!token) {
-              router.push("/component/account_user/login");
+              router.push("/component/account_user/login_user");
               return;
             }
     
@@ -59,8 +76,11 @@ function NavbarUser(){
     
             if (res) {
                 Cookies.remove("token", { path: "/" }); 
-                router.push("/component/account_user/login");
                 setUser(null); 
+                Cookies.remove("token"); 
+                await signOut({ redirect: false });
+                router.push("/component/account_user/login_user");
+                // const sessionLogout = await getSession();
                 toast.success("Đăng xuất thành công!");
             } else {
                 toast.error("Đăng xuất thất bại!");
@@ -79,35 +99,51 @@ function NavbarUser(){
                 </div>
                 <h1 className={styles.title_navbar}>ContentGenie</h1>
             </Link>
-            <div className={styles.search}>
-                    <input className={roleUser===0 ? styles.input_search_hide : styles.input_search} type="text" placeholder={t("input_search")} value={inputSearch} onChange={(e) => setInputSearch(e.target.value)}/>
-                </div>
+            <div className={isDashboard ? styles.search : styles.search_hide}>
+                <input className={roleUser===0 ? styles.input_search_hide : styles.input_search} type="text" placeholder={t("input_search")} value={inputSearch} onChange={(e) => setInputSearch(e.target.value)}/>
+            </div>
             <div className={styles.icon_navbar}>
-                    <button className={styles.icon_bell}>
-                        <Image src="/icon_bell.png" alt="Noti" fill ></Image>
-                    </button>
+                    <div className={styles.icon_bell}>
+                        <NotificationsIcon></NotificationsIcon>
+                    </div>
                     <button className={styles.button_user} onClick={() => setShowDropdownUser(!showDropdownUser)}>
-                        <div className={styles.icon_user}>
-                            <Image src="/icon_circle_user.png" alt="User" fill ></Image>
+                        <div className={avtUser ? styles.avt_user : styles.icon_user}>
+                        {!avtUser && <Image src="/icon_circle_user.png" alt="avt" fill />}
                         </div>
+                        {avtUser && <img className={styles.avt_user} src={avtUser} alt={avtUser} />}
                         <p className={styles.name_user}>{user}</p>
                     </button>
                     <div className={showDropdownUser ? styles.manage_user_show : styles.manage_user_hide}>
-                        <Link href="/component/account_user/edit_profile" className={ roleUser===0 ? styles.edit_profile : styles.edit_profile_hide}>
-                            <div className={styles.icon_edit_profile}>
-                                <Image src="/icon_edit_profile.png" alt="Icon edit profile" fill></Image>
-                            </div>
-                            <p>{t("account_management")}</p>
-                        </Link>
-                        <Link href="/component/admin/dashboard" className={ roleUser===1 ? styles.dashboard : styles.dashboard_hide}>
-                            <div className={styles.icon_dashboard}>
-                                <Image src="/icon_sidebar_dashboard.png" alt="Icon dashboard" fill></Image>
-                            </div>
-                            <p>{t("dashboard")}</p>
-                        </Link>
+                        <div className={styles.link}>
+                        {/* className={ roleUser===0 ? styles.edit_profile : styles.edit_profile_hide} */}
+                            <Link href="/component/account_user/edit_profile" className={styles.edit_profile}> 
+                                <div className={styles.icon_edit_profile}>
+                                    <BorderColorIcon></BorderColorIcon>
+                                </div>
+                                <p>{t("account_management")}</p>
+                            </Link>
+                            <Link href="/component/post_manage/list_post_user" className={ roleUser===0 ? styles.post_management : styles.edit_profile_hide}>
+                                <div className={styles.icon_edit_profile}>
+                                    <MarkAsUnreadIcon></MarkAsUnreadIcon>
+                                </div>
+                                <p>{t("post_management")}</p>
+                            </Link>
+                            <Link href="/component/post_manage/content_generator" className={styles.post_management}>
+                                <div className={styles.icon_edit_profile}>
+                                    <EditNoteIcon></EditNoteIcon>
+                                </div>
+                                <p>{t("create_content")}</p>
+                            </Link>
+                            <Link href="/component/admin/dashboard" className={ roleUser===1 ? styles.dashboard : styles.dashboard_hide}>
+                                <div className={styles.icon_dashboard}>
+                                <SearchIcon></SearchIcon>
+                                </div>
+                                <p>{t("dashboard")}</p>
+                            </Link>
+                        </div>
                         <button className={styles.btn_signout} onClick={handleSubmitSignout}>
                             <div className={styles.icon_signout}>
-                                <Image src="/signout.png" alt="Icon signout" fill></Image>
+                                <ExitToAppIcon></ExitToAppIcon>
                             </div>
                             <p className={styles.text_signout}>{t("signout")}</p>
                         </button>

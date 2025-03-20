@@ -160,6 +160,7 @@
     box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
     padding: 16px 24px 0;
     margin-top: -16px;
+    padding-top: 30px;
 }
 
 .text_user_management{
@@ -175,7 +176,7 @@
     overflow-y: auto; 
     white-space: nowrap;
     gap: 15px;
-    margin-top: 16px;
+    margin-top: 26px;
 }
 
 .item_user_management > *{
@@ -194,21 +195,29 @@
 
 .btn_add_new{
     cursor: pointer;
-    top: 176px;
-    left: 290px;
-    width: 148px;
-    height: 36px;
-    padding: 0px 8px;
+    padding: 8px 8px;
     border: 0;
-    box-sizing: border-box;
+    text-decoration: none;
     border-radius: 6px;
     background-color: #ff0001;
     color: #ffffff;
     font-size: 14px;
     font-family: "Open Sans";
-    font-weight: 500;
-    line-height: 16px;
-    outline: none;
+}
+
+.inf_user{
+    display: flex;
+    align-items: center;
+    padding-left: 16px;
+    gap: 15px;
+}
+
+
+.avt_user{
+    position: relative;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
 }
 
 .item_name_user{
@@ -217,7 +226,13 @@
     font-family: "Open Sans";
     font-weight: 700;
     line-height: 21px;
-    padding-left: 16px;
+}
+
+.btn_group_user{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
 }
 
 .btn_edit_user{
@@ -228,12 +243,24 @@
     text-align: center;
     box-sizing: border-box;
     border-radius: 6px;
-    background-color: #ff0001;
+    background-color: #00b7ff;
     color: #ffffff;
     font-size: 14px;
     font-family: "Open Sans";
     line-height: 16px;
     outline: none;
     text-decoration: none;
-    margin-left: 16px;
+}
+
+.btn_delete_user{
+    cursor: pointer;
+    border: none;
+    width: 50px;
+    padding: 5px 8px;
+    background-color: #ff0001;
+    font-size: 14px;
+    font-family: "Open Sans";
+    line-height: 16px;
+    color: #fff;
+    border-radius: 5px;
 }

@@ -1,151 +1,207 @@
-"use client"
-import NavbarUser from "@/single_file/navbar_user";
-import styles from "../../../styles/edit_profile.module.css"
+"use client";
+
+import styles from "../../../styles/edit_profile.module.css";
 import Link from "next/link";
-import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify";
+import dynamic from "next/dynamic";
+import { useAuth } from "../../authProvider"; 
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 function EditProfilePage() {
-
     const t = useTranslations("edit_profile");
+    
     const [nameUser, setNameUser] = useState("");
-    const [inputName, setInputName] = useState("");
     const [userName, setUserName] = useState("");
-    const [inputUserName, setInputUserName] = useState("");
+    const [inputName, setInputName] = useState("");
+    const [inputEmail, setInputEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [avatar, setAvatar] = useState("");
+
+    const message1="Đã cập nhật email thành công với tài khoản có username: ";
+    const message2="password: ";
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleImageClick = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        }
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const file = e.target.files[0];
+            const imageUrl = URL.createObjectURL(file);
+            setAvatar(imageUrl);
+        }
+    };
+
+    const auth = useAuth();
+
+    const fetchUserData = () => {
+        if (auth?.user?.name) {
+            setNameUser(auth.user.name);
+            setInputName(auth?.user.name);
+            setUserName(auth?.user.username);
+            setPassword(auth?.user.password);
+            setInputEmail(auth?.user.email);
+            if(auth?.user.avatar)
+                setAvatar(auth?.user.avatar);
+        }
+    }
 
     useEffect(() => {
-        const token = Cookies.get("token");
-        if (token) {
-            fetch("/api/manage_account/login", {
-                method: "GET",
+       fetchUserData();
+    },[auth?.user]);
+
+    const handleSubmitSave = async () => {
+        let uploadedImageUrl = avatar;
+    
+        if (fileInputRef.current?.files?.length) {
+            const file = fileInputRef.current.files[0];
+            const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
+            const uploadPreset = "demo-upload";
+            const form = new FormData();
+            form.append("file", file);
+            form.append("upload_preset", uploadPreset);
+
+            const response = await fetch(cloudinaryUrl, {
+                method: "POST",
+                body: form,
+            });
+
+            const data = await response.json();
+            if (data.secure_url) {
+                uploadedImageUrl = data.secure_url;
+            } else {
+                toast.error(t("error_upload_img"));
+                return;
+            }
+        }
+
+        if (!inputName || !inputEmail) {
+            toast.error(t("enter_full"));
+            return;
+        }
+        else if(!/^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(inputEmail)) {
+            toast.error(t("invalid_email"));
+            return;
+        }
+        else if(inputEmail === auth.user.email && inputName === auth.user.name && uploadedImageUrl === auth.user.avatar){
+            toast.error(t("no_inf_change"));
+            return;
+        }
+
+        const responseEmail = await fetch(`http://localhost:3000/api/manage_account/add_new_user?email=${inputEmail}`,{
+            method: "GET"
+        });
+
+        if(responseEmail.ok || inputEmail === auth.user.email){
+            const token = Cookies.get("token");
+            if (!token) return;
+
+            fetch("/api/manage_account/edit_profile", {
+                method: "PUT",
                 headers: {
                     Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
                 },
+                body: JSON.stringify({
+                    userName: userName,
+                    password: password,
+                    inputName: inputName,
+                    avatar: uploadedImageUrl,
+                    email: inputEmail
+                }),
             })
             .then(async (res) => {
-                if (!res) {
-                    throw new Error(`Lỗi HTTP: ${res}`);
-                }
-                const contentType = res.headers.get("content-type");
-                if (!contentType || !contentType.includes("application/json")) {
-                    throw new Error("Phản hồi không phải JSON hợp lệ");
+                if (!res.ok) {
+                    throw new Error(`Lỗi HTTP: ${res.status}`);
                 }
                 return res.json();
             })
             .then((data) => {
-                if (data.user) {
-                    setNameUser(data.user.name);
-                    setInputName(data.user.name);
-                    setUserName(data.user.username);
-                    setInputUserName(data.user.username);
-                    setPassword(data.user.password);
+                if (data.accessToken) {
+                    Cookies.set("token", data.accessToken, { expires: 1 });
                 }
+                fetch("http://localhost:3000/api/verify_otp",{
+                    method: "PUT",
+                    body: JSON.stringify({oldEmail: auth.user.email, newEmail: inputEmail, username: auth?.user.username, password, message1, message2})
+                })
+                toast.success(t("update_successful"));
+                auth.setUser(() => ({
+                    name: inputName,
+                    avatar: uploadedImageUrl,
+                }));
             })
-            .catch((error) => console.error("Lỗi lấy thông tin user:", error));
-        }
-    }, []);
-
-    const handleSubmitSave = () => {
-        if(!inputUserName || !inputName){
-            toast.error("Please enter full information");
-            return;
+            .catch((error) => console.error(t("error_update"), error));
         }
         else{
-            const token = Cookies.get("token");
-            if (token) {
-                fetch("/api/manage_account/edit_profile", {
-                    method: "PUT",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        userName: userName,
-                        password: password,
-                        inputName: inputName,
-                        inputUserName: inputUserName
-                    }),
-                })
-                .then(async (res) => {
-                    if (!res) {
-                        throw new Error(`Lỗi HTTP: ${res}`);
-                    }
-                    const contentType = res.headers.get("content-type");
-                    if (!contentType || !contentType.includes("application/json")) {
-                        throw new Error("Phản hồi không phải JSON hợp lệ");
-                    }
-                    return res.json();
-                    
-                })
-                .then((data) => {
-                    // const data = await res.json();
-                    console.log("Data:",data);
-                    if (data.accessToken) {
-                        Cookies.set("token", data.accessToken, { expires: 1 }); // Cập nhật token mới
-                    }
-                    if (data) {
-                        toast.success(data.message);
-                        // setTimeout(() => {
-                        //     window.location.reload();
-                        // }, 1000);
-                    }
-                    else if (data.error) {
-                        toast.error(data.error);
-                    }
-                })
-                .catch((error) => console.error("Lỗi thay đổi mật khẩu:", error));
-            }
+            toast.error(t("email_exist"));
         }
-    }
+    };
 
-  return (
-    <div className={styles.container}>
-        <NavbarUser></NavbarUser>
-        <div className={styles.content}>
-            <div className={styles.sidebar}>
-                <p className={styles.sidebar_name_user}>{t("hi")} {nameUser}!</p>
-                <div className={styles.sidebar_account_manage}>
-                    <div className={styles.icon_account_manage}>
-                        <Image src="/icon_account_manage.png" alt="Icon account manage" fill></Image>
+    const NavbarComponent = dynamic(() => import("@/single_file/navbar_user"), {ssr: false});
+    return (
+        <div className={styles.container}>
+            <NavbarComponent />
+            <div className={styles.content}>
+                <div className={styles.sidebar}>
+                    <p className={styles.sidebar_name_user}>{t("hi")} {nameUser} !</p>
+                    <div className={styles.sidebar_account_manage}>
+                        <div className={styles.icon_account_manage}>
+                            <ManageAccountsIcon></ManageAccountsIcon>
+                        </div>
+                        <p className={styles.text_account_manage}>{t("account_manage")}</p>
                     </div>
-                    <p className={styles.text_account_manage}>{t("account_manage")}</p>
+                    <Link href="" className={styles.sidebar_edit_profile}>{t("edit_profile")}</Link>
+                    <Link href="/component/account_user/change_password" className={styles.sidebar_change_password}>{t("change_password")}</Link>
                 </div>
-                <Link href="" className={styles.sidebar_edit_profile}>{t("edit_profile")}</Link>
-                <Link href="/component/account_user/change_password" className={styles.sidebar_change_password}>{t("change_password")}</Link>
-            </div>
-            <div className={styles.section}>
-                <p className={styles.title_section}>
-                    {t("account_manage")}
-                </p>
-                <div className={styles.section_link}>
-                    <Link href="" className={styles.section_edit_profile}>{t("edit_profile")}</Link>
-                    <Link href="/component/account_user/change_password" className={styles.section_change_password}>{t("change_password")}</Link>
-                </div>
-                <p className={styles.title_link}>{t("edit_profile")}</p>
-                <div className={styles.form_section}>
-                    <div className={styles.name}>
-                        <label htmlFor="name" className={styles.label}>{t("name")} <p className={styles.icon_start}>*</p></label>
-                        <input id="name" type="text" className={styles.input}
-                        value={inputName} onChange={(e)=>setInputName(e.target.value)}/>
+                <div className={styles.section}>
+                    <p className={styles.title_section}>{t("account_manage")}</p>
+                    <div className={styles.section_link}>
+                        <Link href="" className={styles.section_edit_profile}>{t("edit_profile")}</Link>
+                        <Link href="/component/account_user/change_password" className={styles.section_change_password}>{t("change_password")}</Link>
                     </div>
-                    <div className={styles.user_name}>
-                        <label htmlFor="username" className={styles.label}>{t("username")} <p className={styles.icon_start}>*</p></label>
-                        <input id="username" type="text" className={styles.input}
-                        value={inputUserName} onChange={(e)=>setInputUserName(e.target.value)}/>
+                    <p className={styles.title_link}>{t("edit_profile")}</p>
+                    <div className={styles.form_section}>
+                        <div className={styles.avt}>
+                            <label htmlFor="avt" className={styles.label}>{t("avt")} <span className={styles.icon_start}>*</span></label>
+                            <div onClick={handleImageClick}>
+                                <img className={styles.upload_avt} src={avatar ? avatar : "/upload_avt.png"} alt="avt"/>
+                            </div>
+                            <input
+                                ref={fileInputRef} 
+                                id="avt"
+                                type="file"
+                                className={styles.choose_avt}
+                                style={{ display: "none" }} 
+                                accept="image/*"
+                                onChange={handleFileChange} 
+                            />
+                        </div>
+                        <div className={styles.name}>
+                            <label htmlFor="name" className={styles.label}>{t("name")} <span className={styles.icon_start}>*</span></label>
+                            <input id="name" type="text" className={styles.input}
+                            value={inputName} onChange={(e) => setInputName(e.target.value)} />
+                        </div>
+                        <div className={styles.name}>
+                            <label htmlFor="email" className={styles.label}>{t("email")} <span className={styles.icon_start}>*</span></label>
+                            <input id="email" type="email" className={styles.input}
+                            value={inputEmail} onChange={(e) => setInputEmail(e.target.value)} />
+                        </div>
+                        <div className={styles.section_btn}>
+                            <button className={styles.btn_save} onClick={handleSubmitSave}>{t("btn_save")}</button>
+                        </div>
+                        <ToastContainer />
                     </div>
-                    <div className={styles.section_btn}>
-                        <button className={styles.btn_save} onClick={handleSubmitSave}>{t("btn_save")}</button>
-                    </div>
-                    <ToastContainer/>
                 </div>
             </div>
         </div>
-    </div>
-  );
+    );
 }
 
-export default EditProfilePage
+export default EditProfilePage;

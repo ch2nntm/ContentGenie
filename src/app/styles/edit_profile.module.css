@@ -30,6 +30,7 @@
     position: relative;
     width: 20px;
     height: 20px;
+    margin-top: -10px;
 }
 
 .sidebar_edit_profile,
@@ -104,10 +105,32 @@
     align-items: center;
     gap:5px;
     margin-left: 250px;
+    margin-top: 20px;
 }
 
 .icon_start{
     color: red;
+}
+
+.choose_avt{
+    margin-left: 270px;
+    margin-top: 0px;
+}
+
+.upload_avt{
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin-left: 350px;
+    margin-top: -20px;
+}
+
+.avt_user{
+    width: 150px;
+    height: 150px;
+    margin-left: 350px;
+    margin-top: -150px;
+    margin-bottom: 50px;
 }
 
 .input{
@@ -118,14 +141,16 @@
     border: none;
     padding-left: 20px;
     margin-left: 270px;
-}
-
-.name{
-    margin-top: -20px;
-}
-
-.user_name{
     margin-top: 20px;
+}
+
+.avt{
+    margin-top: -30px;
+}
+
+.name,
+.user_name{
+    margin-top: 0px;
 }
 
 .section_btn{

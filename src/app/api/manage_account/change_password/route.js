@@ -10,7 +10,7 @@ const dbConfig = {
     password: "SxywZGpysG9CqoUA",
     database: "testdbnextjs",
     ssl: {
-        ca: fs.readFileSync("/etc/ssl/cert.pem"), // Đọc file chứng chỉ CA
+        ca: fs.readFileSync("/etc/ssl/cert.pem"), 
     },
   };
 
@@ -20,11 +20,18 @@ async function generateToken(payload) {
     return await new SignJWT(payload)
         .setProtectedHeader({ alg: "HS256" })
         .setIssuedAt()
-        .setExpirationTime("1h") // Token hết hạn sau 1 giờ
+        .setExpirationTime("1h") 
         .sign(secretKey);
 }
 
   export async function PUT(req) {
+    const authHeader = req.headers.get("authorization"); 
+    const token = authHeader?.split(" ")[1];
+
+    if (!token) {
+        return NextResponse.json({ message: "No tokens" }, { status: 401 });
+    }
+
     try {
         const { userName, password, newPassword } = await req.json();
 

@@ -18,6 +18,31 @@
     z-index: 9;
 }
 
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 100px;
+  }
+  
+  .spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 0, 0, 0.2);
+    border-top-color: #000;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
 .title_logo{
     display: flex;
     gap: 8px;
@@ -64,6 +89,14 @@
     font-size: 19px;
     width: 19px;
     height: 28px;
+}
+
+.content_post {
+    margin-right: 10px;
+    /* height: 55px; 
+    overflow-y: auto; 
+    white-space: normal;
+    word-wrap: break-word; */
 }
 
 
@@ -132,10 +165,16 @@
     margin-top: 88px;
     margin-left: 312px;
     width: 860px;
-    height: 506px;
+    /* height: 506px; */
     background-color: #ffffff;
     border-radius: 6px;
     box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+}
+
+.navbar_user{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .inf_user{
@@ -150,6 +189,7 @@
     position: relative;
     width: 50px;
     height: 50px;
+    border-radius: 10%;
     background-position: center center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -163,12 +203,24 @@
     line-height: 21px;
 }
 
+.user_name{
+    margin-top: -10px;
+}
+
+.time_user{
+    display: flex;
+    margin-top: 30px;
+    margin-right: 30px;
+    align-items: center;
+    gap: 10px;
+}
+
 .time{
     color: #919191;
     font-size: 14px;
     font-family: "Open Sans";
     line-height: 16px;
-    margin-top: -10px;
+    margin-top: 15px;
 }
 
 .inf_post{
@@ -188,45 +240,18 @@
 
 .interact_post{
     display: flex;
-    margin-left: 24px;
-    margin-top: 10px;
+    margin: 0 24px;
+    justify-content: space-between;
 }
 
-.like_post,
-.comment_post,
-.share_post{
+.back,
+.repeat,
+.star,
+.favorite,
+.dots{
     display: flex;
     align-items: center;
-    gap: 4px;
-}
-
-.comment_post,
-.share_post{
-    margin-left: 11px;
-}
-
-.icon_like_post,
-.icon_comment_post,
-.icon_share_post{
-    position: relative;
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
-}
-
-.text_like_post,
-.text_comment_post,
-.text_share_post{
-    color: #ff0001;
-    font-size: 16px;
-    font-family: "Open Sans";
-    line-height: 19px;
-    text-align: center;
-}
-
-.text_comment_post,
-.text_share_post{
-    color: #030303;
+    gap: 3px;
 }
 
 .scheduled_post{
@@ -285,10 +310,11 @@
     margin-right: 16px;
 }
 
-.btn_edit{
+.btn_edit,
+.btn_upload{
     cursor: pointer;
     margin-top: 45px;
-    margin-left: 644px;
+    /* margin-left: 344px; */
     margin-bottom: 20px;
     width: 239px;
     height: 36px;
@@ -296,7 +322,7 @@
     border: 0;
     box-sizing: border-box;
     border-radius: 6px;
-    background-color: #ff0001;
+    background-color: #ff8400;
     color: #ffffff;
     font-size: 14px;
     font-family: "Open Sans";
@@ -305,6 +331,102 @@
     transition: all 0.3s ease;
 }
 
+.btn_upload{
+    background-color: red;
+}
+
+.btn_upload:hover{
+    background-color: #f55b5b;
+}
+
+.btn_container{
+    display: flex;
+    gap: 100px;
+    margin-left: 450px;
+}
+
 .btn_edit:hover{
-    background-color: #df0404e1;
+    background-color: #e55a23e1;
+}
+
+.modal_container{
+    position: relative;
+    z-index: 9999;
+    background-color: #fbfbfb;
+    box-shadow: 0px 0px 4px grey;
+    border-radius: 10px;
+    width: 60%;
+    height: 500px;
+    top: 0;
+    margin: auto;
+    margin-top: -480px;
+}
+
+.button_close{
+    position: absolute;
+    float: right;
+}
+
+.icon_close{
+    color: red;
+}
+
+.modal_title{
+    padding: 20px;
+    font-size: 20px;
+}
+
+.form_container{
+    margin-left: 100px;
+}
+
+.label_title{
+    font-size: 20px;
+}
+
+.label_img{
+    font-size: 20px;
+}
+
+.form_group{
+    margin-top: 120px;
+}
+
+.img_edit_main_post{
+    position: absolute;
+    width: 400px;
+    height: 200px;
+    margin-left: 100px;
+}
+
+.control_title{
+    position: absolute;
+    width: 500px;
+    margin-left: 50px;
+    margin-top: 30px;
+}
+
+.modal_footer{
+    margin-top: 200px;
+    display: flex;
+    gap: 100px;
+    margin-left: 300px;
+}
+
+.text_save{
+    color: white;
+    background-color: red;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+.text_close{
+    padding: 5px 15px;
+    border: none;
+    border-radius: 5px;
+    color: #000;
+    background-color: #e4e3e3;
+    font-size: 12px;
 }

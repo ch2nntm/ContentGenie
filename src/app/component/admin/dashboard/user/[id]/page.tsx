@@ -1,42 +1,38 @@
-"use client";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { notFound } from "next/navigation";
+import styles from "../../../../../styles/detail_user.module.css";
 
+const getUserDetail = async (id: string) => {
+  try {
+    const res = await fetch(`http://localhost:3000/api/manage_account/user/${id}`, {
+      method: "GET",
+      headers: { "Accept": "application/json" },
+      cache: "no-store" ,//cache: "force-cache"
+    });
+    if (!res.ok) return null;
+    console.log("Res: ",res);
+    return res.json();
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return null;
+  }
+};
 
-const ViewUserDetail = () => {
-    const params = useParams();
-    const id = params.id as string;
+export default async function ViewUserDetail({ params }: { params: { id: string } }) {
+  const detailUser = await getUserDetail(params.id);
+  console.log("User detail: ",detailUser);
 
-    const [detailUser, setDetailUser] = useState<AccountUser | null>(null);
-    useEffect(() => {
-        fetch(`/api/manage_account/user/${id}`, {
-            method: "GET",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json",
-            },
-        })
-        .then((res) => res.json())
-        .then((data) => {
-            console.log("Data from API:", data);
-            setDetailUser(data || null);
-        })
-        .catch((err) => console.error("Error fetching user:", err));
-    }, []);
+  if (!detailUser) return notFound();
+  const proxy = "https://cors-anywhere.herokuapp.com/";
 
-    return (
-        <div>
-            <h1>Thông tin người dùng {id}!</h1>
-            {detailUser ? (
-                <>
-                    <p>Họ tên: {detailUser.name}</p>
-                </>
-            ) : (
-                <p>Không tìm thấy người dùng.</p>
-            )}
+  return (
+    <div className={styles.container}>
+      <div className={styles.inf_user_container}>
+        <h1 className={styles.title}>Thông tin người dùng {detailUser.id}!</h1>
+        <div className={styles.inf_user}>
+          <img className={styles.avt_user} src={detailUser.avatar}/>
+          <p>Họ tên: {detailUser.name}</p>
         </div>
-    );
-
+      </div>
+    </div>
+  );
 }
-
-export default ViewUserDetail;

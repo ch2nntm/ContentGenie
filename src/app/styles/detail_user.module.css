@@ -1,0 +1,33 @@
+.inf_user_container{
+    width: 600px;
+    box-shadow: 1px 1px 3px grey;
+    margin: auto;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 70px;
+}
+
+.icon_back{
+    position: relative;
+    width: 20px;
+    height: 20px;
+    margin-top: 20px;
+    margin-left: 30px;
+}
+
+.inf_user{
+    display: flex;
+    gap: 40px;
+}
+
+.avt_user_container{
+    justify-items: center;
+}
+
+.avt_user{
+    display: flex;
+    width: 150px;
+    height: 150px;
+    /* border-radius: 50%; */
+}
+

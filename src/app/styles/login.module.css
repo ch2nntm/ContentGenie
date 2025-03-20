@@ -95,6 +95,12 @@
     height: 20px;
 }
 
+.forgot_password{
+    margin-left: 430px;
+    margin-top: -10px;
+    color: #000;
+}
+
 .buttonLogin {
     margin-left: 140px;
     margin-top: 20px;
@@ -162,4 +168,5 @@
 .google{
     width: 25px;
     margin-left: 120px;
+    margin-top: 10px;
 }

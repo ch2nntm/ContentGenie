@@ -19,8 +19,8 @@ export async function POST(req) {
     const connection = await mysql.createConnection(dbConfig);
 
     const [rows] = await connection.execute(
-      "SELECT * FROM account WHERE username = ? AND password = ?",
-      [username, password]
+      "SELECT * FROM account WHERE username = ?",
+      [username]
     );
 
     if (rows.length > 0) { 
@@ -32,8 +32,8 @@ export async function POST(req) {
     }
 
     await connection.execute(
-      "INSERT INTO account (name, username, password, role) VALUES (?, ?, ?, 0)",
-      [name, username, password]
+      "INSERT INTO account (email, name, avatar, username, password, role, credits) VALUES (?, ?, '', ?, ?, 0, 20)",
+      [username+"@gmail.com",name, username, password]
     );
 
     await connection.end(); 

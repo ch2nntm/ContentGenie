@@ -15,7 +15,8 @@
         "hello": "Hello",
         "account": "Account",
         "signout": "Sign out",
-        "create": "Create"
+        "create": "Create",
+        "title_page": "Home Page"
     },
     "login": {
         "label_username": "Username",
@@ -25,13 +26,18 @@
         "signin": "Sign In",
         "signup": "Sign Up",
         "have_account": "Don't have an account?",
-        "signinGG": "Sign in with Google"
+        "signinGG": "Sign in with Google",
+        "title_page": "Login Page",
+        "forgot_password": "Forgot Password",
+        "signinLinkedIn": "Sign in with LinkedIn"
     },
     "navbar_user":{
         "signout": "Sign out",
         "account_management": "Account management",
         "input_search": "Search...",
-        "dashboard": "Dashboard"
+        "dashboard": "Dashboard",
+        "post_management": "Post management",
+        "create_content": "Generate Content"
     },
     "register": {
         "label_name": "Name",
@@ -44,14 +50,20 @@
         "input_confirm_password": "Confirm your password",
         "create_account": "Create Account",
         "have_account": "Have an account?",
-        "signin": "Sign In"
+        "signin": "Sign In",
+        "password_not_format":"Password must be at least 8 characters long, including letters, numbers, and special characters!"
     },
     "preview": {
         "time": "hours ago",
         "share": "Share",
         "scheduled_post": "Scheduled Posts",
         "btn_edit": "Edit Post",
-        "account_management": "Account management"
+        "account_management": "Account management",
+        "content": "Content",
+        "btn_close": "Close",
+        "btn_save": "Save",
+        "img": "Image",
+        "upload_post": "Upload"
     },
     "content_generator": {
         "social_media": "Select Social Media Platform:",
@@ -59,9 +71,19 @@
         "number_of_week": "Number of Posts Per Week:",
         "topic": "Topic or Keywords:",
         "enter_topic": "Enter topic or keywords",
+        "audience":"Choose Audience",
         "enable_trend": "Enable Trending-Based Content:",
-        "btn_generate_content": "Grenerate Content",
-        "account_management": "Account management"
+        "btn_generate_content": "Generate Content",
+        "account_management": "Account management",
+        "noti_error":"Please fill in completely",
+        "option_music": "Music",
+        "option_shopping": "Shopping",
+        "option_story": "Tales",
+        "public": "Public",
+        "private": "Private",
+        "error_http": "Error HTTP",
+        "invalid_json": "Invalid JSON response!",
+        "error_get_user": "Error getting user information!"
     },
     "dashboard": {
         "sidebar_dashboard": "Dashboard",
@@ -71,8 +93,13 @@
         "sidebar_settings": "Settings",
         "section_user_management": "User Management",
         "section_add_new_user": "Add New User",
-        "section_edit": "Edit",
-        "section_no_user": "No users found"
+        "section_view": "View",
+        "section_no_user": "No users found",
+        "section_delete": "Delete",
+        "delete_success":"User deleted successfully: ",
+        "delete_fail": "User deleted failed!",
+        "cancel_delete": "Canceled delete!",
+        "error_load": "Error loading users..."
     },
     "change_password":{
         "hi": "Hi",
@@ -83,7 +110,14 @@
         "new_password": "New Password",
         "confirm_password": "Confirm Password",
         "btn_refresh": "Refresh",
-        "btn_save": "Save"
+        "btn_save": "Save",
+        "enter_full": "Please enter full information!",
+        "password_not_match": "New password and confirm password do not match!",
+        "password_incorrect": "Old password is incorrect!",
+        "password_not_format": "Password must be at least 8 characters long, including letters, numbers, and special characters!",
+        "invalid_json": "Invalid JSON response!",
+        "error_get_user": "Error getting user information!",
+        "error_change_password": "Error changing password!"
     },
     "edit_profile":{
         "hi": "Hi",
@@ -92,7 +126,82 @@
         "change_password": "Change Password",
         "avt": "Avatar",
         "name": "Name",
+        "email": "Email",
         "username": "Username",
-        "btn_save": "Save"
+        "btn_save": "Save",
+        "invalid_email": "Invalid email!",
+        "error_upload_img": "Error uploading image!",
+        "enter_full": "Please enter full field!",
+        "no_inf_change": "No information changed!",
+        "update_successful": "Update successful!",
+        "error_update:":"Error updating information!",
+        "email_exist":"Email already exists!",
+        "update_fail": "Update failed!",
+        "message": "Update email successful!"
+    },
+    "forgot_password":{
+        "enter_full": "Please enter full field!",
+        "username_wrong" : "Username is wrong!",
+        "error_register": "Error during registration!",
+        "password_not_match": "Password is not match!",
+        "password_not_format" : "Password must be at least 8 characters long, including letters, numbers, and special characters!",
+        "title": "Forgot Password",
+        "username": "Username",
+        "btn_cancel": "Cancel",
+        "reset_password": "Reset Password",
+        "password": "Password",
+        "confirm_password": "Confirm Password"
+    },
+    "list_post_user":{
+        "title_page": "List Post",
+        "no_post": "No post found",
+        "posted": "Posted",
+        "pending": "Pending",
+        "hours": "hours ago",
+        "days": "days ago",
+        "months": "months ago",
+        "years": "years ago",
+        "edit": "Edit",
+        "delete": "Delete",
+        "content": "Content",
+        "btn_close": "Close",
+        "btn_save": "Save",
+        "btn_edit": "Edit Post",
+        "img": "Image",
+        "upload_post": "Upload",
+        "image": "Image",
+        "error_http": "HTTP error! Status:",
+        "error_fetch": "Error fetching post details:",
+        "confirm_delete": "Are you sure you want to delete this post?",
+        "post_delete": "Post is deleted: ",
+        "error_delete": "Error delete post:",
+        "cancel_delete": "Canceled delete!"
+    },
+    "new_user":{
+        "btn_add_new": "Add New User",
+        "name": "Name",
+        "email": "Email",
+        "btn_add": "Add",
+        "btn_send":"Send",
+        "btn_cancel": "Cancel",
+        "enter_code": "Enter Code",
+        "code": "Code",
+        "add_successful":"Add new user successful!",
+        "add_fail": "Failed to send code!",
+        "wrong_code":"Wrong code!",
+        "enter_full":"Please enter full field!",
+        "enter_name":"Please enter name!",
+        "enter_email":"Please enter email!",
+        "invalid_email":"Invalid email!",
+        "send_code_successful":"Send code successful!",
+        "send_code_fail":"Failed to send code!",
+        "message1":"OTP confirmed successfully. Your account is username:",
+        "message2":" and password: ",
+        "placeholder_name":"Enter name",
+        "placeholder_email":"Enter email",
+        "placeholder_code":"Enter code",
+        "exist_account": "Account already exists!",
+        "send_email_success": "Send email successful!",
+        "send_email_fail": "Send email failed!"
     }
 }

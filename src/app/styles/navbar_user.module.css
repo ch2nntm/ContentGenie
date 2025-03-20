@@ -40,6 +40,14 @@
     line-height: 28px;
 }
 
+.search_hide{
+    display: none;
+}
+
+.search{
+    display: block;
+}
+
 
 .input_search{
     margin-top: 17px;
@@ -80,12 +88,13 @@
 
 .button_user{
     cursor: pointer;
+    position: relative;
+    display: inline-block;
     border: none;
     background-color: transparent;
     display: flex;
     align-items: center;
     font-size: 19px;
-    top: 18px;
     height: 28px;
     gap: 10px;
 }
@@ -94,6 +103,13 @@
     position: relative;
     width: 19px;
     height: 28px;
+}
+
+.avt_user{
+    position: relative;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
 }
 
 .name_user{
@@ -107,18 +123,26 @@
 .manage_user_show{
     display: block;
     position: absolute;
+    top: -330%; /* Đặt dropdown ngay dưới user */
+    left: 82%; /* Căn giữa theo tên user */
+    transform: translateX(-50%);
     box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
     background-color: #ffffff;
     border-radius: 5px;
     width: 200px;
     height: 200px;
-    margin-top: 250px;
-    margin-left: 0px;
+    margin-top: 270px;
+    margin-left: 10px;
     padding-top: 10px;
 }
 
+.link{
+    height: 120px;
+}
+
 .edit_profile,
-.dashboard{
+.dashboard,
+.post_management{
     display: flex;
     align-items: center;
     gap: 10px;
@@ -130,12 +154,19 @@
     transition: all 0.3s ease;
 }
 
+.post_management,
+.dashboard{
+    margin-top: 10px;
+}
+
 .edit_profile_hide,
 .dashboard_hide{
     display: none;
 }
 
-.edit_profile:hover{
+.edit_profile:hover,
+.post_management:hover,
+.dashboard:hover{
     color: #816161;
 }
 
@@ -144,18 +175,19 @@
     position: relative;
     width: 20px;
     height: 20px;
+    margin-top: -10px;
 }
 
 .btn_signout{
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 10px;
     border: none;
     border-radius: 10px;
     background-color: dodgerblue;
     color: #ffffff;
     height: 35px;
-    margin-top: 120px;
+    margin-top: 30px;
     margin-left: 100px;
 }
 
@@ -163,4 +195,5 @@
     position: relative;
     width: 15px;
     height: 15px;
+    margin-top: -10px;
 }

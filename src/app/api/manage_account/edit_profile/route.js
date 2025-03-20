@@ -14,31 +14,50 @@ const dbConfig = {
     },
 };
 
-// Khóa bí mật tạo JWT
 const secretKey = new TextEncoder().encode("your-secret-key");
 
 async function generateToken(payload) {
     return await new SignJWT(payload)
         .setProtectedHeader({ alg: "HS256" })
         .setIssuedAt()
-        .setExpirationTime("1h") // Token hết hạn sau 1 giờ
+        .setExpirationTime("1h") 
         .sign(secretKey);
 }
 
 export async function PUT(req) {
+    const authHeader = req.headers.get("authorization"); 
+    const token = authHeader?.split(" ")[1];
+
+    if (!token) {
+        return NextResponse.json({ message: "No tokens" }, { status: 401 });
+    }
+
     try {
-        const { userName, password, inputName, inputUserName } = await req.json();
+        const { userName, password, inputName, avatar, email} = await req.json();
         const connection = await mysql.createConnection(dbConfig);
-        console.log(userName + " - " + password + " - " + inputName + " - " + inputUserName);
-        if (!userName || !password || !inputName || !inputUserName) {
-            console.log(userName + " - " + password + " - " + inputName + " - " + inputUserName);
+        console.log(userName + " - " + password + " - " + inputName);
+        if (!userName || !password || !inputName) {
+            console.log(userName + " - " + password + " - " + inputName);
             return NextResponse.json({ error: "Thiếu dữ liệu đầu vào" }, { status: 400 });
         }
 
+        const [rows] = await connection.execute(
+            "SELECT * FROM account WHERE username = ?",
+            [userName]
+          );
+      
+          if (rows.length = 0) { 
+            await connection.end();
+            return new Response(
+              JSON.stringify({ error: "Username is not exists" }),
+              { status: 409, headers: { "Content-Type": "application/json" } }
+            );
+          }
+
         // Cập nhật thông tin user trong database
         const [result] = await connection.execute(
-            "UPDATE account SET name = ?, username = ? WHERE username = ? AND password = ?",
-            [inputName, inputUserName, userName, password]
+            "UPDATE account SET name = ?, avatar = ?, email = ? WHERE username = ? AND password = ?",
+            [inputName, avatar, email, userName, password]
         );
 
         if (result.affectedRows === 0) {
@@ -49,7 +68,7 @@ export async function PUT(req) {
         // Lấy thông tin user mới sau khi cập nhật
         const [updatedUser] = await connection.execute(
             "SELECT * FROM account WHERE username = ? AND password = ?",
-            [inputUserName, password]
+            [userName, password]
         );
         await connection.end();
 
@@ -59,13 +78,12 @@ export async function PUT(req) {
 
         const user = updatedUser[0];
 
-        // Tạo token mới
         const newToken = await generateToken(user);
 
         return NextResponse.json({
             message: "Cập nhật thông tin thành công",
-            accessToken: newToken, // Trả về token mới
-            user, // Trả về thông tin user mới
+            accessToken: newToken, 
+            user, 
         }, { status: 200 });
 
     } catch (error) {

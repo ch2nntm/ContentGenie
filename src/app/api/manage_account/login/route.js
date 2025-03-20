@@ -16,17 +16,14 @@ const dbConfig = {
   };
   
 
-const secretKey = new TextEncoder().encode("your-secret-key"); //khóa bí mật dùng để ký JWT (JSON Web Token), thành một dạng Uint8Array (mảng byte).
+const secretKey = new TextEncoder().encode("your-secret-key"); //khóa bí mật dùng để ký JWT (JSON Web Token), chuyển đổi khoá bị mật thành một dạng Uint8Array (mảng byte).
 
-// Hàm tạo JWT
-// payload: Chứa dữ liệu cần mã hóa bên trong JWT (thường là thông tin user).
-// async: Vì hàm sử dụng await nên cần khai báo async để làm việc với Promise.
 async function generateToken(payload) {
     return await new SignJWT(payload)
-        .setProtectedHeader({ alg: "HS256" })
-        .setIssuedAt()
+        .setProtectedHeader({ alg: "HS256" }) // Định nghĩa thuật toán mã hoá (HS256)
+        .setIssuedAt() // Thêm thời điểm phát hành (iat)
         .setExpirationTime("1h") 
-        .sign(secretKey);
+        .sign(secretKey); //Ký JWT với khoá bí mật
 }
 
 export async function GET(request) {

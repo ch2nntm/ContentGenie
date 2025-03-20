@@ -2,20 +2,39 @@
 import {NextIntlClientProvider} from 'next-intl';
 import {getLocale, getMessages} from 'next-intl/server';
 import Topbar from '../single_file/Topbar';
- 
+import Script from 'next/script';
+
+export const metadata = {
+  title: "Home Page",
+  description: "Home Page"
+};
+
 export default async function RootLayout({
   children
 }: {
   children: React.ReactNode;
 }) {
-  const locale = await getLocale(); // Lấy ngôn ngữ hiện tại (từ cookies hoặc headers)
+  const locale = await getLocale(); 
   const messages = await getMessages();
- 
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "My Website",
+    "url": "https://mywebsite.com",
+    "logo": "https://mywebsite.com/logo.png"
+  };
+
   return (
     <html lang={locale}>
+      <head>
+        <Script
+          type="application/ld+json"
+          id="structured-data"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+      </head>
       <body>
-        {/* NextIntlClientProvider: cung cấp thông điệp
-        messages: lấy thông điệp từ các file json trong thư mục messages */}
         <NextIntlClientProvider messages={messages}>
           <Topbar />
           {children}

@@ -1,90 +1,77 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import useSWR from "swr";
 import styles from "../../../styles/dashboard.module.css";
-import Image from "next/image";
-import { useTranslations } from "next-intl";
 import Link from "next/link";
-import Cookies from "js-cookie";
 import NavbarUser from "@/single_file/navbar_user";
+import { account } from "@prisma/client";
+import SearchIcon from "@mui/icons-material/Search";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import SettingsIcon from "@mui/icons-material/Settings";
+import { toast } from "react-toastify";
+import Cookies from "js-cookie";
+import DeleteButton from "./DeleteButton/page";
+import { useTranslations } from "next-intl";
 
-function DashBoard(){
 
-    // const [inputSearch, setInputSearch] = useState("");
-    const t = useTranslations("dashboard");
+const fetcher = async (url: string) => {
+    const token = Cookies.get("token");
+  if (!token) return [];
 
-    const [users, setUsers] = useState<AccountUser[]>([]);
+  const res = await fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-    useEffect(() => {
-        const token = Cookies.get("token");
-        if(token){
-            fetch("/api/manage_account/user", {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-            .then((res) => res.json())
-            .then((data) => {
-                console.log("Data from API:", data);
-                setUsers(data?.users || []); 
-            })
-            .catch((err) => console.error("Error fetching users:", err));
-        }
-    }, []);
+  if (!res.ok) return [];
+  return (await res.json())?.users || [];
+};
 
-    return (
-        <div className={styles.container}>
-            {/* <div className={styles.navbar}>
-                <div className={styles.title_logo}>
-                    <div className={styles.icon_logo}>
-                        <Image src="/wand_magic_sparkles.png" alt="logo" fill ></Image>
-                    </div>
-                    <h1 className={styles.title_navbar}>ContentGenie</h1>
-                </div>
-                <div className={styles.search}>
-                    <input className={styles.input_search} type="text" placeholder={t("input_search")} value={inputSearch} onChange={(e) => setInputSearch(e.target.value)}/>
-                </div>
-                <div className={styles.icon_navbar}>
-                        <button className={styles.icon_bell}>
-                            <Image src="/icon_bell.png" alt="Noti" fill ></Image>
-                        </button>
-                        <button className={styles.button_user}>
-                            <div className={styles.icon_user}>
-                                <Image src="/icon_circle_user.png" alt="User" fill ></Image>
-                            </div>
-                        </button>
-                    </div>
-            </div> */}
-            <NavbarUser></NavbarUser>
+export default function DashBoard() {
+  const { data: users = [], error } = useSWR(
+    "http://localhost:3000/api/manage_account/user",
+    fetcher,
+  );
+  const t = useTranslations("dashboard");
+
+  if (error) return <p>{t("error_load")}</p>;
+
+  return (
+    <div className={styles.container}>
+            <NavbarUser />
             <div className={styles.content}>
                 <div className={styles.sidebar}>
                     <div className={styles.dashboard}>
                         <div className={styles.icon_dashboard}>
-                            <Image src="/icon_sidebar_dashboard.png" alt="Icon dashboard" fill></Image>
+                            <SearchIcon></SearchIcon>
                         </div>
                         <p className={styles.text_dashboard}>{t("sidebar_dashboard")}</p>
                     </div>
                     <div className={styles.users}>
                         <div className={styles.icon_users}>
-                            <Image src="/icon_sidebar_users.png" alt="Icon users" fill></Image>
+                            <PeopleAltIcon></PeopleAltIcon>
                         </div>
                         <p className={styles.text_users}>{t("sidebar_users")}</p>
                     </div>
                     <div className={styles.posts}>
                         <div className={styles.icon_posts}>
-                            <Image src="/icon_sidebar_posts.png" alt="Icon posts" fill></Image>
+                            <MarkAsUnreadIcon></MarkAsUnreadIcon>
                         </div>
                         <p className={styles.text_posts}>{t("sidebar_posts")}</p>
                     </div>
                     <div className={styles.analytics}>
                         <div className={styles.icon_analytics}>
-                            <Image src="/icon_sidebar_analytics.png" alt="Icon analytics" fill></Image>
+                            <TrendingUpIcon></TrendingUpIcon>
                         </div>
                         <p className={styles.text_analytics}>{t("sidebar_analytics")}</p>
                     </div>
                     <div className={styles.settings}>
                         <div className={styles.icon_settings}>
-                            <Image src="/icon_sidebar_settings.png" alt="Icon settings" fill></Image>
+                            <SettingsIcon></SettingsIcon>
                         </div>
                         <p className={styles.text_settings}>{t("sidebar_settings")}</p>
                     </div>
@@ -93,15 +80,25 @@ function DashBoard(){
                     <div className={styles.user_management}>
                         <p className={styles.text_user_management}>{t("section_user_management")}</p>
                         <div className={styles.content_user_management}>
-                            <button className={styles.btn_add_new}>
+                            <Link href="/component/admin/new_user" className={styles.btn_add_new}>
                                 {t("section_add_new_user")}
-                            </button>
+                            </Link>
                             <div className={styles.item_user_management}>
                                 {users.length > 0 ? (
-                                    users.map((item) => (
+                                    users.map((item: account) => (
                                         <div key={item.id} className={styles.item_user}>
-                                            <p className={styles.item_name_user}>{item.name}</p>
-                                            <Link href={`dashboard/user/${item.id}`} className={styles.btn_edit_user}>{t("section_edit")}</Link>
+                                            <div className={styles.inf_user}>
+                                                <div className={styles.avt_user_container}>
+                                                    <img className={styles.avt_user} src={item.avatar ? item.avatar : "/icon_circle_user.png"}></img>
+                                                </div>
+                                                <p className={styles.item_name_user}>{item.name}</p>
+                                            </div>
+                                            <div className={styles.btn_group_user}>
+                                                <Link href={`/component/admin/dashboard/user/${item.id}`} className={styles.btn_edit_user}>
+                                                    {t("section_view")}
+                                                </Link>
+                                                <DeleteButton id={item.id} />
+                                            </div>
                                         </div>
                                     ))
                                 ) : (
@@ -113,7 +110,5 @@ function DashBoard(){
                 </div>
             </div>
         </div>
-    )
+  );
 }
-
-export default DashBoard;

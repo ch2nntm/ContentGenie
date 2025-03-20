@@ -7,6 +7,9 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { toast, ToastContainer } from "react-toastify";
 import NavbarUser from "../../../../single_file/navbar_user";
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 function ChangePassword(){
     const t = useTranslations("change_password");
@@ -20,7 +23,7 @@ function ChangePassword(){
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    useEffect(() => {
+    const fetchUserData = () => {
         const token = Cookies.get("token");
         if (token) {
             fetch("/api/manage_account/login", {
@@ -35,7 +38,7 @@ function ChangePassword(){
                 }
                 const contentType = res.headers.get("content-type");
                 if (!contentType || !contentType.includes("application/json")) {
-                    throw new Error("Phản hồi không phải JSON hợp lệ");
+                    throw new Error(t("invalid_json"));
                 }
                 return res.json();
             })
@@ -46,8 +49,12 @@ function ChangePassword(){
                     setPassword(data.user.password);
                 }
             })
-            .catch((error) => console.error("Lỗi lấy thông tin user:", error));
+            .catch((error) => console.error(t("error_get_user"), error));
         }
+    }
+
+    useEffect(() => {
+        fetchUserData();
       }, []);
 
       const handleSubmitRefresh = () => {
@@ -57,19 +64,23 @@ function ChangePassword(){
       }
 
       const handleSubmitSave = () => {
-        console.log("Sending data:", { userName, oldPassword, newPassword });
+
+        const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         if(!oldPassword || !newPassword || !confirmPassword){
-            toast.error("Please enter full information");
+            toast.error(t("enter_full"));
             return;
         }
         else if(newPassword !== confirmPassword){
-            toast.error("New password and confirm password do not match");
+            toast.error(t("password_not_match"));
             return;
         }
         else if(password !== oldPassword){
-            toast.error("Old password is incorrect");
+            toast.error(t("password_incorrect"));
             return;
         }
+        else if (!passwordRegex.test(password)) {
+            toast.error(t("password_not_format"));
+        } 
         else{
             const token = Cookies.get("token");
             if (token) {
@@ -91,7 +102,7 @@ function ChangePassword(){
                     }
                     const contentType = res.headers.get("content-type");
                     if (!contentType || !contentType.includes("application/json")) {
-                        throw new Error("Phản hồi không phải JSON hợp lệ");
+                        throw new Error(t("invalid_json"));
                     }
                     return res.json();
                 })
@@ -105,43 +116,27 @@ function ChangePassword(){
                         setOldPassword("");
                         setNewPassword("");
                         setConfirmPassword("");
+                        fetchUserData();
+                        window.location.reload();
                     }
                     else if (data.error) {
                         toast.error(data.error);
                     }
                 })
-                .catch((error) => console.error("Lỗi thay đổi mật khẩu:", error));
+                .catch((error) => console.error(t("error_change_password"), error));
             }
         }
       }
       
     return (
         <div className={styles.container}>
-            {/* <div className={styles.navbar}>
-                <div className={styles.title_logo}>
-                    <div className={styles.icon_logo}>
-                        <Image src="/wand_magic_sparkles.png" alt="logo" fill ></Image>
-                    </div>
-                    <h1 className={styles.title_navbar}>ContentGenie</h1>
-                </div>
-                <div className={styles.icon_navbar}>
-                    <button className={styles.icon_bell}>
-                        <Image src="/icon_bell.png" alt="Noti" fill ></Image>
-                    </button>
-                    <button className={styles.button_user}>
-                        <div className={styles.icon_user}>
-                            <Image src="/icon_circle_user.png" alt="User" fill ></Image>
-                        </div>
-                    </button>
-                </div>
-            </div> */}
             <NavbarUser></NavbarUser>
             <div className={styles.content}>
                 <div className={styles.sidebar}>
                     <p className={styles.sidebar_name_user}>{t("hi")} {nameUser}!</p>
                     <div className={styles.sidebar_account_manage}>
                         <div className={styles.icon_account_manage}>
-                            <Image src="/icon_account_manage.png" alt="Icon account manage" fill></Image>
+                            <ManageAccountsIcon></ManageAccountsIcon>
                         </div>
                         <p className={styles.text_account_manage}>{t("account_manage")}</p>
                     </div>
@@ -168,7 +163,8 @@ function ChangePassword(){
                                 className={styles.toggle_button}
                             >
                                 <div className={styles.eye_password}>
-                                    <Image src={showOldPassword ? "/fa_eye_slash.png" : "/fa_eye.png"} alt="Eye Password" fill></Image>
+                                    {showOldPassword && <VisibilityIcon></VisibilityIcon>}
+                                    {!showOldPassword && <VisibilityOffIcon></VisibilityOffIcon>}
                                 </div>
                             </button>
                         </div>
@@ -182,7 +178,8 @@ function ChangePassword(){
                                 className={styles.toggle_button}
                             >
                                 <div className={styles.eye_password}>
-                                    <Image src={showNewPassword ? "/fa_eye_slash.png" : "/fa_eye.png"} alt="Eye Password" fill></Image>
+                                    {showNewPassword && <VisibilityIcon></VisibilityIcon>}
+                                    {!showNewPassword && <VisibilityOffIcon></VisibilityOffIcon>}
                                 </div>
                             </button>
                         </div>
@@ -196,7 +193,8 @@ function ChangePassword(){
                                 className={styles.toggle_button}
                             >
                                 <div className={styles.eye_password}>
-                                    <Image src={showConfirmPassword ? "/fa_eye_slash.png" : "/fa_eye.png"} alt="Eye Password" fill></Image>
+                                    {showConfirmPassword && <VisibilityIcon></VisibilityIcon>}
+                                    {!showConfirmPassword && <VisibilityOffIcon></VisibilityOffIcon>}
                                 </div>
                             </button>
                         </div>
