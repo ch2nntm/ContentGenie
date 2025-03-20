@@ -11,7 +11,7 @@ import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Cookies from "js-cookie";
-import DeleteButton from "./DeleteButton/page";
+import DeleteButton from "./DeleteButton";
 import { useTranslations } from "next-intl";
 
 
