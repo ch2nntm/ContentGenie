@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import styles from "../../../../../styles/detail_user.module.css";
 
 type PageProps = {
-  params: { id: string };
+  params: unknown;
 };
 
 const getUserDetail = async (id: string) => {
