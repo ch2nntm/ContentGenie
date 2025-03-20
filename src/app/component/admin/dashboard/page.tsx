@@ -10,7 +10,6 @@ import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import DeleteButton from "./DeleteButton/page";
 import { useTranslations } from "next-intl";
