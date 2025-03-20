@@ -4,7 +4,6 @@ import useSWR from "swr";
 import styles from "../../../styles/dashboard.module.css";
 import Link from "next/link";
 import NavbarUser from "@/single_file/navbar_user";
-import { account } from "@prisma/client";
 import SearchIcon from "@mui/icons-material/Search";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
@@ -14,6 +13,11 @@ import Cookies from "js-cookie";
 import DeleteButton from "../../../../single_file/DeleteButton";
 import { useTranslations } from "next-intl";
 
+interface account {
+    id: number;
+    name: string;
+    avatar: string;
+}
 
 const fetcher = async (url: string) => {
     const token = Cookies.get("token");
