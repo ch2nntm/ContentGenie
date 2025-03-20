@@ -1,6 +1,6 @@
 "use client"; 
 import { useTranslations } from "next-intl";
-import styles from "../../../styles/dashboard.module.css";
+import styles from "../app/styles/DeleteButton.module.css";
 
 import { toast } from "react-toastify";
 

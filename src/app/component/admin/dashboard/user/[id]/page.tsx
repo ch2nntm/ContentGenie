@@ -18,6 +18,7 @@ const getUserDetail = async (id: string) => {
 };
 
 export default async function ViewUserDetail({ params }: { params: { id: string } }) {
+  if (!params?.id) return notFound();
   const detailUser = await getUserDetail(params.id);
   console.log("User detail: ",detailUser);
 
