@@ -22,11 +22,12 @@ function EditProfilePage() {
     const t = useTranslations("edit_profile");
     
     const [nameUser, setNameUser] = useState("");
-    const [userName, setUserName] = useState("");
     const [inputName, setInputName] = useState("");
     const [inputEmail, setInputEmail] = useState("");
     const [password, setPassword] = useState("");
     const [avatar, setAvatar] = useState("");
+    const [enterCode, setEnterCode] = useState("");
+    const [isSend, setIsSend] = useState(false);
 
     const message1="Đã cập nhật email thành công với tài khoản có username: ";
     const message2="password: ";
@@ -44,6 +45,7 @@ function EditProfilePage() {
             const file = e.target.files[0];
             const imageUrl = URL.createObjectURL(file);
             setAvatar(imageUrl);
+            console.log("IMG CLODU: ",avatar);
         }
     };
 
@@ -55,7 +57,6 @@ function EditProfilePage() {
         if (auth?.user?.name) {
             setNameUser(auth.user.name);
             setInputName(auth?.user.name);
-            setUserName(auth?.user.username);
             setPassword(auth?.user.password);
             setInputEmail(auth?.user.email);
             if(auth?.user.avatar)
@@ -86,6 +87,7 @@ function EditProfilePage() {
             const data = await response.json();
             if (data.secure_url) {
                 uploadedImageUrl = data.secure_url;
+                setAvatar(uploadedImageUrl);
             } else {
                 toast.error(t("error_upload_img"));
                 return;
@@ -105,14 +107,8 @@ function EditProfilePage() {
             return;
         }
 
-        const responseEmail = await fetch(`http://localhost:3000/api/manage_account/add_new_user?email=${inputEmail}`,{
-            method: "GET"
-        });
-
-        if(responseEmail.ok || inputEmail === auth.user.email){
-            const token = Cookies.get("token");
-            if (!token) return;
-
+        const token = Cookies.get("token");
+        if(inputEmail === auth?.user.email){
             fetch("/api/manage_account/edit_profile", {
                 method: "PUT",
                 headers: {
@@ -120,11 +116,11 @@ function EditProfilePage() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    userName: userName,
                     password: password,
                     inputName: inputName,
-                    avatar: uploadedImageUrl,
-                    email: inputEmail
+                    avatar: avatar,
+                    inputEmail: inputEmail,
+                    email: auth?.user.email
                 }),
             })
             .then(async (res) => {
@@ -142,17 +138,74 @@ function EditProfilePage() {
                     body: JSON.stringify({oldEmail: auth.user.email, newEmail: inputEmail, username: auth?.user.username, password, message1, message2})
                 })
                 toast.success(t("update_successful"));
+                setIsSend(false);
                 auth.setUser(() => ({
                     name: inputName,
-                    avatar: uploadedImageUrl,
+                    avatar: avatar,
                 }));
             })
             .catch((error) => console.error(t("error_update"), error));
         }
         else{
-            toast.error(t("email_exist"));
+            fetch("http://localhost:3000/api/send_otp",{
+                method: "POST",
+                body: JSON.stringify({email: inputEmail})
+            })
+            setIsSend(true);
         }
     };
+
+    const cancelEnterCode = () => {
+        setIsSend(false);
+        setInputEmail(auth?.user.email);
+    }
+
+    const handleVerify = async() => {
+        const responseVerify = await fetch("http://localhost:3000/api/verify_otp",{
+            method: "POST",
+            body: JSON.stringify({email: inputEmail, otp: enterCode, username: auth?.user.username, password, message1, message2})
+        })
+        if(!responseVerify.ok){
+            return;
+        }
+        const token = Cookies.get("token");
+        fetch("/api/manage_account/edit_profile", {
+            method: "PUT",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                password: password,
+                inputName: inputName,
+                avatar: avatar,
+                inputEmail: inputEmail,
+                email: auth?.user.email
+            }),
+        })
+        .then(async (res) => {
+            if (!res.ok) {
+                throw new Error(`Lỗi HTTP: ${res.status}`);
+            }
+            return res.json();
+        })
+        .then((data) => {
+            if (data.accessToken) {
+                Cookies.set("token", data.accessToken, { expires: 1 });
+            }
+            fetch("http://localhost:3000/api/verify_otp",{
+                method: "PUT",
+                body: JSON.stringify({oldEmail: auth.user.email, newEmail: inputEmail, username: auth?.user.username, password, message1, message2})
+            })
+            toast.success(t("update_successful"));
+            setIsSend(false);
+            auth.setUser(() => ({
+                name: inputName,
+                avatar: avatar,
+            }));
+        })
+        .catch((error) => console.error(t("error_update"), error));
+    }
 
     const NavbarComponent = dynamic(() => import("@/single_file/navbar_user"), {ssr: false});
     return (
@@ -177,7 +230,7 @@ function EditProfilePage() {
                         <Link href="/component/account_user/change_password" className={styles.section_change_password}>{t("change_password")}</Link>
                     </div>
                     <p className={styles.title_link}>{t("edit_profile")}</p>
-                    <div className={styles.form_section}>
+                    {!isSend && <div className={styles.form_section}>
                         <div className={styles.avt}>
                             <label htmlFor="avt" className={styles.label}>{t("avt")} <span className={styles.icon_start}>*</span></label>
                             <div onClick={handleImageClick}>
@@ -208,6 +261,23 @@ function EditProfilePage() {
                         </div>
                         <ToastContainer />
                     </div>
+                    }
+                    {isSend && <div>
+                        <div className={styles.code}>
+                            <label htmlFor="code" className={styles.label}>{t("code")} <span className={styles.icon_start}>*</span></label>
+                            <input id="code" type="text" className={styles.input}
+                            value={enterCode} onChange={(e) => setEnterCode(e.target.value)} />
+                        </div>
+                        <div className={styles.btn_group}>
+                            <button className={styles.btn_cancel} onClick={cancelEnterCode}>
+                                {t("btn_cancel")}
+                            </button>
+                            <button className={styles.btn_update} onClick={handleVerify}>
+                                {t("btn_update")}
+                            </button>
+                        </div>
+                    </div>
+                    }
                 </div>
             </div>
         </div>

@@ -19,6 +19,15 @@
     flex-direction: column;
     white-space: normal;
     overflow: visible;
+    margin-top: -20px;
+}
+
+.content_verify{
+    display: flex;
+    flex-direction: column;
+    white-space: normal;
+    overflow: visible;
+    margin-top: 100px;
 }
 
 .title{
@@ -27,7 +36,7 @@
     white-space: none;
     overflow: visible;
     margin-left: 200px;
-    margin-top: 10%;
+    margin-top: 5%;
     gap: 20px;
     align-items: center;
 }
@@ -142,4 +151,34 @@
     font-weight: 600;
     line-height: 16px;
   }
+
+  .form_group{
+    display: flex;
+    flex-direction: column;
+  }
   
+  .btn_group{
+    display: flex;
+    margin-left: 200px;
+    margin-top: 40px;
+    gap: 130px;
+  }
+
+  .btn_cancel{
+    background-color: rgb(161, 163, 164);
+    text-decoration: none;
+    padding: 5px 15px;
+    color: #000;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn_add{
+    border: none;
+    background-color: rgba(0, 110, 255, 0.882);
+    padding: 5px 20px;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}

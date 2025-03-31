@@ -49,12 +49,12 @@ export async function GET(request) {
 
 export async function POST(req) {
     try {
-        const {username, password } = await req.json();
+        const {email, password } = await req.json();
 
         const connection = await mysql.createConnection(dbConfig);
         const [rows] = await connection.execute(
-            "SELECT * FROM account WHERE username = ? AND password = ?",
-            [username, password]
+            "SELECT * FROM account WHERE email = ? AND password = ?",
+            [email, password]
         );
         await connection.end();
 

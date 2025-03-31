@@ -9,7 +9,7 @@ const dbConfig = {
     password: "SxywZGpysG9CqoUA",
     database: "testdbnextjs",
     ssl: {
-        ca: fs.readFileSync("/etc/ssl/cert.pem"), // Đọc file chứng chỉ CA
+        ca: fs.readFileSync("/etc/ssl/cert.pem"), 
     },
 };
 
@@ -17,8 +17,6 @@ const secretKey = new TextEncoder().encode("your-secret-key");
 
 export async function GET(req) {
     try {
-        // const cookieStore = cookies();
-        // const token = (await cookieStore).get("token")?.value;
         const authHeader = req.headers.get("authorization"); 
         const token = authHeader?.split(" ")[1];
 

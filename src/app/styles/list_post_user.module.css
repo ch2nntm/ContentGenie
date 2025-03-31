@@ -81,6 +81,7 @@
 .interact_post{
     display: flex;
     margin: 0 24px;
+    margin-top: 15px;
     justify-content: space-between;
 }
 
@@ -94,12 +95,17 @@
     gap: 3px;
 }
 
+.text_like_post{
+    margin-top: 15px;
+}
+
 .dots_delete,
-.dots_edit{
+.dots_edit,
+.dots_export{
     cursor: pointer;
     display: block;
     margin: auto;
-    width: 80px;
+    width: 100px;
     height: 30px;
     margin-top: 10px;
     border:none;
@@ -117,6 +123,11 @@
     background-color: red;
 }
 
+.dots_export{
+    color: #fff;
+    background-color: #9b9898;
+}
+
 .dots_menu {
     position: absolute;
     background-color: white;
@@ -124,7 +135,7 @@
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 99;
     left: 65%; 
-    margin-top: -125px;
+    margin-top: -165px;
     padding: 10px 20px;
 }
 
@@ -143,9 +154,9 @@
     border-radius: 10px;
     width: 60%;
     height: 500px;
-    top: 0;
     margin: auto;
-    margin-top: -480px;
+    top: 0;
+    /* margin-top: -600px; */
 }
 
 .button_close{
@@ -183,6 +194,16 @@
     width: 400px;
     height: 200px;
     margin-left: 100px;
+}
+
+.choose_avt{
+    position: absolute;
+}
+
+.button_close_img{
+    position: relative;
+    left: 400;
+    top: -20;
 }
 
 .control_title{
@@ -239,6 +260,7 @@
 }
 
 .btn_close,
-.btn_save{
+.btn_save,
+.btn_export{
     cursor: pointer;
 }

@@ -35,12 +35,10 @@ export async function GET(req) {
             "SELECT CAST(id AS CHAR) AS id, title, content, image, platform, posttime, status, user_id, audience FROM post WHERE user_id = ?", 
             [userId]
         );
-        
-        
 
         await connection.end(); 
 
-        return NextResponse.json({ message: "Get list post of user successfully", posts: rows }, { status: 200 });
+        return NextResponse.json({ message: "Get list post of user successfully", posts: rows}, { status: 200 });
     } catch (error) {
         console.error("Error:", error);
         return NextResponse.json({ message: "Invalid token or server error" }, { status: 401 });

@@ -19,7 +19,7 @@
         "title_page": "Home Page"
     },
     "login": {
-        "label_username": "Username",
+        "label_email": "Email",
         "label_password": "Password",
         "input_username": "Enter your username",
         "input_password": "Enter your password",
@@ -29,7 +29,10 @@
         "signinGG": "Sign in with Google",
         "title_page": "Login Page",
         "forgot_password": "Forgot Password",
-        "signinLinkedIn": "Sign in with LinkedIn"
+        "signinLinkedIn": "Sign in with LinkedIn",
+        "invalid_email": "Invalid email!",
+        "exist_account": "Account already exists!",
+        "invalid_password": "Invalid password!"
     },
     "navbar_user":{
         "signout": "Sign out",
@@ -41,7 +44,9 @@
     },
     "register": {
         "label_name": "Name",
+        "label_email": "Email",
         "input_name":"Enter your name",
+        "input_email":"Enter email",
         "label_username": "Username",
         "label_password": "Password",
         "input_username": "Enter your username",
@@ -51,7 +56,17 @@
         "create_account": "Create Account",
         "have_account": "Have an account?",
         "signin": "Sign In",
-        "password_not_format":"Password must be at least 8 characters long, including letters, numbers, and special characters!"
+        "password_not_format":"Password must be at least 8 characters long, including letters, numbers, and special characters!",
+        "message1":"OTP confirmed successfully. Your account is email:",
+        "message2":" and password: ",
+        "invalid_email":"Invalid email!",
+        "enter_code": "Enter the code sent to your email",
+        "placeholder_code":"Enter code",
+        "btn_add": "Add",
+        "btn_cancel": "Cancel",
+        "code": "Code",
+        "send_code_successful":"Send code successful!",
+        "wrong_code":"Wrong code!"
     },
     "preview": {
         "time": "hours ago",
@@ -63,14 +78,16 @@
         "btn_close": "Close",
         "btn_save": "Save",
         "img": "Image",
-        "upload_post": "Upload"
+        "upload_post": "Upload",
+        "like":"Like",
+        "comment": "Comment"
     },
     "content_generator": {
         "social_media": "Select Social Media Platform:",
         "post_time": "Choose Posting Time:",
         "number_of_week": "Number of Posts Per Week:",
-        "topic": "Topic or Keywords:",
-        "enter_topic": "Enter topic or keywords",
+        "topic": "Topic and Keywords:",
+        "enter_topic": "Enter keywords",
         "audience":"Choose Audience",
         "enable_trend": "Enable Trending-Based Content:",
         "btn_generate_content": "Generate Content",
@@ -83,7 +100,8 @@
         "private": "Private",
         "error_http": "Error HTTP",
         "invalid_json": "Invalid JSON response!",
-        "error_get_user": "Error getting user information!"
+        "error_get_user": "Error getting user information!",
+        "not_enough_credit": "Your card number has expired!"
     },
     "dashboard": {
         "sidebar_dashboard": "Dashboard",
@@ -93,6 +111,8 @@
         "sidebar_settings": "Settings",
         "section_user_management": "User Management",
         "section_add_new_user": "Add New User",
+        "section_list_post": "List Post",
+        "section_add_new_post": "Add New Post",
         "section_view": "View",
         "section_no_user": "No users found",
         "section_delete": "Delete",
@@ -137,20 +157,26 @@
         "error_update:":"Error updating information!",
         "email_exist":"Email already exists!",
         "update_fail": "Update failed!",
-        "message": "Update email successful!"
+        "message": "Update email successful!",
+        "code":"Code",
+        "btn_update": "Update",
+        "btn_cancel": "Cancel"
     },
     "forgot_password":{
         "enter_full": "Please enter full field!",
-        "username_wrong" : "Username is wrong!",
+        "username_wrong" : "Email is wrong!",
         "error_register": "Error during registration!",
         "password_not_match": "Password is not match!",
         "password_not_format" : "Password must be at least 8 characters long, including letters, numbers, and special characters!",
         "title": "Forgot Password",
-        "username": "Username",
+        "email": "Email",
         "btn_cancel": "Cancel",
         "reset_password": "Reset Password",
         "password": "Password",
-        "confirm_password": "Confirm Password"
+        "confirm_password": "Confirm Password",
+        "change_success": "Change password successful!",
+        "message1": "Change password successful with email: ",
+        "message2": " and new password: "
     },
     "list_post_user":{
         "title_page": "List Post",
@@ -173,9 +199,11 @@
         "error_http": "HTTP error! Status:",
         "error_fetch": "Error fetching post details:",
         "confirm_delete": "Are you sure you want to delete this post?",
-        "post_delete": "Post is deleted: ",
+        "post_delete": "Post is deleted",
         "error_delete": "Error delete post:",
-        "cancel_delete": "Canceled delete!"
+        "cancel_delete": "Canceled delete!",
+        "export_pdf": "Export PDF",
+        "miss_token_mastondon": "Not logged in Mastodon"
     },
     "new_user":{
         "btn_add_new": "Add New User",
@@ -195,7 +223,7 @@
         "invalid_email":"Invalid email!",
         "send_code_successful":"Send code successful!",
         "send_code_fail":"Failed to send code!",
-        "message1":"OTP confirmed successfully. Your account is username:",
+        "message1":"OTP confirmed successfully. Your account is email:",
         "message2":" and password: ",
         "placeholder_name":"Enter name",
         "placeholder_email":"Enter email",
@@ -203,5 +231,25 @@
         "exist_account": "Account already exists!",
         "send_email_success": "Send email successful!",
         "send_email_fail": "Send email failed!"
+    },
+    "detail_post": {
+        "hours":"hours ago",
+        "days":"days ago",
+        "months":"months ago",
+        "years":"years ago",
+        "social_mastodon": "Social Media Mastodon",
+        "social_linkedin": "Social Media LinkedIn",
+        "status_pending": "Pending",
+        "status_posted": "Posted",
+        "error_fetch":"Error fetching post details:"
+    },
+    "detail_user": {
+        "user_detail": "User details!",
+        "name": "Name: ",
+        "email":"Email: ",
+        "quantity_credits": "Number of remaining cards: ",
+        "quantity_post": "Total number of posts: "
     }
+    
 }
+

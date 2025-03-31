@@ -14,26 +14,26 @@ const dbConfig = {
 
 export async function POST(req) {
   try {
-    const { name, username, password } = await req.json();
+    const { name, email, password } = await req.json();
 
     const connection = await mysql.createConnection(dbConfig);
 
     const [rows] = await connection.execute(
-      "SELECT * FROM account WHERE username = ?",
-      [username]
+      "SELECT * FROM account WHERE email = ?",
+      [email]
     );
 
     if (rows.length > 0) { 
       await connection.end();
       return new Response(
-        JSON.stringify({ error: "Username already exists" }),
+        JSON.stringify({ error: "Email already exists" }),
         { status: 409, headers: { "Content-Type": "application/json" } }
       );
     }
 
     await connection.execute(
-      "INSERT INTO account (email, name, avatar, username, password, role, credits) VALUES (?, ?, '', ?, ?, 0, 20)",
-      [username+"@gmail.com",name, username, password]
+      "INSERT INTO account (email, name, avatar, password, role, credits) VALUES (?, ?, '', ?, 0, 20)",
+      [email,name, password]
     );
 
     await connection.end(); 

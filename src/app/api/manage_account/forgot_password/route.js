@@ -15,18 +15,18 @@ const dbConfig = {
 
 export async function POST(req) {
     try{
-        const {username} = await req.json();
+        const {email} = await req.json();
         const connection = await mysql.createConnection(dbConfig);
         const [rows] = await connection.execute(
-            "SELECT * FROM account WHERE username = ?",
-            [username]
+            "SELECT * FROM account WHERE email = ?",
+            [email]
         );
       
         if (rows.length > 0) {
-            return NextResponse.json({ message: "Username is correct!" }, { status: 200 });
+            return NextResponse.json({ message: "Email is correct!" }, { status: 200 });
         } else {
             return new Response(
-                JSON.stringify({ error: "Wrong username!" }),
+                JSON.stringify({ error: "Wrong email!" }),
                 { status: 400, headers: { "Content-Type": "application/json" } }
             );
         }
@@ -41,7 +41,7 @@ export async function POST(req) {
 
 export async function PUT(req) {
     try {
-        const { password, username } = await req.json();
+        const { password, email } = await req.json();
 
         if (!password) {
             return NextResponse.json({ error: "Thiếu password" }, { status: 400 });
@@ -49,14 +49,14 @@ export async function PUT(req) {
 
         const connection = await mysql.createConnection(dbConfig);
         const [result] = await connection.execute(
-            "UPDATE account SET password = ? WHERE username = ?",
-            [password, username]
+            "UPDATE account SET password = ? WHERE email = ?",
+            [password, email]
         );
 
         await connection.end();
 
         if (result.affectedRows === 0) {
-            return NextResponse.json({ error: "Sai tên đăng nhập hoặc không tìm thấy tài khoản" }, { status: 400 });
+            return NextResponse.json({ error: "Sai email hoặc không tìm thấy tài khoản" }, { status: 400 });
         }
 
         return NextResponse.json({ message: "Cập nhật mật khẩu thành công"}, { status: 200 });

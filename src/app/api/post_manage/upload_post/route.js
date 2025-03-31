@@ -23,6 +23,11 @@ export async function POST(req) {
   try {
     const { id, keyword, content, imgUrl, posttime, user_id, platform, status, audience } = await req.json();
 
+    console.log("Posttime:", posttime.toLocaleString("en-CA", { 
+      timeZone: "Asia/Ho_Chi_Minh", 
+      hour12: false 
+    }).replace(",", ""));
+
     const safeTitle = keyword || "Untitled"; 
     const safeStatus = status === true || status === "true";
     const safeImage = imgUrl || null; 

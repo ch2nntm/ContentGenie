@@ -23,6 +23,43 @@ async function generateToken(payload) {
         .setExpirationTime("1h") 
         .sign(secretKey);
 }
+// export async function POST(req) {
+//     const authHeader = req.headers.get("authorization"); 
+//     const token = authHeader?.split(" ")[1];
+
+//     if (!token) {
+//         return NextResponse.json({ message: "No tokens" }, { status: 401 });
+//     }
+
+//     try {
+//         const {inputEmail, email} = await req.json();
+//         console.log("inputEmail: ",inputEmail," - email: ",email);
+//         const connection = await mysql.createConnection(dbConfig);
+//         if (!inputEmail || !email) {
+//             return NextResponse.json({ error: "Thiếu dữ liệu đầu vào" }, { status: 400 });
+//         }
+
+//         const [rows] = await connection.execute(
+//             "SELECT * FROM account WHERE email = ?",
+//             [inputEmail]
+//         );
+        
+//         if (rows.length > 0) { 
+//             await connection.end();
+//             return new Response(
+//                 JSON.stringify({ error: "Email is exists" }),
+//                 { status: 409, headers: { "Content-Type": "application/json" } }
+//             );
+//         }
+
+//         return NextResponse.json({
+//             message: "Email is not exists",
+//         }, { status: 200 });
+//     }catch (error) {
+//         console.error("Error: ", error);
+//         return NextResponse.json({ error: "Lỗi hệ thống" }, { status: 500 });
+//     }
+// }
 
 export async function PUT(req) {
     const authHeader = req.headers.get("authorization"); 
@@ -33,31 +70,31 @@ export async function PUT(req) {
     }
 
     try {
-        const { userName, password, inputName, avatar, email} = await req.json();
+        const { password, inputName, avatar, inputEmail, email} = await req.json();
+        console.log("inputEmail: ",inputEmail," - email: ",email);
         const connection = await mysql.createConnection(dbConfig);
-        console.log(userName + " - " + password + " - " + inputName);
-        if (!userName || !password || !inputName) {
-            console.log(userName + " - " + password + " - " + inputName);
+        if (!password || !inputName || !inputEmail || !email) {
             return NextResponse.json({ error: "Thiếu dữ liệu đầu vào" }, { status: 400 });
         }
 
-        const [rows] = await connection.execute(
-            "SELECT * FROM account WHERE username = ?",
-            [userName]
-          );
-      
-          if (rows.length = 0) { 
-            await connection.end();
-            return new Response(
-              JSON.stringify({ error: "Username is not exists" }),
-              { status: 409, headers: { "Content-Type": "application/json" } }
+        if(inputEmail !== email){
+            const [rows] = await connection.execute(
+                "SELECT * FROM account WHERE email = ?",
+                [inputEmail]
             );
-          }
+          
+            if (rows.length = 0) { 
+                await connection.end();
+                return new Response(
+                    JSON.stringify({ error: "Email is not exists" }),
+                    { status: 409, headers: { "Content-Type": "application/json" } }
+                );
+            }
+        }
 
-        // Cập nhật thông tin user trong database
         const [result] = await connection.execute(
-            "UPDATE account SET name = ?, avatar = ?, email = ? WHERE username = ? AND password = ?",
-            [inputName, avatar, email, userName, password]
+            "UPDATE account SET name = ?, avatar = ?, email = ? WHERE email = ? AND password = ?",
+            [inputName, avatar, inputEmail, email, password]
         );
 
         if (result.affectedRows === 0) {
@@ -65,10 +102,9 @@ export async function PUT(req) {
             return NextResponse.json({ error: "Không thể cập nhật thông tin" }, { status: 400 });
         }
 
-        // Lấy thông tin user mới sau khi cập nhật
         const [updatedUser] = await connection.execute(
-            "SELECT * FROM account WHERE username = ? AND password = ?",
-            [userName, password]
+            "SELECT * FROM account WHERE email = ? AND password = ?",
+            [inputEmail, password]
         );
         await connection.end();
 

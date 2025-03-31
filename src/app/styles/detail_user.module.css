@@ -7,12 +7,23 @@
     margin-top: 70px;
 }
 
+.title{
+    margin-top: -5px;
+}
+
 .icon_back{
     position: relative;
     width: 20px;
     height: 20px;
     margin-top: 20px;
     margin-left: 30px;
+}
+
+.arrowback{
+    margin-top: 70px;
+    margin-left: 0px;
+    color: grey;
+    width: 20px;
 }
 
 .inf_user{
@@ -31,3 +42,13 @@
     /* border-radius: 50%; */
 }
 
+.text_inf{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: -20px;
+}
+
+.bold_text{
+    font-weight: bold;
+}

@@ -9,7 +9,7 @@ import { useTranslations } from "next-intl";
 
 function ForgotPassword(){
     const t = useTranslations("forgot_password");
-    const [username, setUsername] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isClickForgotPassword, setIsClickForgotPassword] = useState(false);
@@ -27,7 +27,7 @@ function ForgotPassword(){
     }
 
     const handleForgotPassword = () => {
-        if(!username){
+        if(!email){
             toast.error(t("enter_full"));
             return;
         }
@@ -38,7 +38,7 @@ function ForgotPassword(){
                     Accept: "application/json, text/plain,*/*",
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({username}),
+                body: JSON.stringify({email}),
             })
             .then((res) => res.json())
             .then((res) => {
@@ -46,7 +46,7 @@ function ForgotPassword(){
                     setIsClickForgotPassword(true);
                 }
                 else if(res.error){
-                    toast.error(t("username_wrong"));
+                    toast.error(t("email_wrong"));
                 }
             })
         } catch (error) {
@@ -75,15 +75,20 @@ function ForgotPassword(){
                         Accept: "application/json, text/plain,*/*",
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({password, username}),
+                    body: JSON.stringify({password, email}),
                 })
                 .then((res) => res.json())
                 .then((res) => {
                     if(res.message){
+                        toast.error(t("change_success"));
+                        fetch("http://localhost:3000/api/verify_otp",{
+                            method: "PUT",
+                            body: JSON.stringify({oldEmail: "Check", newEmail: email, password, message1: t("message1"), message2: t("message2")})
+                        })
                         router.push("/component/account_user/login_user");
                     }
                     else if(res.error){
-                        toast.error(t("username_wrong"));
+                        toast.error(t("email_wrong"));
                     }
                 })
             } catch (error) {
@@ -100,11 +105,11 @@ function ForgotPassword(){
                         {t("title")}
                     </p>
                     <div className={styles.input_username}>
-                        <label htmlFor="username" className={styles.label}>
-                            {t("username")}
+                        <label htmlFor="email" className={styles.label}>
+                            {t("email")}
                             <p className={styles.important}>*</p>
                         </label>
-                        <input id="username" onChange={(e) => setUsername(e.target.value)} value={username} type="text" className={styles.input} />
+                        <input id="email" onChange={(e) => setEmail(e.target.value)} value={email} type="text" className={styles.input} />
                     </div>
                     <button onClick={hanldeCancelForgotPassword} type="button" className={styles.btn_cancel}>{t("btn_cancel")}</button>
                     <button onClick={handleForgotPassword} type="button" className={styles.btn_forgot_password}>{t("title")}</button>

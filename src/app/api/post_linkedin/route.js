@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 
-//Đăng bài
 export async function POST(req) {
     const authHeader = req.headers.get("authorization"); 
     const token = authHeader?.split(" ")[1];
-    const { userId, content, link, title } = await req.json();
+    const { userId, content, audience } = await req.json();
+    console.log("userId: ",userId," - content: ",content," - audience: ",audience);
   
-    if (!userId || !content || !link || !title) {
+    if (!userId || !content) {
       return NextResponse.json({ error: "Missing data" }, { status: 400 });
     }
   
@@ -16,19 +16,20 @@ export async function POST(req) {
       specificContent: {
         "com.linkedin.ugc.ShareContent": {
           shareCommentary: { text: content },
-          shareMediaCategory: "ARTICLE",
-            media: [
-                {
-                    status: "READY",
-                    description: {
-                        text: "Official LinkedIn Blog - Your source for insights and information about LinkedIn."
-                    },
-                    originalUrl: `${link}`,
-                    title: {
-                        text: `${title}`
-                    }
-                }
-            ]
+          shareMediaCategory: "NONE"
+          // shareMediaCategory: "ARTICLE",
+          //   media: [
+          //       {
+          //           status: "READY",
+          //           description: {
+          //               text: "Official LinkedIn Blog - Your source for insights and information about LinkedIn."
+          //           },
+          //           originalUrl: `${link}`,
+          //           title: {
+          //               text: `${title}`
+          //           }
+          //       }
+          //   ]
           // shareMediaCategory: "IMAGE",
           //   media: [
           //       {
@@ -44,7 +45,7 @@ export async function POST(req) {
           //   ]
         },
       },
-      visibility: { "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC" }, //CONNECTIONS
+      visibility: { "com.linkedin.ugc.MemberNetworkVisibility": audience }, 
     };
   
     const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {
@@ -160,7 +161,6 @@ export async function GET(req) {
       return NextResponse.json({ error: "Missing Token" }, { status: 400 });
     }
 
-    // Lấy thông tin user để lấy URN
     const profileRes = await fetch("https://api.linkedin.com/v2/userinfo", {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },

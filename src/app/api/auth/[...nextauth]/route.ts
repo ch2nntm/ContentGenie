@@ -46,7 +46,6 @@ const authOptions: NextAuthOptions = {
             email: profile.email, 
             name: profile.name, 
             avatar: profile.picture || '',
-            username: "", 
             password: "", 
             role: 0
           },

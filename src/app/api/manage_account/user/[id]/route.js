@@ -9,13 +9,14 @@ const dbConfig = {
     password: "SxywZGpysG9CqoUA",
     database: "testdbnextjs",
     ssl: {
-        ca: fs.readFileSync("/etc/ssl/cert.pem"), // Đọc file chứng chỉ CA
+        ca: fs.readFileSync("/etc/ssl/cert.pem"), 
     },
   };
 
   export async function GET(req, {params}) {
-    console.log("Params:", params); 
-    const id = params?.id;
+    const body = await params;
+    const id = body.id;
+    console.log("Id:", id); 
     
     if (isNaN(id)) {
         return new Response(JSON.stringify({ error: "Invalid user ID" }), {

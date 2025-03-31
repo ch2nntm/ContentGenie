@@ -1,16 +1,19 @@
+import { AuthProvider } from "../../authProvider";
+
+
 export const metadata = {
-    title: "Content Generator",
-    description: "Content Generator Page",
+    title: "Content Genie",
+    description: "Content Genie Page",
   };
    
-  export default async function ContentGeneratorLayout({
+  export default async function ContentGenieLayout({
     children
   }: {
     children: React.ReactNode;
   }) {
     return (
-        <div>
+        <AuthProvider>
             {children}
-        </div>
+        </AuthProvider>
     );
   }

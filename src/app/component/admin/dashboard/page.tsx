@@ -10,16 +10,27 @@ import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Cookies from "js-cookie";
-import DeleteButton from "../../../../single_file/DeleteButton";
 import { useTranslations } from "next-intl";
 
 interface account {
     id: number;
     name: string;
     avatar: string;
+    email: string;
 }
 
-const fetcher = async (url: string) => {
+interface post{
+    post_id: string;
+    title: string;
+    content: string;
+    image: string;
+    audience: string;
+    avatar: string;
+    name: string;
+    platform: string;
+}
+
+const fetcher = async ([url, type]: [string, string]) => {
     const token = Cookies.get("token");
   if (!token) return [];
 
@@ -31,17 +42,21 @@ const fetcher = async (url: string) => {
   });
 
   if (!res.ok) return [];
-  return (await res.json())?.users || [];
+  return (await res.json())?.[type] || [];
 };
 
 export default function DashBoard() {
-  const { data: users = [], error } = useSWR(
-    "http://localhost:3000/api/manage_account/user",
+  const { data: users = []} = useSWR(
+    ["http://localhost:3000/api/manage_account/user", "users"],
     fetcher,
   );
-  const t = useTranslations("dashboard");
 
-  if (error) return <p>{t("error_load")}</p>;
+  const { data: posts = []} = useSWR(
+    ["http://localhost:3000/api/manage_account/list_post", "posts"],
+    fetcher,
+  );
+
+  const t = useTranslations("dashboard");
 
   return (
     <div className={styles.container}>
@@ -81,27 +96,56 @@ export default function DashBoard() {
                 </div>
                 <div className={styles.section}>
                     <div className={styles.user_management}>
-                        <p className={styles.text_user_management}>{t("section_user_management")}</p>
                         <div className={styles.content_user_management}>
-                            <Link href="/component/admin/new_user" className={styles.btn_add_new}>
+                            {/* <Link href="/component/admin/new_user" className={styles.btn_add_new}>
                                 {t("section_add_new_user")}
-                            </Link>
+                            </Link> */}
+                            <p className={styles.text_user_management}>{t("section_user_management")}</p>
                             <div className={styles.item_user_management}>
                                 {users.length > 0 ? (
                                     users.map((item: account) => (
                                         <div key={item.id} className={styles.item_user}>
-                                            <div className={styles.inf_user}>
+                                            <Link href={`/component/admin/dashboard/user/${item.id}`} className={styles.inf_user}>
                                                 <div className={styles.avt_user_container}>
                                                     <img className={styles.avt_user} src={item.avatar ? item.avatar : "/icon_circle_user.png"}></img>
                                                 </div>
                                                 <p className={styles.item_name_user}>{item.name}</p>
-                                            </div>
-                                            <div className={styles.btn_group_user}>
-                                                <Link href={`/component/admin/dashboard/user/${item.id}`} className={styles.btn_edit_user}>
-                                                    {t("section_view")}
-                                                </Link>
-                                                <DeleteButton id={item.id} />
-                                            </div>
+                                            </Link>
+                                            <p className={styles.item_email_user}>@{item.email}</p>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p>{t("section_no_user")}</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                    <div className={styles.user_management}>
+                        <div className={styles.content_user_management}>
+                            {/* <Link href="/component/admin/new_user" className={styles.btn_add_new}>
+                                {t("section_add_new_post")}
+                            </Link> */}
+                            <p className={styles.text_user_management}>{t("section_list_post")}</p>
+                            <div className={styles.item_user_management}>
+                                {posts.length > 0 ? (
+                                    posts.map((item: post) => (
+                                        <div key={item.post_id} className={styles.item_user}>
+                                            <Link href={`/component/admin/dashboard/post/${item.post_id}`} className={styles.item_user}>
+                                                <div className={styles.inf_user}>
+                                                    <div className={styles.avt_user_container}>
+                                                        <img className={styles.avt_user} src={item.avatar ? item.avatar : "/icon_circle_user.png"}></img>
+                                                    </div>
+                                                    <p className={styles.item_name_user}>{item.name}</p>
+                                                </div>
+                                                <div className={styles.content_post}>
+                                                    <div className={styles.gene_post}>
+                                                        <p className={styles.text_title}>{item.title}</p>
+                                                        {item.platform === "Mastodon" && <img className={styles.icon_platform} src="/icon_mastodon.png"/>}
+                                                        {item.platform === "LinkedIn" && <img className={styles.icon_platform} src="/icon_linkedin.webp"/>}
+                                                    </div>
+                                                    <p className={styles.text_content}>{item.content}</p>
+                                                </div>
+                                            </Link>
                                         </div>
                                     ))
                                 ) : (
@@ -112,6 +156,7 @@ export default function DashBoard() {
                     </div>
                 </div>
             </div>
+            
         </div>
   );
 }

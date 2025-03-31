@@ -12,14 +12,13 @@ model account {
   email    String  @unique
   name     String?
   avatar   String?
-  username String?
   password String?
   role     Int     @default(0)
   credits  Int     @default(0)
 }
 
 model post {
-  id       BigInt       @id
+  id       String       @id
   title    String
   content  String?   @db.VarChar(1000)
   image    String?   @db.VarChar(500)
@@ -28,4 +27,19 @@ model post {
   platform String
   status   Boolean
   audience String
+}
+
+model credits{
+  user_id Int
+  date DateTime
+  credit_use Int
+  @@id([user_id, date])
+}
+
+model dasboard{
+  id Int @id @default(autoincrement())
+  time DateTime?
+  total_users Int
+  total_posts Int
+  total_credits Int
 }

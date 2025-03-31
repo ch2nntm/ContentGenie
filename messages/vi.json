@@ -19,7 +19,7 @@
         "title_page": "Trang Chủ"
     },
     "login": {
-        "label_username": "Tên tài khoản",
+        "label_email": "Email",
         "label_password": "Mật khẩu",
         "input_username": "Nhập tên tài khoản",
         "input_password": "Nhập mật khẩu",
@@ -29,7 +29,10 @@
         "signinGG": "Đăng nhập với Google",
         "title_page": "Trang Đăng Nhập",
         "forgot_password": "Quên mật khẩu",
-        "signinLinkedIn": "Đăng nhập với LinkedIn"
+        "signinLinkedIn": "Đăng nhập với LinkedIn",
+        "invalid_email": "Email không hợp lệ!",
+        "exist_account":"Tài khoản đã tồn tại!",
+        "invalid_password": "Mật khẩu không hợp lệ!"
     },
     "navbar_user":{
         "signout": "Đăng xuất",
@@ -41,7 +44,9 @@
     },
     "register": {
         "label_name": "Họ tên",
+        "label_email": "Email",
         "input_name":"Nhập họ tên",
+        "input_email":"Nhập email",
         "label_username": "Tên tài khoản",
         "label_password": "Mật khẩu",
         "input_username": "Nhập tên tài khoản",
@@ -51,7 +56,18 @@
         "create_account": "Tạo tài khoản",
         "have_account": "Có tài khoản?",
         "signin": "Đăng Nhập",
-        "password_not_format":"Mật khẩu phải chứa ít nhất 8 ký tự, 1 chữ hoa, 1 chữ thường và 1 số!" 
+        "password_not_format":"Mật khẩu phải chứa ít nhất 8 ký tự, 1 chữ hoa, 1 chữ thường và 1 số!",
+        "message1":"Đã xác nhận OTP thành công. Tài khoản của bạn là email: ",
+        "message2":" và mật khẩu: ",
+        "invalid_email":"Định dạng email sai!",
+        "enter_code": "Nhập mã được gửi đến email của bạn",
+        "placeholder_code":"Nhập mã",
+        "btn_add":"Thêm",
+        "btn_cancel":"Hủy bỏ",
+        "code":"Mã",
+        "send_code_successful":"Gửi mã thành công!",
+        "exist_account": "Tài khoản đã tồn tại!",
+        "wrong_code":"Mã sai!"
     },
     "preview": {
         "time": "giờ trước",
@@ -63,14 +79,16 @@
         "btn_close": "Thoát",
         "btn_save": "Lưu",
         "img": "Hình ảnh",
-        "upload_post": "Đăng bài"
+        "upload_post": "Đăng bài",
+         "like": "Thích",
+        "comment": "Bình luận"
     },
     "content_generator": {
         "social_media": "Chọn Nền Tảng Truyền Thông Xã Hội:",
         "post_time": "Chọn Thời Gian Đăng Bài:",
         "number_of_week": "Số Lượng Bài Viết Mỗi Tuần:",
-        "topic": "Chủ Đề Hoặc Từ Khóa:",
-        "enter_topic": "Nhập Chủ Đề Hoặc Từ Khóa",
+        "topic": "Chủ Đề và Từ Khóa:",
+        "enter_topic": "Nhập Từ Khóa",
         "enable_trend": "Bật Nội Dung Dựa Trên Xu Hướng:",
         "btn_generate_content": "Tạo Nội Dung",
         "account_management": "Quản lý tài khoản",
@@ -83,7 +101,8 @@
         "private": "Riêng Tư",
         "error_http": "Lỗi HTTP",
         "invalid_json": "Phản hồi không phải JSON hợp lệ",
-        "error_get_user": "Lỗi lấy thông tin user:"
+        "error_get_user": "Lỗi lấy thông tin user:",
+        "not_enough_credit": "Số thẻ của bạn đã hết!"
     },
     "dashboard": {
         "sidebar_dashboard": "Trang Tổng Quan",
@@ -93,6 +112,8 @@
         "sidebar_settings": "Cài Đặt",
         "section_user_management": "Quản lý người dùng",
         "section_add_new_user": "Thêm người dùng mới",
+        "section_list_post": "Danh Sách Bài Đăng",
+        "section_add_new_post": "Thêm Bài Đăng Mới",
         "section_view": "Xem",
         "section_no_user": "Không có người dùng nào được tìm thấy",
         "section_delete": "Xoá",
@@ -137,20 +158,26 @@
         "error_update:":"Lỗi cập nhật thông tin!",
         "email_exist":"Email đã tồn tại!",
         "update_fail": "Cập nhật thất bại!",
-        "message": "Cập nhật email thành công!"
+        "message": "Cập nhật email thành công!",
+        "code":"Mã",
+        "btn_update": "Cập nhật",
+        "btn_cancel":"Hủy bỏ"
     },
     "forgot_password":{
         "enter_full": "Vui lòng điền đầy đủ các trường!",
-        "username_wrong": "Tên người dùng sai!",
+        "username_wrong": "Email sai!",
         "error_register": "Lỗi trong quá trình đăng ký!",
         "password_not_match": "Mật khẩu không khớp!",
         "password_not_format" : "Mật khẩu phải dài ít nhất 8 ký tự, bao gồm chữ cái, số và ký tự đặc biệt!",
         "title": "Quên mật khẩu",
-        "username": "Tên người dùng",
+        "email": "Email",
         "btn_cancel": "Hủy bỏ",
         "reset_password": "Đặt lại mật khẩu",
         "password": "Mật khẩu",
-        "confirm_password": "Xác nhận mật khẩu"
+        "confirm_password": "Xác nhận mật khẩu",
+        "change_success": "Thay đổi mật khẩu thành công!",
+        "message1": "Thay đổi mật khẩu thành công với email: ",
+        "message2": " và mật khẩu mới: "
     },
     "list_post_user":{
         "title_page": "Danh sách bài đăng",
@@ -173,9 +200,11 @@
         "error_http": "Lỗi HTTP! Trạng thái:",
         "error_fetch": "Lỗi khi tìm kiếm thông tin chi tiết bài đăng:",
         "confirm_delete": "Bạn có chắc chắn muốn xóa bài viết này không?",
-        "post_delete": "Bài viết đã bị xóa:",
+        "post_delete": "Bài viết đã bị xóa",
         "error_delete": "Lỗi xóa bài viết:",
-        "cancel_delete": "Hủy xóa!"
+        "cancel_delete": "Hủy xóa!",
+        "export_pdf": "Xuất file PDF",
+        "miss_token_mastondon": "Chưa đăng nhập Mastodon"
     },
     "new_user":{
         "btn_add_new": "Thêm Người Dùng Mới",
@@ -196,11 +225,29 @@
         "invalid_email":"Định dạng email sai!",
         "send_code_successful":"Gửi mã thành công!",
         "send_code_fail":"Gửi mã thất bại!",
-        "message1":"Đã xác nhận OTP thành công. Tài khoản của bạn là tên người dùng: ",
+        "message1":"Đã xác nhận OTP thành công. Tài khoản của bạn là email: ",
         "message2":" và mật khẩu: ",
         "placeholder_name":"Nhập họ tên",
         "placeholder_email":"Nhập email",
         "placeholder_code":"Nhập mã",
         "exist_account": "Tài khoản đã tồn tại!"
+    },
+    "detail_post": {
+        "hours":"giờ trước",
+        "days":"ngày trước",
+        "months":"tháng trước",
+        "years":"năm trước",
+        "social_mastodon": "Mạng xã hội Mastodon",
+        "social_linkedin": "Mạng xã hội LinkedIn",
+        "status_pending": "Chưa đăng",
+        "status_posted": "Đã đăng",
+        "error_fetch":"Lỗi khi tìm kiếm thông tin chi tiết bài đăng:"
+    },
+    "detail_user": {
+        "user_detail": "Thông tin chi tiết người dùng!",
+        "name": "Họ tên: ",
+        "email":"Email: ",
+        "quantity_credits": "Số thẻ còn lại: ",
+        "quantity_post": "Tổng số bài đăng: "
     }
 }

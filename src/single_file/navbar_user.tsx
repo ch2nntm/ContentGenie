@@ -30,7 +30,6 @@ function NavbarUser(){
 
     useEffect(() => {
         const token = Cookies.get("token");
-        console.log("Pathname: ",pathname);
         if (token) {
             fetch("/api/manage_account/login", {
                 method: "GET",
@@ -72,9 +71,9 @@ function NavbarUser(){
             const res = await fetch("/api/manage_account/logout", { method: "POST" });
     
             if (res) {
-                Cookies.remove("token", { path: "/" }); 
-                setUser(null); 
-                Cookies.remove("token"); 
+                Cookies.remove("mastodon_token");
+                Cookies.remove("token");  
+                Cookies.remove("redirect_params");
                 await signOut({ redirect: false });
                 router.push("/component/account_user/login_user");
                 // const sessionLogout = await getSession();

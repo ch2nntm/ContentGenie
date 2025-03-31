@@ -18,7 +18,7 @@ function Login() {
 
     const t = useTranslations("login");  
     const noti_toast = useTranslations("toast"); 
-    const [username, setUsername] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [showPassword, setShowPassword] = useState(false);
 
@@ -37,8 +37,16 @@ function Login() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault(); 
-        if (!username || !password) {
+        if (!email || !password) {
             toast.error(noti_toast("enter_not_full"));
+            return;
+        }
+        else if (!/^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+            toast.error(t("invalid_email"));
+            return;
+        }
+        else if(!/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)){
+            toast.error(t("invalid_password"));
             return;
         }
         fetch("/api/manage_account/login", {
@@ -47,7 +55,7 @@ function Login() {
                 Accept: "application/json, text/plain,*/*",
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ username, password }),
+            body: JSON.stringify({ email, password }),
         })
         .then((res) => res.json())
         .then((data) => {
@@ -86,13 +94,13 @@ function Login() {
                         <h1 className={styles.text_main}>ContentGenie</h1>
                     </div>
                     <form onSubmit={handleSubmit} className={styles.form}>
-                        <label className={styles.label} htmlFor="username">{t("label_username")}</label>
+                        <label className={styles.label} htmlFor="email">{t("label_email")}</label>
                         <input
-                            type="text"
-                            id="username"
+                            type="email"
+                            id="email"
                             placeholder={t("input_username")}
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             className={styles.input}
                         />
                         <label className={styles.label} htmlFor="password">{t("label_password")}</label>

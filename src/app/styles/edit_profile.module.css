@@ -170,3 +170,33 @@
     border-radius: 5px;
     padding: 7px 0px;
 }
+
+.code{
+    margin-top: 100px;
+}
+
+.btn_group{
+    display: flex;
+    margin: 80px 130px;
+    gap: 200px;
+    margin-left: 300px;
+}
+
+.btn_cancel{
+    background-color: rgb(161, 163, 164);
+    text-decoration: none;
+    padding: 5px 15px;
+    color: #000;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn_update{
+    border: none;
+    background-color: rgba(0, 110, 255, 0.882);
+    padding: 5px 20px;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}

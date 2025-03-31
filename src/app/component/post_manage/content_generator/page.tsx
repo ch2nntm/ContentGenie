@@ -7,29 +7,48 @@ import NavbarUser from "@/single_file/navbar_user";
 import { useRouter } from "next/navigation";
 import ShareIcon from '@mui/icons-material/Share';
 import WatchLaterIcon from '@mui/icons-material/WatchLater';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import KeyIcon from '@mui/icons-material/Key';
-import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import { toast, ToastContainer } from "react-toastify";
 import PersonIcon from '@mui/icons-material/Person';
+import { useAuth } from "../../authProvider";
+
+interface User {
+    id: string;
+    avatar?: string;
+    name?: string;
+    username?: string;
+}
 
 function ContentGeneratorPage() {
     const t = useTranslations("content_generator");
     const [selectedPlatform, setSelectedPlatform] = useState("");
-    const [selectedDate, setSelectedDate] = useState("");
-    const [selectedNumber, setSelectedNumber] = useState(0);
     const [selectTopic, setSelectTopic] = useState("");
     const [enterKeyword, setEnterKeyword] = useState("");
     const [selectedAudience, setSelectedAudience] = useState("public");
-    const [isOn, setIsOn] = useState(false);
     const router = useRouter();
+    const auth = useAuth() as { user: User };
 
     const today = new Date();
-    const formattedDate = today.toISOString().split('T')[0];
+    const formattedDate = today.toISOString().split("T")[0]; 
+    const formattedTime = today.getHours().toString().padStart(2, "0") + ":" + today.getMinutes().toString().padStart(2, "0"); 
 
-    const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedDate(event.target.value);
-    };   
+    const [selectedDate, setSelectedDate] = useState(formattedDate);
+    const [selectedTime, setSelectedTime] = useState("");
+
+    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newDate = e.target.value;
+        setSelectedDate(newDate);
+        setSelectedTime("");
+    };
+
+    const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const time = new Date(`1970-01-01T${e.target.value}:00`);
+        setSelectedTime(time.toLocaleTimeString("en-GB", { 
+            timeZone: "Asia/Ho_Chi_Minh", 
+            hour12: false 
+        }));
+        console.log("Date Time: ",selectedTime);
+    }
 
     useEffect(() => {
         const token = Cookies.get("token");
@@ -59,22 +78,79 @@ function ContentGeneratorPage() {
         }
       }, []);
 
-      const hanldeCreateContent = () => {
-        const queryParams = new URLSearchParams({
-            platform: selectedPlatform,
-            date: selectedDate,
-            number: selectedNumber.toString(),
-            topic: selectTopic,
-            keyword: enterKeyword,
-            audience: selectedAudience,
-            isOn: isOn.toString(),
-        }).toString();
-        if(selectedPlatform==="" || selectedDate==="" || selectedNumber==0 || enterKeyword==="" || selectedAudience===""){
+      const hanldeCreateContent = async() => {
+        if(selectedPlatform==="" || selectedDate==="" || enterKeyword==="" || selectedAudience===""){
             toast.error(t("noti_error"));
-        }
-        else{
-            if(selectedPlatform === "Mastodon")
-                router.push(`/component/post_manage/preview?${queryParams}`);
+            return;
+        }else{
+            const responseQuantity = await fetch("http://localhost:3000/api/manage_account/check_credit",{
+                method: "POST",
+                body: JSON.stringify({id: auth?.user.id})
+            })
+            const dataQuantity = await responseQuantity.json();
+            const quantity_credit = dataQuantity.data[0].credits;
+            if(quantity_credit === 0){
+                toast.error(t("not_enough_credit"));
+                return;
+            }
+            else{
+                if(selectedPlatform === "Mastodon"){
+                    const token = Cookies.get("mastodon_token");
+                
+                    if (!token) {
+                        Cookies.set("redirect_params", new URLSearchParams({
+                            platform: selectedPlatform,
+                            date: `${selectedDate}T${selectedTime}`,
+                            topic: selectTopic,
+                            keyword: enterKeyword,
+                            audience: selectedAudience,
+                            user_Id: auth?.user.id
+                        }).toString());
+                        
+                        window.location.href = "/api/mastodon/auth";  
+                        return;
+                    }
+            
+                    const queryParams = new URLSearchParams({
+                        platform: selectedPlatform,
+                        date: `${selectedDate}T${selectedTime}`,
+                        topic: selectTopic,
+                        keyword: enterKeyword,
+                        audience: selectedAudience,
+                        user_Id: auth?.user.id
+                    }).toString();
+
+                    router.push(`/component/post_manage/preview?${queryParams}`);
+                }
+                else if(selectedPlatform === "LinkedIn"){
+                    const linkedin_access_token = Cookies.get("linkedin_access_token");
+                
+                    if (!linkedin_access_token) {
+                        Cookies.set("redirect_params", new URLSearchParams({
+                            platform: selectedPlatform,
+                            date: `${selectedDate}T${selectedTime}`,
+                            topic: selectTopic,
+                            keyword: enterKeyword,
+                            audience: selectedAudience,
+                            user_Id: auth?.user.id
+                        }).toString());
+                        
+                        window.location.href = "/api/linkedin/auth";  
+                        return;
+                    }
+            
+                    const queryParams = new URLSearchParams({
+                        platform: selectedPlatform,
+                        date: `${selectedDate}T${selectedTime}`,
+                        topic: selectTopic,
+                        keyword: enterKeyword,
+                        audience: selectedAudience,
+                        user_Id: auth?.user.id
+                    }).toString();
+                    
+                    router.push(`/component/post_manage/preview_linkedin?${queryParams}`);
+                }
+            }
         }
       };
 
@@ -97,7 +173,7 @@ function ContentGeneratorPage() {
                 <div className={styles.platform_social_media}>
                     <button className={selectedPlatform === "Mastodon" ? styles.platform_facebook : styles.btn_platform_social_media} onClick={() => setSelectedPlatform("Mastodon")}>Mastodon</button>
                     <button className={selectedPlatform === "TikTok" ? styles.platform_tiktok : styles.btn_platform_social_media} onClick={() => setSelectedPlatform("TikTok")}>TikTok</button>
-                    <button className={selectedPlatform === "Linkedin" ? styles.platform_instagram : styles.btn_platform_social_media} onClick={() => setSelectedPlatform("Linkedin")}>Linkedin</button>
+                    <button className={selectedPlatform === "LinkedIn" ? styles.platform_linkedin : styles.btn_platform_social_media} onClick={() => setSelectedPlatform("LinkedIn")}>LinkedIn</button>
                 </div>
             </div>
             <div className={styles.post_time}>
@@ -109,9 +185,20 @@ function ContentGeneratorPage() {
                         {t("post_time")}
                     </p>
                 </label>
-                <input className={styles.input_date} id="post_time" min={formattedDate} type="date" value={selectedDate} onChange={handleDateChange} />
+                <input  className={styles.input_date} id="post_time"
+                    type="date"
+                    min={formattedDate}
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                />
+                <input  className={styles.input_time}
+                    type="time"
+                    value={selectedTime}
+                    onChange={handleTimeChange}
+                    min={selectedDate === formattedDate ? formattedTime : "00:00"}
+                />
             </div>
-            <div className={styles.number_of_week}>
+            {/* <div className={styles.number_of_week}>
                 <label className={styles.title_number_of_week} htmlFor="number_of_week">
                     <div className={styles.icon_number_of_week}>
                         <CalendarMonthIcon></CalendarMonthIcon>
@@ -119,7 +206,7 @@ function ContentGeneratorPage() {
                     <p className={styles.text_number_of_week}>{t("number_of_week")}</p>
                 </label>
                 <input type="number" id="number_of_week" min="0" className={styles.input_number} value={selectedNumber} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSelectedNumber(Number(e.target.value))}/>
-            </div>
+            </div> */}
             <div className={styles.topic}>
                 <label className={styles.title_topic} htmlFor="topic">
                     <div className={styles.icon_topic}>
@@ -151,7 +238,7 @@ function ContentGeneratorPage() {
                     </select>
                 </div>
             </div>
-            <div className={styles.enable_trend}>
+            {/* <div className={styles.enable_trend}>
                 <div className={styles.title_enable_trend}>
                     <div className={styles.icon_enable_trend}>
                         <LocalFireDepartmentIcon></LocalFireDepartmentIcon>
@@ -164,7 +251,7 @@ function ContentGeneratorPage() {
                     >
                     <div className={styles.circle}></div>
                 </div>
-            </div>
+            </div> */}
             <div className={styles.generate_content}>
                 <button onClick={hanldeCreateContent} className={styles.btn_generate_content}>{t("btn_generate_content")}</button>
             </div>

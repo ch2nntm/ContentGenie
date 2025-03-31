@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 const DeleteButton = ({ id }: { id: number }) => {
     const handleDelete = async () => {
-        if (window.confirm("Are you sure you want to delete this post?")) {
+        if (window.confirm("Are you sure you want to delete this users?")) {
             const response = await fetch(`http://localhost:3000/api/manage_account/user/${id}`, {
                 method: "DELETE",
                 headers: {

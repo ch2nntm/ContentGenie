@@ -1,0 +1,81 @@
+import mysql from "mysql2/promise";
+import fs from "fs";
+import { NextResponse } from "next/server";
+
+const dbConfig = {
+    host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
+    port: 4000,
+    user: "23RJwZS9wrfiKxq.root",
+    password: "SxywZGpysG9CqoUA",
+    database: "testdbnextjs",
+    ssl: {
+        ca: fs.readFileSync("/etc/ssl/cert.pem"),
+    },
+  };
+
+  export async function GET(req, {params}) {
+    const body = await params;
+    const id = body.id;
+    console.log("Id:", id); 
+    
+    if (isNaN(id)) {
+        return new Response(JSON.stringify({ error: "Invalid post ID" }), {
+            status: 400,
+        });
+    }
+
+    try {
+        const connection = await mysql.createConnection(dbConfig);
+    
+        const [rows] = await connection.execute(
+          "SELECT post.id as post_id, post.*, account.* FROM post left join account on post.user_id = account.id WHERE post.id = ?",
+          [id]
+        );
+        
+        await connection.end();
+    
+        if (rows.length === 0) {
+          return new Response(JSON.stringify({ error: "Post not found" }), {
+            status: 404,
+          });
+        }
+    
+        return new Response(JSON.stringify(rows[0]), { status: 200 });
+      } catch (error) {
+        console.error(error);
+        return new Response(
+          JSON.stringify({ error: "Database connection failed" }),
+          { status: 500 }
+        );
+      }
+}
+
+export async function DELETE(req, { params }) {
+  const id = params?.id;
+  
+  if (!id) {
+      return NextResponse.json({ error: "Missing post ID" }, { status: 400 });
+  }
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [result] = await connection.execute(
+        "DELETE FROM post WHERE id = ?",
+        [id]
+    );
+
+    await connection.end();
+
+    if(result.affectedRows === 0) {
+        return NextResponse.json({ error: "Post not found" }, { status: 400 });
+    }
+
+    return NextResponse({success: "Delete successful"}, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse(
+      JSON.stringify({ error: "Database connection failed" }),
+      { status: 500 }
+    );
+  }
+}

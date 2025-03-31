@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import styles from "../../../styles/preview.module.css";
@@ -37,16 +37,19 @@ function PreviewPage() {
     const audience = searchParams.get("audience") || "";
     const [postTime, setPostTime] = useState(new Date(searchParams.get("date") || ""));
     const platform = searchParams.get("platform") || "";
-    const status = searchParams.get("isOn") || false;
+    const user_Id = searchParams.get("user_Id") || false;
     const [content, setContent] = useState("");
     const [updateContent, setUpdateContent] = useState("");
     const [openModal, setOpenModal] = useState(false);
     const [video, setVideo] = useState("");
 
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
 
     const [imgUrl, setImgUrl] = useState("");
+    const [imgUrlTest, setImgUrlTest] = useState("");
     const [messages] = useState([
         {
             role: "system", 
@@ -54,8 +57,44 @@ function PreviewPage() {
         },
     ]);
 
-
     const [loading, setLoading] = useState(false); 
+
+    const uploadToCloudinary = async (file: string | Blob) => {
+        const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
+        const uploadPreset = "demo-upload";
+        const form = new FormData();
+        form.append("upload_preset", uploadPreset);
+
+        if (typeof file === "string" && file.startsWith("blob:")) {
+            const responseConvert = await fetch(file);
+            const blob = await responseConvert.blob();
+            const fileConvert = new File([blob], "image.jpg", { type: blob.type });
+            form.append("file", fileConvert);
+        }
+        else{
+            form.append("file", file);
+        }
+    
+        try {
+            const response = await fetch(cloudinaryUrl, {
+                method: "POST",
+                body: form,
+            });
+    
+            const dataImg = await response.json();
+            if (dataImg.secure_url) {
+                console.log("IMAGE UPLOADED: ", dataImg.secure_url);
+                return dataImg.secure_url; 
+            } else {
+                toast.error("Upload ảnh thất bại!");
+                return null;
+            }
+        } catch (error) {
+            console.error("Lỗi khi upload ảnh:", error);
+            return null;
+        }
+    };
+
     const fetchData = async (input: string) => {
         try {
             messages.push({role: "user", content: input});
@@ -63,13 +102,14 @@ function PreviewPage() {
             setLoading(true);
             const token = Cookies.get("token");
             if (!token) return;
+            console.log("user_Id:",user_Id);
             const responseData = await fetch("/api/manage_account/openai", {
                 method: "POST",
                 headers: { 
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json" 
                 },
-                body: JSON.stringify({ messages: messages }),
+                body: JSON.stringify({user_Id: user_Id , messages: messages }),
             });
 
             if (!responseData.ok) {
@@ -81,31 +121,14 @@ function PreviewPage() {
             setContent(data.messages?.content);
             setUpdateContent(data.messages?.content);
 
-            if(topic.includes("Mua sắm"))
-                setImgUrl(data.imageUrl);
+            if(topic.includes("Mua sắm")){
+                const uploadedImgUrl = await uploadToCloudinary(data.imageUrl);
+                if (uploadedImgUrl) {
+                    setImgUrl(uploadedImgUrl);
+                }
+            }
             else if(topic.includes("Âm nhạc")){
                 setVideo(data.music);
-            }
-
-            const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
-            const uploadPreset = "demo-upload";
-            const form = new FormData();
-            form.append("file", imgUrl);
-            form.append("upload_preset", uploadPreset);
-
-            const response = await fetch(cloudinaryUrl, {
-                method: "POST",
-                body: form,
-            });
-
-            const dataImg = await response.json();
-            if (dataImg.secure_url) {
-                console.log("IMAGE1: ",dataImg.secure_url);
-                setImgUrl(dataImg.secure_url);
-                console.log("IMAGE2: ",imgUrl);
-            } else {
-                toast.error("Upload ảnh thất bại!");
-                return;
             }
         } catch (error) {
             console.error("Error fetching AI response:", error);
@@ -118,43 +141,107 @@ function PreviewPage() {
         fetchData(keyword);
     }, [keyword]);
 
+    // useEffect(()=>{
+    //     const fetchDataAsync = async () => {
+    //         const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
+    //         const uploadPreset = "demo-upload";
+    //         const form = new FormData();
+    //         form.append("file", imgUrl);
+    //         form.append("upload_preset", uploadPreset);
+
+    //         const response = await fetch(cloudinaryUrl, {
+    //             method: "POST",
+    //             body: form,
+    //         });
+
+    //         const dataImg = await response.json();
+    //         if (dataImg.secure_url) {
+    //             console.log("IMAGE1: ",dataImg.secure_url);
+    //             setImgUrl(dataImg.secure_url);
+    //             console.log("IMAGE2: ",imgUrl);
+    //         } else {
+    //             toast.error("Upload ảnh thất bại!");
+    //             return;
+    //         }
+    //         console.log("IMAGE: ",imgUrl);
+    //     };
+    //     fetchDataAsync();
+    // },[imgUrl]);
+
     const handleCancel = () => {
         setUpdateContent(content);
         setOpenModal(false);
+        setImgUrlTest("");
     }
 
     const hanldeSave = async () => {
         setContent(updateContent);
         setOpenModal(false);
+        if(imgUrlTest !== "/upload_avt.png")
+            setImgUrl(imgUrlTest);
+        else
+            setImgUrl("");
     };
 
-    const hanldeUpload = async () => {
-        const token = Cookies.get("token");
-        if (!token) {
-            toast.error("401 Authentication");
-            return;
+    const handleImageClick = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
         }
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const file = e.target.files[0];
+            const imageUrlTest = URL.createObjectURL(file);
+            setImgUrlTest(imageUrlTest);
+            console.log("Image Test: ", imageUrlTest);
+        }
+    };
+
+    const handleClickBtnCloseImg = () => {
+        console.log("Click close img");
+        setImgUrlTest("/upload_avt.png");
+    }
+
+    const hanldeUpload = async () => {
         try {
-            const mastodonRes = await fetch("/api/mastodon", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ content, audience }),
-            });
-    
-            const mastodonData = await mastodonRes.json();
-            console.log("Mastodon response:", mastodonData.data.id);
-    
-            if (!mastodonRes.ok) {
-                toast.error("Lỗi khi gửi bài viết đến Mastodon");
-                return;
+            let uploadedImgUrl = imgUrl; 
+            if (imgUrl !== "/upload_avt.png" && imgUrl) {
+                uploadedImgUrl = await uploadToCloudinary(imgUrl);
+                setImgUrl(uploadedImgUrl);
+                console.log("IMAGE UPLOADED1: ", uploadedImgUrl);
             }
+
+            // const formData = new FormData();
+            // formData.append("url", uploadedImgUrl);
+            // formData.append("content", content);
+            // formData.append("audience", audience);
+
+            // const mastodonRes = await fetch("/api/mastodon", {
+            //     method: "POST",
+            //     body: formData,
+            // });
     
-            toast.success("Mastodon post successful!");
+            // const mastodonData = await mastodonRes.json();
+            // console.log("Mastodon response:", mastodonData.postData.id);
+    
+            // if (!mastodonRes.ok) {
+            //     toast.error("Lỗi khi gửi bài viết đến Mastodon");
+            //     return;
+            // }
+    
+            // toast.success("Mastodon post successful!");
+            const token = Cookies.get("token");
+
+            const id_post = Math.floor(1000 + Math.random() * 9000).toString();
 
             const userId = auth?.user?.id || null; 
-            const formattedPostTime = postTime instanceof Date ? postTime.toISOString() : postTime || null; 
+            const formattedPostTime = postTime instanceof Date 
+            ? postTime.toLocaleString("en-CA", { timeZone: "Asia/Ho_Chi_Minh" }) 
+            : postTime 
+                ? new Date(postTime).toLocaleString("en-CA", { timeZone: "Asia/Ho_Chi_Minh", hour12: false}) 
+                : null;
+
             fetch("/api/post_manage/upload_post", {
                 method: "POST",
                 headers: {
@@ -163,23 +250,23 @@ function PreviewPage() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    id: mastodonData.data.id,
+                    id: id_post,
                     keyword,
                     content,
                     imgUrl,
                     posttime: formattedPostTime,
                     user_id: userId,
                     platform,
-                    status,
+                    status: 0,
                     audience
                 }),
             })
             .then((res) => res.json())
             .then((res) => {
                 if (res.message) {
-                    // router.push("/");
                     setOpenModal(false);
                     toast.success("Successful");
+                    // router.push("/component/post_manage/list_post_user");
                 } else if (res.error) {
                     console.log("Res: ", res);
                 }
@@ -188,29 +275,6 @@ function PreviewPage() {
             console.error("Lỗi khi đăng tweet:", error);
         }
     }
-
-    // const postToMastodon = async () => {
-    //     const formData = new FormData();
-    //     formData.append("url", imgUrl);
-    //     formData.append("content", content);
-    //     console.log("Form data: ",formData);
-    //     try {
-    //         fetch("/api/tweet", {
-    //             method: "POST",
-    //             body: formData
-    //           })
-    //             .then(res => res.json())
-    //             .then(data => {
-    //                 console.log(data);
-    //                 toast.success("Successful");
-    //             })                
-    //             .catch(err => console.error(err));
-              
-    //     } catch (error) {
-    //         console.error("Lỗi khi đăng tweet:", error);
-    //     }
-    // };
-    
 
     const handleDateChange = (event: { target: { value: string | number | Date; }; }) => {
         setPostTime(new Date(event.target.value));
@@ -284,19 +348,19 @@ function PreviewPage() {
                                 <button 
                                     type="button" 
                                     className={styles.item} 
-                                    onClick={() => document.getElementById("datePicker")?.click()}
+                                    onClick={() => (document.getElementById("datePicker") as HTMLInputElement)?.showPicker()}
                                 >
                                     {format(postTime, "MMM d")}
                                 </button>
-                                
                                 <input 
                                     id="datePicker"
                                     type="date"
                                     min={formattedDate}
-                                    style={{ opacity: 0, width: 0, height: 0, position: "absolute" }}
+                                    style={{ opacity: 0, position: "absolute" }}
                                     value={postTime.toISOString().split("T")[0]} 
                                     onChange={handleDateChange}
                                 />
+
                             </div>
                         </div>
                         <div className={styles.btn_container}>
@@ -325,7 +389,22 @@ function PreviewPage() {
                         </Form.Group>
                         <Form.Group className={styles.form_group}>
                             <Form.Label className={styles.label_img}>{t("img")}</Form.Label>
-                            {imgUrl && <img className={styles.img_edit_main_post} src={imgUrl}/>}
+                            <div onClick={handleImageClick}>
+                                {!imgUrl && <img className={imgUrlTest ? styles.img_edit_main_post : styles.img_edit_main_post_upload} src={imgUrlTest ? imgUrlTest : "/upload_avt.png"} alt="avt"/>}
+                                {imgUrl && <img src={imgUrlTest ? imgUrlTest : imgUrl} className={imgUrlTest ? styles.img_edit_main_post : styles.img_edit_main_post_upload} />}
+                            </div>
+                            <Form.Control
+                                ref={fileInputRef} 
+                                id="avt"
+                                type="file"
+                                className={styles.choose_avt}
+                                style={{ display: "none" }} 
+                                accept="image/*"
+                                onChange={handleFileChange} 
+                            />
+                            <Button className={styles.button_close_img} onClick={handleClickBtnCloseImg}>
+                                <CloseIcon className={styles.icon_close_img}></CloseIcon>
+                            </Button>
                         </Form.Group>
                     </Form>
                 </Modal.Body>
