@@ -55,9 +55,11 @@ function Register() {
             fetch("/api/send_otp",{
                 method: "POST",
                 body: JSON.stringify({email})
+            })
+            .then(()=>{
+                toast.success(t("send_code_successful"));
+                setIsEnterCode(true);
             });
-            toast.success(t("send_code_successful"));
-            setIsEnterCode(true);
         }
         else{
             toast.error(t("exist_account"));

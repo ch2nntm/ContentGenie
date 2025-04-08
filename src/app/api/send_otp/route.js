@@ -30,7 +30,6 @@ export async function POST(req) {
 
         const otp = generateOTP();
 
-        // Lưu vào Redis với thời gian sống 5 phút (300 giây)
         await redis.setex(`otp:${email}`, 300, otp);
 
         await sendEmail(email, otp);
