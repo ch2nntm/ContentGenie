@@ -8,15 +8,20 @@ export async function POST(req) {
     const api_key = process.env.NEXT_PUBLIC_PAYOS_API_KEY;
     const client_id = process.env.NEXT_PUBLIC_PAYOS_CLIENT_ID;
 
-    const data = `amount=${body.amount}&cancelUrl=${body.cancelUrl}&description=${body.description}&orderCode=${body.orderCode}&returnUrl=${body.returnUrl}`;
+    const generateCode = () => Math.floor(Math.random() * 100000);
+    const orderCode = generateCode();
+
+    const data = `amount=${body.amount}&cancelUrl=${body.cancelUrl}&description=${body.description}&orderCode=${orderCode}&returnUrl=${body.returnUrl}`;
 
     const signature = crypto
       .createHmac('sha256', checksum_key)
       .update(data)
       .digest('hex');
 
+    console.log("orderCode:", orderCode);
+
     const payload = {
-      orderCode: body.orderCode,
+      orderCode: orderCode,
       amount: body.amount,
       description: body.description,
       cancelUrl: body.cancelUrl,

@@ -100,8 +100,7 @@ export default function UpgradePro() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    amount: 1, 
-                    orderCode: 39,
+                    amount: 1,
                     description: "Upgrade pro",
                     cancelUrl: "/component/upgrade",
                     returnUrl: "/component/upgrade"
