@@ -14,6 +14,7 @@ export default function UpgradePro() {
     const [credits, setCredits] = useState(0);
     const searchParams = useSearchParams();
     const code = searchParams.get("code") || "";
+    const status = searchParams.get("status") || "";
     const t = useTranslations("upgrade");
     const [isLoading, setIsLoading] = useState(true);
 
@@ -41,24 +42,24 @@ export default function UpgradePro() {
                         }
                         return res.json();
                     })
-                    .then((data) => {
+                    .then(async (data) => {
                         if (data.user) {
                             setUserId(data.user.id);
-                            if(code){
-                                fetch("/api/manage_account/check_credit",{
-                                  method: "PUT",
-                                  headers:{
-                                      "Authorization": `Bearer ${token}`
-                                  },
-                                  body: JSON.stringify({id: data.user.id})
-                                }).then(async (res) => {
-                                    if (!res) {
-                                        throw new Error(`Lỗi HTTP: ${res}`);
-                                    }
-                                }).then((data)=>{
-                                    console.log("dataResponse: ",data);
-                                    toast.success("Upgrade pro success");
-                                })
+                            if(code && status==="PAID"){
+                                const putRes = await fetch("/api/manage_account/check_credit", {
+                                    method: "PUT",
+                                    headers: {
+                                      "Authorization": `Bearer ${token}`,
+                                      "Content-Type": "application/json",
+                                    },
+                                    body: JSON.stringify({ id: data.user.id })
+                                  });
+                              
+                                  if (!putRes.ok) {
+                                    throw new Error("PUT credit thất bại");
+                                  }
+                              
+                                  toast.success("Upgrade pro success");
                             }
                             fetch("/api/manage_account/check_credit",{
                                 method: "POST",
@@ -92,7 +93,7 @@ export default function UpgradePro() {
         };
         fetchData();
         
-    },[])
+    },[]);
 
     const handlePayment = async () => {
         if(userId){

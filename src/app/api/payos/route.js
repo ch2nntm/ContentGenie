@@ -9,10 +9,15 @@ export async function POST(req) {
     const client_id = process.env.NEXT_PUBLIC_PAYOS_CLIENT_ID;
     const base_url = process.env.NEXT_PUBLIC_PAYOS_BASE_URL;
 
+    const public_url = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL : 'http://localhost:3000/';
+
+    const cancelUrl = public_url+body.cancelUrl;
+    const returnUrl = public_url+body.returnUrl
+
     const generateCode = () => Math.floor(Math.random() * 100000);
     const orderCode = generateCode();
 
-    const data = `amount=${body.amount}&cancelUrl=${body.cancelUrl}&description=${body.description}&orderCode=${orderCode}&returnUrl=${body.returnUrl}`;
+    const data = `amount=${body.amount}&cancelUrl=${cancelUrl}&description=${body.description}&orderCode=${orderCode}&returnUrl=${returnUrl}`;
 
     const signature = crypto
       .createHmac('sha256', checksum_key)
@@ -25,8 +30,8 @@ export async function POST(req) {
       orderCode: orderCode,
       amount: body.amount,
       description: body.description,
-      cancelUrl: body.cancelUrl,
-      returnUrl: body.returnUrl,
+      cancelUrl:  cancelUrl,
+      returnUrl: returnUrl,
       signature: signature,  
     };
 
