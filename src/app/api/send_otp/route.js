@@ -7,24 +7,21 @@ const redis = new Redis(process.env.REDIS_URL);
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
 const sendEmail = async (email, otp) => {
-    try{
-        const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS, 
-            },
-        });
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS, 
+        },
+    });
 
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: "Mã OTP của bạn",
-            text: `Mã OTP của bạn là: ${otp} (Hết hạn sau 5 phút).`,
-        });
-    }catch (err) {
-        console.error("Error sending email:", err);
-    }
+    await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "Mã OTP của bạn",
+        text: `Mã OTP của bạn là: ${otp} (Hết hạn sau 5 phút).`,
+    });
+
 };
 
 export async function POST(req) {
@@ -36,7 +33,7 @@ export async function POST(req) {
 
         await redis.setex(`otp:${email}`, 300, otp);
 
-        await sendEmail(email, otp);
+        sendEmail(email, otp);
 
         return NextResponse.json({ message: "OTP sent successfully" }, { status: 200 });
     } catch (error) {
