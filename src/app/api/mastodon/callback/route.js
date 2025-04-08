@@ -13,7 +13,7 @@ export async function GET(req) {
     const CLIENT_SECRET = process.env.MASTODON_CLIENT_SECRET;
     const REDIRECT_URI = process.env.MASTODON_REDIRECT_URI;
 
-    console.log("MASTODON_INSTANCE: ",MASTODON_INSTANCE," - CLIENT_ID: ",MASTODON_CLIENT_ID," - CLIENT_SECRET: ",MASTODON_CLIENT_SECRET," - REDIRECT_URI: ",MASTODON_REDIRECT_URI);
+    console.log("MASTODON_INSTANCE: ",MASTODON_INSTANCE," - CLIENT_ID: ",CLIENT_ID," - CLIENT_SECRET: ",CLIENT_SECRET," - REDIRECT_URI: ",REDIRECT_URI);
   
     try {
       const tokenResponse = await fetch(`${MASTODON_INSTANCE}/oauth/token`, {
