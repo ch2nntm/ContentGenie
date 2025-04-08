@@ -38,17 +38,17 @@ export async function GET(req) {
       const tokenData = await tokenResponse.json();
       console.log("TOKEN DATA: ",tokenData);
       
-    cookieStore().set("linkedin_access_token", tokenData.access_token, {
+    cookieStore.set("linkedin_access_token", tokenData.access_token, {
       path: "/",
       sameSite: "Lax",
     });
 
-    cookieStore().set("linkedin_id_token", tokenData.id_token, {
+    cookieStore.set("linkedin_id_token", tokenData.id_token, {
       path: "/",
       sameSite: "Lax",
     });
 
-    const redirectParams = cookies().get("redirect_params") || "";
+    const redirectParams = cookieStore.get("redirect_params") || "";
     if(!redirectParams){
       return Response.redirect(new URL(`/component/post_manage/list_post_user`, req.url), 302);
     }

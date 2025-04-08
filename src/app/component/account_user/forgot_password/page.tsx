@@ -75,11 +75,13 @@ function ForgotPassword(){
             .then((res) => res.json())
             .then((res) => {
                 if(res.message){
-                    setIsClickForgotPassword(true);
                     setCode("");
                     fetch("/api/send_otp",{
                         method: "POST",
                         body: JSON.stringify({email})
+                    })
+                    .then(()=>{
+                        setIsClickForgotPassword(true);
                     });
                 }
                 else if(res.error){

@@ -35,12 +35,12 @@ export async function GET(req) {
       const tokenData = await tokenResponse.json();
       console.log("TOKEN DATA: ",tokenData);
 
-      cookieStore().set("mastodon_token", tokenData.access_token, {
+      cookieStore.set("mastodon_token", tokenData.access_token, {
         path: "/",
         sameSite: "Lax",
       });
 
-      const redirectParams = cookieStore().get("redirect_params") || "";
+      const redirectParams = cookieStore.get("redirect_params") || "";
 
       if(!redirectParams){
         return Response.redirect(new URL(`/component/post_manage/list_post_user`, req.url), 302);
