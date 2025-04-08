@@ -41,7 +41,13 @@
         "dashboard": "Trang Tổng Quan",
         "post_management": "Quản lý bài đăng",
         "create_content": "Tạo Nội Dung",
-        "credits": "Kiểm tra số thẻ"
+        "credits": "Kiểm tra số thẻ",
+        "error_http": "Lỗi HTTP",
+        "error_get_user": "Lỗi lấy thông tin người dùng!",
+        "invalid_json": "Phản hồi JSON không hợp lệ!",
+        "logout_success": "Đăng xuất thành công!",
+        "logout_fail": "Đăng xuất không thành công!",
+        "error_signout": "Lỗi đăng xuất!"
     },
     "register": {
         "label_name": "Họ tên",

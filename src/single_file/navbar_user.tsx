@@ -39,23 +39,22 @@ function NavbarUser(){
             })
             .then(async (res) => {
                 if (!res) {
-                    throw new Error(`Lỗi HTTP: ${res}`);
+                    throw new Error(`t("error_http") ${res}`);
                 }
                 const contentType = res.headers.get("content-type");
                 if (!contentType || !contentType.includes("application/json")) {
-                    throw new Error("Phản hồi không phải JSON hợp lệ");
+                    throw new Error(t('invalid_json'));
                 }
                 return res.json();
             })
             .then((data) => {
                 if (data.user) {
-                    console.log("Data: ",data.user);
                     setUser(data.user.name);
                     setRoleUser(data.user.role);
                     setAvtUser(data.user.avatar);
                 }
             })
-            .catch((error) => console.error("Lỗi lấy thông tin user:", error));
+            .catch((error) => console.error(t('error_get_user'), error));
         }
       }, []);
 
@@ -76,14 +75,13 @@ function NavbarUser(){
                 Cookies.remove("redirect_params");
                 await signOut({ redirect: false });
                 router.push("/component/account_user/login_user");
-                // const sessionLogout = await getSession();
-                toast.success("Đăng xuất thành công!");
+                toast.success(t("logout_success"));
             } else {
-                toast.error("Đăng xuất thất bại!");
+                toast.error(t("logout_fail"));
             }
         } catch (error) {
-            console.error("Lỗi khi đăng xuất:", error);
-            toast.error("Có lỗi xảy ra!");
+            console.error(error);
+            toast.error(t("error_signout"));
         }
     }
 

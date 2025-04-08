@@ -40,12 +40,27 @@ function EditProfilePage() {
         }
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
-            const imageUrl = URL.createObjectURL(file);
-            setAvatar(imageUrl);
-            console.log("IMG CLODU: ",avatar);
+            const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
+            const uploadPreset = "demo-upload";
+            const form = new FormData();
+            form.append("file", file);
+            form.append("upload_preset", uploadPreset);
+
+            const response = await fetch(cloudinaryUrl, {
+                method: "POST",
+                body: form,
+            });
+
+            const data = await response.json();
+            if (data.secure_url) {
+                setAvatar(data.secure_url);
+            } else {
+                toast.error(t("error_upload_img"));
+                return;
+            }
         }
     };
 
@@ -69,30 +84,6 @@ function EditProfilePage() {
     },[auth?.user]);
 
     const handleSubmitSave = async () => {
-        let uploadedImageUrl = avatar;
-    
-        if (fileInputRef.current?.files?.length) {
-            const file = fileInputRef.current.files[0];
-            const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
-            const uploadPreset = "demo-upload";
-            const form = new FormData();
-            form.append("file", file);
-            form.append("upload_preset", uploadPreset);
-
-            const response = await fetch(cloudinaryUrl, {
-                method: "POST",
-                body: form,
-            });
-
-            const data = await response.json();
-            if (data.secure_url) {
-                uploadedImageUrl = data.secure_url;
-                setAvatar(uploadedImageUrl);
-            } else {
-                toast.error(t("error_upload_img"));
-                return;
-            }
-        }
 
         if (!inputName || !inputEmail) {
             toast.error(t("enter_full"));
@@ -102,7 +93,7 @@ function EditProfilePage() {
             toast.error(t("invalid_email"));
             return;
         }
-        else if(inputEmail === auth.user.email && inputName === auth.user.name && uploadedImageUrl === auth.user.avatar){
+        else if(inputEmail === auth.user.email && inputName === auth.user.name && avatar === auth.user.avatar){
             toast.error(t("no_inf_change"));
             return;
         }

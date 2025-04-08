@@ -41,7 +41,13 @@
         "dashboard": "Dashboard",
         "post_management": "Post management",
         "create_content": "Generate Content",
-        "credits": "Check Credits"
+        "credits": "Check Credits",
+        "error_http": "Error HTTP",
+        "error_get_user": "Error getting user information!",
+        "invalid_json": "Invalid JSON response!",
+        "logout_success": "Logout successful!",
+        "logout_fail": "Logout failed!",
+        "error_signout": "Error signing out!"
     },
     "register": {
         "label_name": "Name",
