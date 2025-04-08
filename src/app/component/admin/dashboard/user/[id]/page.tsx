@@ -11,7 +11,8 @@ type PageProps = Promise<{
 
 const getUserDetail = async (id: string) => {
   try {
-    const res = await fetch(`/api/manage_account/user/${id}`, {
+    const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+    const res = await fetch(`${BASE_URL}/api/manage_account/user/${id}`, {
       method: "GET",
       headers: { "Accept": "application/json" },
       cache: "no-store" ,
