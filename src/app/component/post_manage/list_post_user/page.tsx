@@ -121,7 +121,7 @@ function ListPostUser() {
                 return;
             }
 
-            const response = await fetch("http://localhost:3000/api/post_manage/list_post_user", {
+            const response = await fetch("/api/post_manage/list_post_user", {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -140,7 +140,7 @@ function ListPostUser() {
             if (data.posts_mastodon.length > 0) {
                 for (const post of data.posts_mastodon) {
                     try {
-                        const detailResponse = await fetch(`http://localhost:3000/api/mastodon/${post.id}`, {
+                        const detailResponse = await fetch(`/api/mastodon/${post.id}`, {
                             method: "GET"
                         });
 
@@ -184,7 +184,7 @@ function ListPostUser() {
                 return;
             }
 
-            const response = await fetch("http://localhost:3000/api/post_manage/list_post_user", {
+            const response = await fetch("/api/post_manage/list_post_user", {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -215,7 +215,7 @@ function ListPostUser() {
         if (window.confirm(t("confirm_delete"))) {
             try {
                 if(isClickMastodon === true){
-                    const response = await fetch(`http://localhost:3000/api/mastodon/${id}`, {
+                    const response = await fetch(`/api/mastodon/${id}`, {
                         method: "DELETE"
                     });
     
@@ -228,7 +228,7 @@ function ListPostUser() {
                     window.location.reload();
                 }
                 else{
-                    const response = await fetch(`http://localhost:3000/api/post_linkedin/${id}`, {
+                    const response = await fetch(`/api/post_linkedin/${id}`, {
                         method: "DELETE"
                     });
     
@@ -319,7 +319,7 @@ function ListPostUser() {
         formData.append("image", uploadedImageUrl);
         formData.append("content", updateContent);
         try {
-            const response = await fetch(`http://localhost:3000/api/mastodon/${id}`, {
+            const response = await fetch(`/api/mastodon/${id}`, {
                 method: "PUT",
                 body: formData
             });

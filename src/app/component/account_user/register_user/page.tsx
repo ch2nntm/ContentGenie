@@ -47,12 +47,12 @@ function Register() {
                 return;
             } 
         }
-        const responseEmail = await fetch(`http://localhost:3000/api/manage_account/add_new_user?email=${email}`,{
+        const responseEmail = await fetch(`/api/manage_account/add_new_user?email=${email}`,{
             method: "GET"
         });
         
         if(responseEmail.ok){
-            fetch("http://localhost:3000/api/send_otp",{
+            fetch("/api/send_otp",{
                 method: "POST",
                 body: JSON.stringify({email})
             });
@@ -70,7 +70,7 @@ function Register() {
     }
 
     const sendCode = async () => {
-        const responseNoti = await fetch("http://localhost:3000/api/verify_otp",{
+        const responseNoti = await fetch("/api/verify_otp",{
             method: "POST",
             body: JSON.stringify({email, otp: enterCode, password, message1, message2, checkOnly: false})
         })

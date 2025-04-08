@@ -39,7 +39,7 @@ function ForgotPassword(){
             toast.error(t("code_not_full"));
             return;
         }
-        const response = await fetch("http://localhost:3000/api/verify_otp",{
+        const response = await fetch("/api/verify_otp",{
             method: "POST",
             body: JSON.stringify({email, otp: code, password: "check", message1: t("message1"), message2: t("message2"), checkOnly: true})
         })
@@ -51,7 +51,7 @@ function ForgotPassword(){
     }
 
     const handleResendCode = () => {
-        fetch("http://localhost:3000/api/send_otp",{
+        fetch("/api/send_otp",{
             method: "POST",
             body: JSON.stringify({email})
         });
@@ -77,7 +77,7 @@ function ForgotPassword(){
                 if(res.message){
                     setIsClickForgotPassword(true);
                     setCode("");
-                    fetch("http://localhost:3000/api/send_otp",{
+                    fetch("/api/send_otp",{
                         method: "POST",
                         body: JSON.stringify({email})
                     });
@@ -118,7 +118,7 @@ function ForgotPassword(){
                 .then((res) => {
                     if(res.message){
                         console.log("res: ", res);
-                        fetch("http://localhost:3000/api/verify_otp",{
+                        fetch("/api/verify_otp",{
                             method: "PUT",
                             body: JSON.stringify({oldEmail: "Check", newEmail: email, password, message1: t("message1"), message2: t("message2")})
                         })

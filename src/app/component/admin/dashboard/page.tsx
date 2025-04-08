@@ -70,12 +70,12 @@ export default function DashBoard() {
     const t = useTranslations("dashboard");
 
     const { data: users = [] } = useSWR(
-        ["http://localhost:3000/api/manage_account/user", "users", searchQuery],
+        ["/api/manage_account/user", "users", searchQuery],
         fetcher
     );
 
     const { data: posts = []} = useSWR(
-        ["http://localhost:3000/api/manage_account/list_post", "posts", searchQuery],
+        ["/api/manage_account/list_post", "posts", searchQuery],
         fetcher,
     );
 

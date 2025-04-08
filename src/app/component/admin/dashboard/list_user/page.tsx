@@ -33,7 +33,7 @@ function ListUserDashboard() {
             if (!token) return;
             setLoading(true);
             try{
-                const response = await fetch("http://localhost:3000/api/manage_account/user",{
+                const response = await fetch("/api/manage_account/user",{
                     method: "GET",
                     headers:{
                         "Authorization": `Bearer: ${token}`

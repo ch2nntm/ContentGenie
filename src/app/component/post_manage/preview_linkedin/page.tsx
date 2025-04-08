@@ -207,7 +207,7 @@ function PreviewPage() {
         try {
             const linkedin_id_token = Cookies.get("linkedin_id_token");
             const linkedin_access_token = Cookies.get("linkedin_access_token");
-            const responseGetInfo = await fetch("http://localhost:3000/api/linkedin",{
+            const responseGetInfo = await fetch("/api/linkedin",{
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${linkedin_id_token}`,
@@ -216,7 +216,7 @@ function PreviewPage() {
             const dataresponseGetInfo = await responseGetInfo.json();
             console.log("dataresponseGetInfo: ",dataresponseGetInfo);
 
-            const linkedinRes = await fetch("http://localhost:3000/api/post_linkedin", {
+            const linkedinRes = await fetch("/api/post_linkedin", {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${linkedin_access_token}`,

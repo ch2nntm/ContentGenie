@@ -133,7 +133,7 @@ function EditProfilePage() {
                 if (data.accessToken) {
                     Cookies.set("token", data.accessToken, { expires: 1 });
                 }
-                fetch("http://localhost:3000/api/verify_otp",{
+                fetch("/api/verify_otp",{
                     method: "PUT",
                     body: JSON.stringify({oldEmail: auth.user.email, newEmail: inputEmail, username: auth?.user.username, password, message1, message2})
                 })
@@ -147,7 +147,7 @@ function EditProfilePage() {
             .catch((error) => console.error(t("error_update"), error));
         }
         else{
-            fetch("http://localhost:3000/api/send_otp",{
+            fetch("/api/send_otp",{
                 method: "POST",
                 body: JSON.stringify({email: inputEmail})
             })
@@ -161,7 +161,7 @@ function EditProfilePage() {
     }
 
     const handleVerify = async() => {
-        const responseVerify = await fetch("http://localhost:3000/api/verify_otp",{
+        const responseVerify = await fetch("/api/verify_otp",{
             method: "POST",
             body: JSON.stringify({email: inputEmail, otp: enterCode, username: auth?.user.username, password, message1, message2})
         })
@@ -193,7 +193,7 @@ function EditProfilePage() {
             if (data.accessToken) {
                 Cookies.set("token", data.accessToken, { expires: 1 });
             }
-            fetch("http://localhost:3000/api/verify_otp",{
+            fetch("/api/verify_otp",{
                 method: "PUT",
                 body: JSON.stringify({oldEmail: auth.user.email, newEmail: inputEmail, username: auth?.user.username, password, message1, message2})
             })

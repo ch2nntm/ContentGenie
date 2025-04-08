@@ -45,7 +45,7 @@ export default function UpgradePro() {
                         if (data.user) {
                             setUserId(data.user.id);
                             if(code){
-                                fetch("http://localhost:3000/api/manage_account/check_credit",{
+                                fetch("/api/manage_account/check_credit",{
                                   method: "PUT",
                                   headers:{
                                       "Authorization": `Bearer ${token}`
@@ -60,7 +60,7 @@ export default function UpgradePro() {
                                     toast.success("Upgrade pro success");
                                 })
                             }
-                            fetch("http://localhost:3000/api/manage_account/check_credit",{
+                            fetch("/api/manage_account/check_credit",{
                                 method: "POST",
                                 headers:{
                                     "Authorization": `Bearer ${token}`
@@ -103,8 +103,8 @@ export default function UpgradePro() {
                     amount: 1, 
                     orderCode: 39,
                     description: "Upgrade pro",
-                    cancelUrl: "http://localhost:3000/component/upgrade",
-                    returnUrl: "http://localhost:3000/component/upgrade"
+                    cancelUrl: "/component/upgrade",
+                    returnUrl: "/component/upgrade"
                 })
             });
         

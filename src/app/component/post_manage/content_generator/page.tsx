@@ -86,7 +86,7 @@ function ContentGeneratorPage() {
             const token = Cookies.get("token");
             if(!token)
                 return;
-            const responseQuantity = await fetch("http://localhost:3000/api/manage_account/check_credit",{
+            const responseQuantity = await fetch("/api/manage_account/check_credit",{
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${token}`,

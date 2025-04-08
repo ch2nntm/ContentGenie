@@ -17,7 +17,7 @@ type PageProps = Promise<{
 
 const getPostDetail = async (post_id: string) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/manage_account/list_post/${post_id}`, {
+    const res = await fetch(`/api/manage_account/list_post/${post_id}`, {
       method: "GET",
       headers: { "Accept": "application/json" },
       cache: "no-store",
@@ -72,7 +72,7 @@ export default async function ViewUserDetail(props : { params: PageProps }) {
     <div className={styles.container}>
       <NavbarComponent/>
       {/* <button onClick={handleBack}><ArrowBackIosNewIcon className={styles.arrowback}/></button> */}
-      <Link href="http://localhost:3000/component/admin/dashboard"><ArrowBackIosNewIcon className={styles.arrowback}/></Link>
+      <Link href="/component/admin/dashboard"><ArrowBackIosNewIcon className={styles.arrowback}/></Link>
       <div className={styles.inf_post_container}>
         <div className={styles.title}>
           {detailPost.platform === "Mastodon" && <img className={styles.icon_platform} src="/icon_mastodon.png"/>}

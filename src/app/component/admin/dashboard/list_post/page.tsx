@@ -41,7 +41,7 @@ function ListPostDashboard() {
 
             console.log(selectedYear+" - "+selectedMonth+" - "+selectedWeek);
             try {
-                const res = await fetch("http://localhost:3000/api/manage_account/list_post", {
+                const res = await fetch("/api/manage_account/list_post", {
                     method: "POST",
                     headers: {
                         Authorization: `Bearer ${token}`,

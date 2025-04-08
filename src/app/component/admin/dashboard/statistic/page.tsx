@@ -41,7 +41,7 @@ function Statistic() {
             if(!token){
                 console.error("Missing token");
             }
-            const response = await fetch("http://localhost:3000/api/admin/statistic",{
+            const response = await fetch("/api/admin/statistic",{
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`
