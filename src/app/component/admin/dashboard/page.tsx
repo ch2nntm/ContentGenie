@@ -11,6 +11,7 @@ import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Cookies from "js-cookie";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 
 interface account {
     id: number;
@@ -30,63 +31,91 @@ interface post{
     platform: string;
 }
 
-const fetcher = async ([url, type]: [string, string]) => {
+// const fetcher = async ([url, type]: [string, string]) => {
+//     const token = Cookies.get("token");
+//     if (!token) return [];
+
+//     const res = await fetch(url, {
+//         method: "GET",
+//         headers: {
+//             Authorization: `Bearer ${token}`,
+//         }
+//     });
+
+//     if (!res.ok) return [];
+//     return (await res.json())?.[type] || [];
+// };
+
+const fetcher = async ([url, type, searchQuery]: [string, string, string | null]) => {
     const token = Cookies.get("token");
-  if (!token) return [];
+    if (!token) return [];
 
-  const res = await fetch(url, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+    const queryParam = searchQuery ? `?searchQuery=${encodeURIComponent(searchQuery)}` : "";
+    
+    const res = await fetch(`${url}${queryParam}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+    });
 
-  if (!res.ok) return [];
-  return (await res.json())?.[type] || [];
+    if (!res.ok) return [];
+    return (await res.json())?.[type] || [];
 };
 
+
 export default function DashBoard() {
-  const { data: users = []} = useSWR(
-    ["http://localhost:3000/api/manage_account/user", "users"],
-    fetcher,
-  );
+    const searchParams = useSearchParams();
+    const searchQuery = searchParams.get("searchQuery") || "";
+    const t = useTranslations("dashboard");
 
-  const { data: posts = []} = useSWR(
-    ["http://localhost:3000/api/manage_account/list_post", "posts"],
-    fetcher,
-  );
+    const { data: users = [] } = useSWR(
+        ["http://localhost:3000/api/manage_account/user", "users", searchQuery],
+        fetcher
+    );
 
-  const t = useTranslations("dashboard");
+    const { data: posts = []} = useSWR(
+        ["http://localhost:3000/api/manage_account/list_post", "posts", searchQuery],
+        fetcher,
+    );
+
+  
+
+  console.log("searchQueryerre: ",searchQuery);
+
+  const token = Cookies.get("token");
+  if (!token) return [];
+
 
   return (
     <div className={styles.container}>
-            <NavbarUser />
+            <NavbarUser/>
             <div className={styles.content}>
                 <div className={styles.sidebar}>
-                    <div className={styles.dashboard}>
+                    <Link href="/component/admin/dashboard" className={styles.dashboard}>
                         <div className={styles.icon_dashboard}>
                             <SearchIcon></SearchIcon>
                         </div>
                         <p className={styles.text_dashboard}>{t("sidebar_dashboard")}</p>
-                    </div>
-                    <div className={styles.users}>
+                    </Link>
+                    <Link href="/component/admin/dashboard/list_user" className={styles.users}>
                         <div className={styles.icon_users}>
                             <PeopleAltIcon></PeopleAltIcon>
                         </div>
                         <p className={styles.text_users}>{t("sidebar_users")}</p>
-                    </div>
-                    <div className={styles.posts}>
+                    </Link>
+                    <Link href="/component/admin/dashboard/list_post" className={styles.posts}>
                         <div className={styles.icon_posts}>
                             <MarkAsUnreadIcon></MarkAsUnreadIcon>
                         </div>
                         <p className={styles.text_posts}>{t("sidebar_posts")}</p>
-                    </div>
-                    <div className={styles.analytics}>
+                    </Link>
+                    <Link href="/component/admin/dashboard/statistic" className={styles.analytics}>
                         <div className={styles.icon_analytics}>
                             <TrendingUpIcon></TrendingUpIcon>
                         </div>
                         <p className={styles.text_analytics}>{t("sidebar_analytics")}</p>
-                    </div>
+                    </Link>
                     <div className={styles.settings}>
                         <div className={styles.icon_settings}>
                             <SettingsIcon></SettingsIcon>
@@ -97,10 +126,7 @@ export default function DashBoard() {
                 <div className={styles.section}>
                     <div className={styles.user_management}>
                         <div className={styles.content_user_management}>
-                            {/* <Link href="/component/admin/new_user" className={styles.btn_add_new}>
-                                {t("section_add_new_user")}
-                            </Link> */}
-                            <p className={styles.text_user_management}>{t("section_user_management")}</p>
+                            <Link href="/component/admin/dashboard/list_user" className={styles.text_user_management}>{t("section_user_management")}</Link>
                             <div className={styles.item_user_management}>
                                 {users.length > 0 ? (
                                     users.map((item: account) => (
@@ -122,14 +148,11 @@ export default function DashBoard() {
                     </div>
                     <div className={styles.user_management}>
                         <div className={styles.content_user_management}>
-                            {/* <Link href="/component/admin/new_user" className={styles.btn_add_new}>
-                                {t("section_add_new_post")}
-                            </Link> */}
-                            <p className={styles.text_user_management}>{t("section_list_post")}</p>
-                            <div className={styles.item_user_management}>
+                            <Link href="/component/admin/dashboard/list_post" className={styles.text_post_management}>{t("section_list_post")}</Link>
+                            <div className={styles.item_post_management}>
                                 {posts.length > 0 ? (
                                     posts.map((item: post) => (
-                                        <div key={item.post_id} className={styles.item_user}>
+                                        <div key={item.post_id} className={styles.item_post}>
                                             <Link href={`/component/admin/dashboard/post/${item.post_id}`} className={styles.item_user}>
                                                 <div className={styles.inf_user}>
                                                     <div className={styles.avt_user_container}>
@@ -149,7 +172,7 @@ export default function DashBoard() {
                                         </div>
                                     ))
                                 ) : (
-                                    <p>{t("section_no_user")}</p>
+                                    <p>{t("section_no_post")}</p>
                                 )}
                             </div>
                         </div>

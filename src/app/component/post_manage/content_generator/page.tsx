@@ -83,8 +83,14 @@ function ContentGeneratorPage() {
             toast.error(t("noti_error"));
             return;
         }else{
+            const token = Cookies.get("token");
+            if(!token)
+                return;
             const responseQuantity = await fetch("http://localhost:3000/api/manage_account/check_credit",{
                 method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
                 body: JSON.stringify({id: auth?.user.id})
             })
             const dataQuantity = await responseQuantity.json();

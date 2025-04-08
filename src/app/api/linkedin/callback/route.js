@@ -2,6 +2,7 @@ import  {cookies} from "next/headers";
 export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const code = searchParams.get("code");
+    const cookieStore = await cookies();
   
     if (!code) {
       return new Response(JSON.stringify({ error: "Missing authorization code" }), { status: 400 });
@@ -36,22 +37,23 @@ export async function GET(req) {
   
       const tokenData = await tokenResponse.json();
       console.log("TOKEN DATA: ",tokenData);
-
-    cookies().set("linkedin_access_token", tokenData.access_token, {
-        path: "/",
-        sameSite: "Lax",
+      
+    cookieStore().set("linkedin_access_token", tokenData.access_token, {
+      path: "/",
+      sameSite: "Lax",
     });
 
-    cookies().set("linkedin_id_token", tokenData.id_token, {
-        path: "/",
-        sameSite: "Lax",
+    cookieStore().set("linkedin_id_token", tokenData.id_token, {
+      path: "/",
+      sameSite: "Lax",
     });
 
     const redirectParams = cookies().get("redirect_params") || "";
+    if(!redirectParams){
+      return Response.redirect(new URL(`/component/post_manage/list_post_user`, req.url), 302);
+    }
 
-    console.log("redirectParams: ",redirectParams.value);
     return Response.redirect(new URL(`/component/post_manage/preview_linkedin?${redirectParams.value}`, req.url), 302);
-  
     } catch (error) {
       console.error("Error exchanging token:", error);
       return new Response(JSON.stringify({ error: "Internal Server Error: "+error }), { status: 500 });

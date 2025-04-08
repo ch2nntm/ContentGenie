@@ -31,14 +31,19 @@ export async function GET(req) {
         console.log("ID: ",userId);
 
         const connection = await mysql.createConnection(dbConfig);
-        const [rows] = await connection.execute(
-            "SELECT CAST(id AS CHAR) AS id, title, content, image, platform, posttime, status, user_id, audience FROM post WHERE user_id = ?", 
+        const [rows_mastodon] = await connection.execute(
+            "SELECT CAST(id AS CHAR) AS id, title, content, image, platform, posttime, status, user_id, audience FROM post WHERE user_id = ? AND platform = 'Mastodon'", 
+            [userId]
+        );
+
+        const [rows_linkedin] = await connection.execute(
+            "SELECT CAST(id AS CHAR) AS id, title, content, image, platform, posttime, status, user_id, audience FROM post WHERE user_id = ? AND platform = 'Linkedin'", 
             [userId]
         );
 
         await connection.end(); 
 
-        return NextResponse.json({ message: "Get list post of user successfully", posts: rows}, { status: 200 });
+        return NextResponse.json({ message: "Get list post of user successfully", posts_mastodon: rows_mastodon, posts_linkedin: rows_linkedin}, { status: 200 });
     } catch (error) {
         console.error("Error:", error);
         return NextResponse.json({ message: "Invalid token or server error" }, { status: 401 });

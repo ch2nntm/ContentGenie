@@ -1,0 +1,104 @@
+.content{
+    display: flex;
+}
+
+.sidebar{
+    margin-top: 80px;
+    width: 250px;
+    height: 624px;
+    background-color: #f7f7f7;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    padding-left: 16px;
+    padding-top: 16px;
+}
+
+.dashboard,
+.users,
+.posts,
+.analytics,
+.settings{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 20px;
+    color: #000;
+    text-decoration: none;
+}
+
+.dashboard{
+    margin-top: 10px;
+}
+
+.analytics{
+    position: relative;
+}
+
+.analytics::after{
+    position: absolute;
+    content: "";
+    border: 1px solid rgb(223, 223, 223);
+    width: 58px;
+    top: 20px;
+    left: 33px;
+}
+
+.users,
+.posts,
+.analytics,
+.settings{
+    margin-top: 18px;
+}
+
+.icon_dashboard,
+.icon_users,
+.icon_posts,
+.icon_analytics,
+.icon_settings{
+    position: relative;
+    width: 20px;
+    height: 20px;
+    color: #000;
+}
+
+.text_dashboard,
+.text_users,
+.text_posts,
+.text_analytics,
+.text_settings{
+    color: #030303;
+    font-size: 16px;
+    font-family: "Open Sans";
+    line-height: 19px;
+}
+
+.section{
+    margin: 50px;
+    margin-top: 80px;
+}
+
+.title_page{
+    font-size: 34px;
+    font-weight: 700;
+}
+
+.select_time{
+    width: 80px;
+    height: 30px;
+    margin-left: 10px;
+}
+
+.statistic{
+    position: relative;
+    width: 1000px;
+}
+
+.btn_export{
+    cursor: pointer;
+    float: right;
+    border: none;
+    padding: 5px 10px;
+    background-color: #43adea;
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: 2px 4px 4px 0 #69b6e2ba;
+}

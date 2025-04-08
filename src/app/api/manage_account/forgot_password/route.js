@@ -48,6 +48,18 @@ export async function PUT(req) {
         }
 
         const connection = await mysql.createConnection(dbConfig);
+
+        const [resultExist] = await connection.execute(
+            "SELECT password FROM account WHERE email = ?",
+            [email]
+        )
+        console.log("resultExist:",resultExist);
+
+        if(resultExist.affectedRows !== 0 && resultExist[0].password === password){
+            console.log("resultExist:",resultExist);
+            return NextResponse.json({ error: "Mat khau cu trung voi mat khau moi", status: 202 }, { status: 202 });;
+        }
+
         const [result] = await connection.execute(
             "UPDATE account SET password = ? WHERE email = ?",
             [password, email]

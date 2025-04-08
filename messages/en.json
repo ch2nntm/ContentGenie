@@ -40,7 +40,8 @@
         "input_search": "Search...",
         "dashboard": "Dashboard",
         "post_management": "Post management",
-        "create_content": "Generate Content"
+        "create_content": "Generate Content",
+        "credits": "Check Credits"
     },
     "register": {
         "label_name": "Name",
@@ -107,7 +108,7 @@
         "sidebar_dashboard": "Dashboard",
         "sidebar_users": "Users",
         "sidebar_posts": "Posts",
-        "sidebar_analytics": "Analytics",
+        "sidebar_analytics": "Statistics",
         "sidebar_settings": "Settings",
         "section_user_management": "User Management",
         "section_add_new_user": "Add New User",
@@ -115,6 +116,7 @@
         "section_add_new_post": "Add New Post",
         "section_view": "View",
         "section_no_user": "No users found",
+        "section_no_post": "No posts found",
         "section_delete": "Delete",
         "delete_success":"User deleted successfully: ",
         "delete_fail": "User deleted failed!",
@@ -176,7 +178,15 @@
         "confirm_password": "Confirm Password",
         "change_success": "Change password successful!",
         "message1": "Change password successful with email: ",
-        "message2": " and new password: "
+        "message2": " and new password: ",
+        "title_code": "Code",
+        "code": "Code",
+        "send_code": "Send Code",
+        "code_not_full": "Please enter field code!",
+        "error_code": "Code is incorrect!",
+        "resend_code": "Resend code",
+        "resend_code_again": "Code sent again",
+        "password_match": "New password matches old password!"
     },
     "list_post_user":{
         "title_page": "List Post",
@@ -203,7 +213,8 @@
         "error_delete": "Error delete post:",
         "cancel_delete": "Canceled delete!",
         "export_pdf": "Export PDF",
-        "miss_token_mastondon": "Not logged in Mastodon"
+        "miss_token_mastondon": "Not logged in Mastodon",
+        "miss_token_linkedin": "Not logged in LinkedIn"
     },
     "new_user":{
         "btn_add_new": "Add New User",
@@ -249,7 +260,49 @@
         "email":"Email: ",
         "quantity_credits": "Number of remaining cards: ",
         "quantity_post": "Total number of posts: "
+    },
+    "list_post_dashboard": {
+        "sidebar_dashboard": "Dashboard",
+        "sidebar_users": "Users",
+        "sidebar_posts": "Posts",
+        "sidebar_analytics": "Statistics",
+        "sidebar_settings": "Settings",
+        "section_no_post":"No posts found"
+    },
+    "list_user_dashboard":{
+        "sidebar_dashboard": "Dashboard",
+        "sidebar_users": "Users",
+        "sidebar_posts": "Posts",
+        "sidebar_analytics": "Statistics",
+        "sidebar_settings": "Settings",
+        "section_no_user":"No users found"
+    },
+    "statistics": {
+        "sidebar_dashboard": "Dashboard",
+        "sidebar_users": "Users",
+        "sidebar_posts": "Posts",
+        "sidebar_analytics": "Statistics",
+        "sidebar_settings": "Settings",
+        "title_page": "STATISTICS",
+        "label_year": "Year:",
+        "title_statistic": "Number of posts and credits per year",
+        "label_post": "Posts",
+        "label_credit": "Credits",
+        "month": "Month",
+        "export_pdf": "Export PDF"
+    },
+    "upgrade": {
+        "text_credits": "Your remaining cards: ",
+        "title_page": "Upgrade to Pro",
+        "subtitle_page": "Unlock the full power of the app",
+        "check_1": "Full feature experience.",
+        "check_2": "Increase work efficiency.",
+        "check_3": "24/7 priority support.",
+        "title1_footer": "Just with ",
+        "title2_footer": " every time you register",
+        "subtitle_footer": "Get 20 feature cards now!",
+        "btn_upgrade1": "Upgrade to",
+        "btn_upgrade2": "PRO"
     }
-    
 }
 

@@ -50,6 +50,7 @@
 
 
 .input_search{
+    position: relative;
     margin-top: 17px;
     width: 400px;
     height: 38px;
@@ -66,6 +67,20 @@
 }
 
 .input_search_hide{
+    display: none;
+}
+
+.btn_search{
+    cursor: pointer;
+    position: absolute;
+    background-color: transparent;
+    border: none;
+    margin-left: -40px;
+    padding-top: 5px;
+    margin-top: 17px;
+}
+
+.btn_search_hide{
     display: none;
 }
 
@@ -130,7 +145,7 @@
     background-color: #ffffff;
     border-radius: 5px;
     width: 200px;
-    height: 200px;
+    height: 220px;
     margin-top: 270px;
     margin-left: 10px;
     padding-top: 10px;
@@ -187,8 +202,8 @@
     background-color: dodgerblue;
     color: #ffffff;
     height: 35px;
-    margin-top: 30px;
-    margin-left: 100px;
+    margin-top: 50px;
+    margin-left: 80px;
 }
 
 .icon_signout{

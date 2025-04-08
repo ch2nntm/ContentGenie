@@ -110,7 +110,6 @@ let isScheduled = false;
 
 export async function GET() {
     try {
-        // const token_mastodon = cookies().get("mastodon_token")?.value;
         const cookieStore = await cookies();
         const token_mastodon = cookieStore.get("mastodon_token")?.value;
         if (!token_mastodon) {
@@ -123,8 +122,6 @@ export async function GET() {
                 console.log("Chạy cron job...");
 
                 const connect = await mysql.createConnection(dbConfig);
-                // const currentTime = new Date().toISOString().slice(0, 19).replace("T", " ");
-                // console.log("CurrentTime: ",currentTime);
                 const currentTime =  new Date().toLocaleString("en-CA", { 
                     timeZone: "Asia/Ho_Chi_Minh", 
                     hour12: false 

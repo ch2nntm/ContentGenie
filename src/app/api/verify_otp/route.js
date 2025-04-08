@@ -23,13 +23,20 @@ const sendEmail = async (email, password, message1, message2) => {
 
 export async function POST(req) {
     try {
-        const { email, otp, password, message1, message2 } = await req.json();
-        if (!email || !otp || !password) return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+        const { email, otp, password, message1, message2, checkOnly } = await req.json();
+        if (!email || !otp) return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+
+        if(checkOnly === false && !password)
+            return NextResponse.json({ error: "Missing password" }, { status: 400 });
 
         const storedOTP = await redis.get(`otp:${email}`);
 
         if (!storedOTP) return NextResponse.json({ error: "OTP expired or invalid" }, { status: 400 });
         if (storedOTP !== otp) return NextResponse.json({ error: "Invalid OTP" }, { status: 400 });
+
+        if (checkOnly) {
+            return NextResponse.json({ message: "OTP is valid" }, { status: 200 });
+        }
 
         await sendEmail(email, password, message1, message2);
 

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import jwt from 'jsonwebtoken';
 
-//Lấy token
 export async function POST() {
   const CLIENT_ID="8660xy4jt5qye8";
   const CLIENT_SECRET = "WPL_AP1.zXKedn8X5A1jLaA4.9+fuLA==";
@@ -41,7 +40,6 @@ export async function POST() {
 }
 
 
-//Giải mã token
 export async function GET(req) {
   try {
     const authHeader = req.headers.get("authorization"); 

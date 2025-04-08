@@ -26,11 +26,12 @@ const dbConfig = {
 
     try {
         const connection = await mysql.createConnection(dbConfig);
-    
+
         const [rows] = await connection.execute(
-          "SELECT * FROM account WHERE id = ?",
+          "SELECT ac.*, count(*) as count_post FROM account ac LEFT JOIN post ps ON ac.id = ps.user_id WHERE ac.id = ?",
           [id]
         );
+
         await connection.end();
     
         if (rows.length === 0) {
@@ -39,7 +40,7 @@ const dbConfig = {
           });
         }
     
-        return new Response(JSON.stringify(rows[0]), { status: 200 });
+        return NextResponse.json(rows, { status: 200 });
       } catch (error) {
         console.error(error);
         return new Response(

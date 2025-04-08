@@ -51,6 +51,7 @@ function ListPostUser() {
     const [updateContent, setUpdateContent] = useState("");
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [image, setImage] = useState("");
+    const [isClickMastodon, setIsClickMastodon] = useState(true);
 
     const slidesRef = useRef<{ [key: number]: HTMLElement | null }>({});
     const handleGeneratePdf = (postId: number) => {
@@ -98,7 +99,13 @@ function ListPostUser() {
     }
 
     useEffect(() => {
-        async function fetchData() {
+        if(isClickMastodon===true)
+            handlePostMastodon();
+    }, [image]);
+
+    const handlePostMastodon = async() => {
+        setIsClickMastodon(true);
+        try {
             const token = Cookies.get("token");
             if (!token) {
                 setPosts([]);
@@ -113,55 +120,91 @@ function ListPostUser() {
                 window.location.href = "/api/mastodon/auth";  
                 return;
             }
-    
-            try {
-                const response = await fetch("http://localhost:3000/api/post_manage/list_post_user", {
-                    method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-    
-                if (!response.ok) {
-                    throw new Error(`t("error_http") ${response.status}`);
-                }
-    
-                const data = await response.json();
-                const sortedPosts = data.posts.sort((a: { posttime: string | number | Date; }, b: { posttime: string | number | Date; }
-                                    ) => new Date(b.posttime).getTime() - new Date(a.posttime).getTime());
-                setPosts(sortedPosts);
-    
-                if (data.posts.length > 0) {
-                    for (const post of data.posts) {
-                        try {
-                            const detailResponse = await fetch(`http://localhost:3000/api/mastodon/${post.id}`, {
-                                method: "GET"
-                            });
-    
-                            if (!detailResponse.ok) {
-                                throw new Error(`${detailResponse.status}`);
-                            }
-    
-                            const detailData = await detailResponse.json();
-    
-                            setLikes(prevLikes => ({
-                                ...prevLikes,
-                                [post.id]: detailData.data.favourites_count ?? 0 
-                            }));
-                        } catch (error) {
-                            console.error(t("error_fetch"), error);
+
+            const response = await fetch("http://localhost:3000/api/post_manage/list_post_user", {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`t("error_http") ${response.status}`);
+            }
+
+            const data = await response.json();
+            const sortedPosts = data.posts_mastodon.sort((a: { posttime: string | number | Date; }, b: { posttime: string | number | Date; }
+                                ) => new Date(b.posttime).getTime() - new Date(a.posttime).getTime());
+            setPosts(sortedPosts);
+
+            if (data.posts_mastodon.length > 0) {
+                for (const post of data.posts_mastodon) {
+                    try {
+                        const detailResponse = await fetch(`http://localhost:3000/api/mastodon/${post.id}`, {
+                            method: "GET"
+                        });
+
+                        if (!detailResponse.ok) {
+                            throw new Error(`${detailResponse.status}`);
                         }
+
+                        const detailData = await detailResponse.json();
+
+                        setLikes(prevLikes => ({
+                            ...prevLikes,
+                            [post.id]: detailData.data.favourites_count ?? 0 
+                        }));
+                    } catch (error) {
+                        console.error(t("error_fetch"), error);
                     }
                 }
-            } catch (error) {
-                console.error(t("error_fetch"), error);
-            } finally {
-                setLoading(false);
             }
+        } catch (error) {
+            console.error(t("error_fetch"), error);
+        } finally {
+            setLoading(false);
         }
-    
-        fetchData();
-    }, [image]);
+    }
+
+    const handlePostLinkedin = async() => {
+        setIsClickMastodon(false);
+        try {
+            const token = Cookies.get("token");
+            if (!token) {
+                setPosts([]);
+                setLoading(false);
+                return;
+            }
+
+            const token_mastodon = Cookies.get("linkedin_access_token");
+
+            if(!token_mastodon){
+                toast.error(t("miss_token_linkedin"));
+                window.location.href = "/api/linkedin/auth";  
+                return;
+            }
+
+            const response = await fetch("http://localhost:3000/api/post_manage/list_post_user", {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`t("error_http") ${response.status}`);
+            }
+
+            const data = await response.json();
+            const sortedPosts = data.posts_linkedin.sort((a: { posttime: string | number | Date; }, b: { posttime: string | number | Date; }
+                                ) => new Date(b.posttime).getTime() - new Date(a.posttime).getTime());
+            setPosts(sortedPosts);
+        } catch (error) {
+            console.error(t("error_fetch"), error);
+        } finally {
+            setLoading(false);
+        }
+    }
     
     const handleCancel = () => {
         setIsClickBtnEdit(false);
@@ -171,17 +214,32 @@ function ListPostUser() {
     const handleDelete = async (id: number) => {
         if (window.confirm(t("confirm_delete"))) {
             try {
-                const response = await fetch(`http://localhost:3000/api/mastodon/${id}`, {
-                    method: "DELETE"
-                });
-
-                if (response.status === 401) {
-                    toast.error(t("miss_token_mastondon"));
-                    window.location.href = "/api/mastodon/auth";  
-                    return;
+                if(isClickMastodon === true){
+                    const response = await fetch(`http://localhost:3000/api/mastodon/${id}`, {
+                        method: "DELETE"
+                    });
+    
+                    if (response.status === 401) {
+                        toast.error(t("miss_token_mastondon"));
+                        window.location.href = "/api/mastodon/auth";  
+                        return;
+                    }
+                    toast.success(t("post_delete"));
+                    window.location.reload();
                 }
-                toast.success(t("post_delete"));
-                window.location.reload();
+                else{
+                    const response = await fetch(`http://localhost:3000/api/post_linkedin/${id}`, {
+                        method: "DELETE"
+                    });
+    
+                    if (response.status === 401) {
+                        toast.error(t("miss_token_linkedin"));
+                        window.location.href = "/api/linkedin/auth";  
+                        return;
+                    }
+                    toast.success(t("post_delete"));
+                    // window.location.reload();
+                }
             }catch (error) {
                 console.error(t("error_delete"), error);
             }
@@ -304,6 +362,8 @@ function ListPostUser() {
             }
         } 
     };
+
+    
     
 
     return (
@@ -312,6 +372,20 @@ function ListPostUser() {
             <div className={styles.list_container}>
                 <div className="title_page">
                     <h1>{t("title_page")}</h1>
+                </div>
+                <div className={styles.btn_platform}>
+                    <button className={styles.btn_mastodon} type="button" onClick={handlePostMastodon}>
+                        Mastodon
+                        <div className={styles.icon_mastodon}>
+                            <Image  src="/icon_mastodon.png" fill alt={""}/>
+                        </div>
+                    </button>
+                    <button className={styles.btn_linkedin} type="button" onClick={handlePostLinkedin}>
+                        Linkedin
+                        <div className={styles.icon_linkedin}>
+                            <Image  src="/icon_linkedin.webp" fill alt={""}/>
+                        </div>
+                    </button>
                 </div>
                 <div className="list_post">
                     {loading ? (
@@ -374,6 +448,110 @@ function ListPostUser() {
                                     {activeDots === item.id && (
                                         <div className={styles.dots_menu}>
                                             <button className={styles.dots_edit} type="button" onClick={() => handleEdit(item.id, item.content)}>{t("edit")}</button>
+                                            <button className={styles.dots_delete} type="button" onClick={() => handleDelete(item.id)}>{t("delete")}</button>
+                                            <button className={styles.dots_export} type="button" onClick={() => handleGeneratePdf(item.id)}>{t("export_pdf")}</button>
+                                        </div>
+                                    )}
+                                    {activeEdit === item.id && <Modal className={styles.modal_container} show={isClickBtnEdit}>
+                                        <Modal.Header className={styles.modal_header}>
+                                            <Button className={styles.button_close} onClick={()=>setIsClickBtnEdit(false)}>
+                                                <CloseIcon className={styles.icon_close}></CloseIcon>
+                                            </Button>
+                                            <Modal.Title className={styles.modal_title}>{t("btn_edit")}</Modal.Title>
+                                        </Modal.Header>
+                                        <Modal.Body>
+                                            <Form className={styles.form_container}>
+                                                <Form.Group>
+                                                    <Form.Label className={styles.label_title}>{t("content")}</Form.Label>
+                                                    <Form.Control className={styles.control_title}  as="textarea" placeholder="..." value={updateContent} onChange={(e) => setUpdateContent(e.target.value)} rows={5}/>
+                                                </Form.Group>
+                                                <Form.Group className={styles.form_group}>
+                                                    <Form.Label htmlFor="avt" className={styles.label_title}>{t("image")} <span className={styles.icon_start}>*</span></Form.Label>
+                                                    <div onClick={handleImageClick}>
+                                                        {!image && <img className={styles.upload_avt_modal} src={item.image ? item.image : "/upload_avt.png"} alt="avt"/>}
+                                                        {image && <img src={image} className={styles.upload_avt_modal} />}
+                                                    </div>
+                                                    <Form.Control
+                                                        ref={fileInputRef} 
+                                                        id="avt"
+                                                        type="file"
+                                                        className={styles.choose_avt}
+                                                        style={{ display: "none" }} 
+                                                        accept="image/*"
+                                                        onChange={handleFileChange} 
+                                                    />
+                                                     <Button className={styles.button_close_img} onClick={handleClickBtnCloseImg}>
+                                                        <CloseIcon className={styles.icon_close_img}></CloseIcon>
+                                                    </Button>
+                                                </Form.Group>
+                                            </Form>
+                                        </Modal.Body>
+                                        <Modal.Footer className={styles.modal_footer}>
+                                            <Button className={styles.btn_close} onClick={handleCancel}>
+                                                <span className={styles.text_close}>{t("btn_close")}</span>
+                                            </Button>
+                                            <Button className={styles.btn_save} onClick={() => hanldeSave(item.id, item.image)}>
+                                                <span className={styles.text_save}>{t("btn_save")}</span>
+                                            </Button>
+                                        </Modal.Footer>
+                                    </Modal>}
+                                    </div>
+                                }
+                                {item.platform === "LinkedIn" &&<div className={styles.mastodon_platform}>
+                                    <div ref={(el) => { slidesRef.current[item.id] = el; }}>
+                                        <div className={styles.navbar_user}>
+                                            <div className={styles.inf_user}>
+                                                {auth?.user?.avatar ? (
+                                                    <img className={styles.inf_user_avt} src={auth.user.avatar} alt="Avatar" />
+                                                ) : (
+                                                    <div className={styles.inf_user_avt}>
+                                                        <Image src="/icon_circle_user.png" alt="Avatar" fill />
+                                                    </div>
+                                                )}
+                                                <div className={styles.inf_user_more}>
+                                                    <p className={styles.name_user}>{auth?.user?.name}</p>
+                                                    <p className={styles.user_name}>@{item.platform}</p>
+                                                </div>
+                                            </div>
+                                            <div className={styles.time_post}>
+                                                <div className={styles.time_user}>
+                                                    {item.audience==="public" && <PublicIcon />}
+                                                    {item.audience==="private" && <HttpsIcon/> }
+                                                    <p className={styles.time}>{convertDay(item.posttime)}</p>
+                                                </div>
+                                                <div className={styles.status_post}>
+                                                    <p>{item.status===1 ? t("posted") : t("pending")}</p>
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                        <div className={styles.content_post}>
+                                            <p className={styles.item_content}>{item.content}</p>
+                                            {item.image && <img src={item.image} className={styles.img_post}/>}
+                                        </div>
+                                        <div className={styles.interact_post}>
+                                            <div className={styles.back}>
+                                                <KeyboardReturnIcon></KeyboardReturnIcon>
+                                                <p className={styles.text_like_post}>0</p>
+                                            </div>
+                                            <div className={styles.repeat}>
+                                                <RepeatIcon></RepeatIcon>
+                                            </div>
+                                            <div className={styles.star}>
+                                                <StarBorderIcon></StarBorderIcon>
+                                                {item.status === 1 && <p className={styles.text_like_post}>{likes[item.id]}</p>}
+                                            </div>
+                                            <div className={styles.favorite}>
+                                                <TurnedInNotIcon></TurnedInNotIcon>
+                                            </div>
+                                            <div onClick={() => handleDots(item.id)} className={styles.dots}>
+                                                <MoreHorizIcon></MoreHorizIcon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {activeDots === item.id && (
+                                        <div className={styles.dots_menu}>
+                                            {/* <button className={styles.dots_edit} type="button" onClick={() => handleEdit(item.id, item.content)}>{t("edit")}</button> */}
                                             <button className={styles.dots_delete} type="button" onClick={() => handleDelete(item.id)}>{t("delete")}</button>
                                             <button className={styles.dots_export} type="button" onClick={() => handleGeneratePdf(item.id)}>{t("export_pdf")}</button>
                                         </div>

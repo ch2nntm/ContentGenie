@@ -34,6 +34,7 @@ function PreviewPage() {
     const audience = searchParams.get("audience") || "";
     const [postTime, setPostTime] = useState(new Date(searchParams.get("date") || ""));
     const platform = searchParams.get("platform") || "";
+    const user_Id = searchParams.get("user_Id") || 0;
     const [content, setContent] = useState("");
     const [updateContent, setUpdateContent] = useState("");
     const [openModal, setOpenModal] = useState(false);
@@ -104,7 +105,7 @@ function PreviewPage() {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json" 
                 },
-                body: JSON.stringify({ messages: messages }),
+                body: JSON.stringify({ user_Id: user_Id, messages: messages }),
             });
 
             if (!responseData.ok) {
@@ -169,10 +170,22 @@ function PreviewPage() {
         setImgUrlTest("");
     }
 
+    const handleClickBtnCloseImg = () => {
+        if(imgUrlTest !== "/upload_avt.png")
+            setImgUrlTest("/upload_avt.png");
+    }
+
+
     const hanldeSave = async () => {
         setContent(updateContent);
         setOpenModal(false);
-        setImgUrl(imgUrlTest);
+        if(imgUrlTest !== "/upload_avt.png"){
+            const uploadedImgUrl = await uploadToCloudinary(imgUrlTest);
+            setImgUrl(uploadedImgUrl);
+        }
+        else{
+            setImgUrl("");
+        }
     };
 
     const handleImageClick = () => {
@@ -201,13 +214,14 @@ function PreviewPage() {
                 }
             });
             const dataresponseGetInfo = await responseGetInfo.json();
+            console.log("dataresponseGetInfo: ",dataresponseGetInfo);
 
             const linkedinRes = await fetch("http://localhost:3000/api/post_linkedin", {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${linkedin_access_token}`,
                 },
-                body: JSON.stringify({userId: dataresponseGetInfo.sub, content,  audience: audience === "public" ? "PUBLIC" : "CONNECTIONS",}),
+                body: JSON.stringify({userId: dataresponseGetInfo.sub, content,  audience: audience === "public" ? "PUBLIC" : "CONNECTIONS", image: imgUrl}),
             });
     
             const linkedInData = await linkedinRes.json();
@@ -363,8 +377,8 @@ function PreviewPage() {
                         <Form.Group className={styles.form_group}>
                             <Form.Label className={styles.label_img}>{t("img")}</Form.Label>
                             <div onClick={handleImageClick}>
-                                {!imgUrl && <img className={styles.img_edit_main_post} src={imgUrlTest ? imgUrlTest : "/upload_avt.png"} alt="avt"/>}
-                                {imgUrl && <img src={imgUrlTest ? imgUrlTest : imgUrl} className={styles.img_edit_main_post_upload} />}
+                                {!imgUrl && <img src={imgUrlTest ? imgUrlTest : "/upload_avt.png"} className={imgUrlTest ? styles.img_edit_main_post : styles.img_edit_main_post_upload} alt="avt"/>}
+                                {imgUrl && <img src={imgUrlTest ? imgUrlTest : imgUrl} className={imgUrlTest ? styles.img_edit_main_post : styles.img_edit_main_post_upload} />}
                             </div>
                             <Form.Control
                                 ref={fileInputRef} 
@@ -375,6 +389,9 @@ function PreviewPage() {
                                 accept="image/*"
                                 onChange={handleFileChange} 
                             />
+                            <Button className={styles.button_close_img} onClick={handleClickBtnCloseImg}>
+                                <CloseIcon className={styles.icon_close_img}></CloseIcon>
+                            </Button>
                         </Form.Group>
                     </Form>
                 </Modal.Body>

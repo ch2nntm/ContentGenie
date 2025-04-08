@@ -2,9 +2,7 @@ import  {cookies} from "next/headers";
 export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const code = searchParams.get("code");
-    const referer = req.headers.get("referer");
-
-    console.log("Request đến từ:", referer);
+    const cookieStore = await cookies();
   
     if (!code) {
       return new Response(JSON.stringify({ error: "Missing authorization code" }), { status: 400 });
@@ -35,20 +33,19 @@ export async function GET(req) {
       const tokenData = await tokenResponse.json();
       console.log("TOKEN DATA: ",tokenData);
 
-      cookies().set("mastodon_token", tokenData.access_token, {
+      cookieStore().set("mastodon_token", tokenData.access_token, {
         path: "/",
         sameSite: "Lax",
-    });
+      });
 
-      const redirectParams = cookies().get("redirect_params") || "";
+      const redirectParams = cookieStore().get("redirect_params") || "";
 
-      console.log("redirectParams: ",redirectParams.value);
+      if(!redirectParams){
+        return Response.redirect(new URL(`/component/post_manage/list_post_user`, req.url), 302);
+      }
+
       return Response.redirect(new URL(`/component/post_manage/preview?${redirectParams.value}`, req.url), 302);
     
-   
-      // return Response.redirect(new URL(`/component/post_manage/list_post_user`, req.url), 302);
-    
-  
     } catch (error) {
       console.error("Error exchanging token:", error);
       return new Response(JSON.stringify({ error: "Internal Server Error" }), { status: 500 });

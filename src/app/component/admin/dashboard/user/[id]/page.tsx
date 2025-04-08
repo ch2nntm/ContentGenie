@@ -18,18 +18,10 @@ const getUserDetail = async (id: string) => {
     });
     if (!res.ok) return null;
 
-
-    const response = await fetch(`http://localhost:3000/api/post_manage/list_post_user/${id}`, {
-      method: "GET",
-    });
-
-    const data = await response.json();
-    console.log("Data: ",data.quantity);
-
     const dataResponse = await res.json();
-    dataResponse.quantity_post = data.quantity ?? 0;
 
-    return dataResponse;
+    const data = dataResponse[0];
+    return data;
   } catch (error) {
     console.error("Error fetching user:", error);
     return null;
@@ -57,7 +49,7 @@ export default async function ViewUserDetail(props: { params: PageProps}) {
             <p className={styles.text_inf}>{(await t)("name")} <p className={styles.bold_text}>{detailUser.name}</p></p>
             <p className={styles.text_inf}>{(await t)("email")} <p className={styles.bold_text}>{detailUser.email}</p></p>
             <p className={styles.text_inf}>{(await t)("quantity_credits")} <p className={styles.bold_text}>{detailUser.credits}</p></p>
-            <p className={styles.text_inf}>{(await t)("quantity_post")} <p className={styles.bold_text}>{detailUser.quantity_post}</p></p>
+            <p className={styles.text_inf}>{(await t)("quantity_post")} <p className={styles.bold_text}>{detailUser.count_post}</p></p>
           </div>
         </div>
       </div>

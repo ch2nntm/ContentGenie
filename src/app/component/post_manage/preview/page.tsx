@@ -37,7 +37,7 @@ function PreviewPage() {
     const audience = searchParams.get("audience") || "";
     const [postTime, setPostTime] = useState(new Date(searchParams.get("date") || ""));
     const platform = searchParams.get("platform") || "";
-    const user_Id = searchParams.get("user_Id") || false;
+    const user_Id = searchParams.get("user_Id") || 0;
     const [content, setContent] = useState("");
     const [updateContent, setUpdateContent] = useState("");
     const [openModal, setOpenModal] = useState(false);

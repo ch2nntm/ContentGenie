@@ -2,6 +2,37 @@
     margin: 100px 200px;
 }
 
+.btn_platform{
+    display: flex;
+    gap: 50px;
+}
+
+.btn_mastodon,
+.btn_linkedin{
+    width: 100px;
+    height: 30px;
+    box-shadow: 0 0 4px grey;
+    border: none;
+    background-color: rgb(32, 144, 230);
+    border-radius: 10px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-left: 10px;
+}
+
+.btn_mastodon{
+    background-color: #9f6aea;
+}
+
+.icon_mastodon,
+.icon_linkedin{
+    position: relative;
+    width: 20px;
+    height: 20px;
+}
+
 .item_post{
     width: 700px;
     box-shadow: 0px 2px 4px grey;

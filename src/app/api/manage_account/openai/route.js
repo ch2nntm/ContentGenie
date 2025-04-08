@@ -23,6 +23,8 @@ export async function POST(req) {
         const body = await req.json();
         const apiKeyYoutube = process.env.API_KEY_YOUTUBE;
 
+        console.log("body.user_Id: ",body.user_Id);
+
         const authHeader = req.headers.get("authorization"); 
         const token = authHeader?.split(" ")[1];
 

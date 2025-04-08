@@ -72,7 +72,7 @@ function Register() {
     const sendCode = async () => {
         const responseNoti = await fetch("http://localhost:3000/api/verify_otp",{
             method: "POST",
-            body: JSON.stringify({email, otp: enterCode, password, message1, message2})
+            body: JSON.stringify({email, otp: enterCode, password, message1, message2, checkOnly: false})
         })
         if(responseNoti.ok){
             fetch("/api/manage_account/register",{

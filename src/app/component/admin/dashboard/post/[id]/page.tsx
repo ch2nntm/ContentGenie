@@ -71,6 +71,7 @@ export default async function ViewUserDetail(props : { params: PageProps }) {
   return (
     <div className={styles.container}>
       <NavbarComponent/>
+      {/* <button onClick={handleBack}><ArrowBackIosNewIcon className={styles.arrowback}/></button> */}
       <Link href="http://localhost:3000/component/admin/dashboard"><ArrowBackIosNewIcon className={styles.arrowback}/></Link>
       <div className={styles.inf_post_container}>
         <div className={styles.title}>

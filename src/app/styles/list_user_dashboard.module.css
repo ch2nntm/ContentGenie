@@ -1,0 +1,145 @@
+.content{
+    display: flex;
+}
+
+.sidebar{
+    margin-top: 80px;
+    width: 250px;
+    height: 624px;
+    background-color: #f7f7f7;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    padding-left: 16px;
+    padding-top: 16px;
+}
+
+.dashboard,
+.users,
+.posts,
+.analytics,
+.settings{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 20px;
+    color: #000;
+    text-decoration: none;
+}
+
+.dashboard{
+    margin-top: 10px;
+}
+
+.users{
+    position: relative;
+}
+
+.users::after{
+    position: absolute;
+    content: "";
+    border: 1px solid rgb(223, 223, 223);
+    width: 35px;
+    top: 20px;
+    left: 33px;
+}
+
+.users,
+.posts,
+.analytics,
+.settings{
+    margin-top: 18px;
+}
+
+.icon_dashboard,
+.icon_users,
+.icon_posts,
+.icon_analytics,
+.icon_settings{
+    position: relative;
+    width: 20px;
+    height: 20px;
+    color: #000;
+}
+
+.text_dashboard,
+.text_users,
+.text_posts,
+.text_analytics,
+.text_settings{
+    color: #030303;
+    font-size: 16px;
+    font-family: "Open Sans";
+    line-height: 19px;
+}
+
+.section{
+    margin-top: 100px;
+}
+
+.item_user_management{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 100px;
+    margin-left: 100px;
+}
+  
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 0, 0, 0.2);
+    border-top-color: #000;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+}
+  
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+  
+
+.item_user{
+    width: 300px;
+    height: 300px;
+    box-shadow: 0px 0px 6px grey;
+    border-radius: 5px;
+    margin: 25px;
+    text-decoration: none;
+}
+
+.inf_user{
+    color: #000;
+    text-decoration: none;
+}
+
+.item_name_user{
+    font-size: large;
+    font-weight: 700;
+    text-align: center;
+}
+
+.avt_user_container{
+    text-align: center;
+    padding-top: 10px;
+}
+
+.avt_user{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.item_email_user,
+.item_credit_user,
+.item_post_of_user{
+    margin-left: 50px;
+}

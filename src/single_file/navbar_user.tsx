@@ -14,10 +14,10 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import SearchIcon from '@mui/icons-material/Search';
 import MarkAsUnreadIcon from '@mui/icons-material/MarkAsUnread';
 import EditNoteIcon from '@mui/icons-material/EditNote';
+import PaymentIcon from '@mui/icons-material/Payment';
 
 
 function NavbarUser(){
-
     const [inputSearch, setInputSearch] = useState("");
     const [showDropdownUser, setShowDropdownUser] = useState(false);
     const [user, setUser] = useState<string | null>(null);
@@ -86,6 +86,16 @@ function NavbarUser(){
             toast.error("Có lỗi xảy ra!");
         }
     }
+
+    const handleSearch = () => {
+        if(inputSearch===""){
+            router.push("/component/admin/dashboard");
+        }
+        if (inputSearch.trim() !== "") {
+            router.push(`/component/admin/dashboard?searchQuery=${encodeURIComponent(inputSearch)}`);
+        }
+    };
+    
     
     return(
         <div className={styles.navbar}>
@@ -97,6 +107,9 @@ function NavbarUser(){
             </Link>
             <div className={isDashboard ? styles.search : styles.search_hide}>
                 <input className={roleUser===0 ? styles.input_search_hide : styles.input_search} type="text" placeholder={t("input_search")} value={inputSearch} onChange={(e) => setInputSearch(e.target.value)}/>
+                <button onClick={handleSearch} className={roleUser===0 ? styles.btn_search_hide : styles.btn_search}>
+                    <SearchIcon/>
+                </button>
             </div>
             <div className={styles.icon_navbar}>
                     <div className={styles.icon_bell}>
@@ -114,32 +127,38 @@ function NavbarUser(){
                         {/* className={ roleUser===0 ? styles.edit_profile : styles.edit_profile_hide} */}
                             <Link href="/component/account_user/edit_profile" className={styles.edit_profile}> 
                                 <div className={styles.icon_edit_profile}>
-                                    <BorderColorIcon></BorderColorIcon>
+                                    <BorderColorIcon/>
                                 </div>
                                 <p>{t("account_management")}</p>
                             </Link>
                             <Link href="/component/post_manage/list_post_user" className={ roleUser===0 ? styles.post_management : styles.edit_profile_hide}>
                                 <div className={styles.icon_edit_profile}>
-                                    <MarkAsUnreadIcon></MarkAsUnreadIcon>
+                                    <MarkAsUnreadIcon/>
                                 </div>
                                 <p>{t("post_management")}</p>
                             </Link>
                             <Link href="/component/post_manage/content_generator" className={styles.post_management}>
                                 <div className={styles.icon_edit_profile}>
-                                    <EditNoteIcon></EditNoteIcon>
+                                    <EditNoteIcon/>
                                 </div>
                                 <p>{t("create_content")}</p>
                             </Link>
                             <Link href="/component/admin/dashboard" className={ roleUser===1 ? styles.dashboard : styles.dashboard_hide}>
                                 <div className={styles.icon_dashboard}>
-                                <SearchIcon></SearchIcon>
+                                <SearchIcon/>
                                 </div>
                                 <p>{t("dashboard")}</p>
+                            </Link>
+                            <Link href="/component/upgrade" className={styles.dashboard}>
+                                <div className={styles.icon_dashboard}>
+                                    <PaymentIcon/>
+                                </div>
+                                <p>{t("credits")}</p>
                             </Link>
                         </div>
                         <button className={styles.btn_signout} onClick={handleSubmitSignout}>
                             <div className={styles.icon_signout}>
-                                <ExitToAppIcon></ExitToAppIcon>
+                                <ExitToAppIcon/>
                             </div>
                             <p className={styles.text_signout}>{t("signout")}</p>
                         </button>

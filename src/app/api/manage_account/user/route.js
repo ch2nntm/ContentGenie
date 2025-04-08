@@ -15,10 +15,14 @@ const dbConfig = {
 
 const secretKey = new TextEncoder().encode("your-secret-key");
 
+
 export async function GET(req) {
     try {
         const authHeader = req.headers.get("authorization"); 
         const token = authHeader?.split(" ")[1];
+        const searchParams = new URL(req.url).searchParams;
+        const searchQuery = searchParams.get("searchQuery") || "";
+        console.log("searchQueryUser: ",searchQuery);
 
         console.log("Token: ",token);
         console.log("SecretKey: ",secretKey);
@@ -31,7 +35,7 @@ export async function GET(req) {
 
             if (payload.role === 1) {
                 const connection = await mysql.createConnection(dbConfig);
-                const [rows] = await connection.execute("SELECT * FROM account WHERE role <> 1");
+                const [rows] = await connection.execute("SELECT ac.*, count(*) as count_post FROM account ac LEFT JOIN post ps ON ac.id = ps.user_id WHERE role <> 1 AND name LIKE ? GROUP BY ac.id;", [`%${searchQuery}%`]);
                 await connection.end();
 
                 return new Response(
@@ -53,3 +57,43 @@ export async function GET(req) {
         );
     }
 }
+
+// export async function POST(req) {
+//     try {
+//         const authHeader = req.headers.get("authorization"); 
+//         const token = authHeader?.split(" ")[1];
+//         const {searchQuery} = await req.json();
+
+//         console.log("Token: ",token);
+//         console.log("SecretKey: ",secretKey);
+//         if (!token) {
+//             return new Response(JSON.stringify({ message: "Missing token" }), { status: 401 });
+//         }
+
+//         try {
+//             const { payload } = await jwtVerify(token, secretKey);
+
+//             if (payload.role === 1) {
+//                 const connection = await mysql.createConnection(dbConfig);
+//                 const [rows] = await connection.execute("SELECT * FROM account WHERE role <> 1 AND name LIKE ?", [`%${searchQuery}%`]);
+//                 await connection.end();
+
+//                 return new Response(
+//                     JSON.stringify({ message: "Get list user successfully", users: rows }),
+//                     { status: 200, headers: { "Content-Type": "application/json" } }
+//                 );
+//             } else {
+//                 return new Response(JSON.stringify({ message: "Forbidden" }), { status: 403 });
+//             }
+//         } catch (error) {
+//             console.error("JWT Verification Error: ", error);
+//             return new Response(JSON.stringify({ message: "Invalid token" }), { status: 401 });
+//         }
+//     } catch (error) {
+//         console.error("Database error:", error);
+//         return new Response(
+//             JSON.stringify({ error: "Database connection failed" }),
+//             { status: 500 }
+//         );
+//     }
+// }
