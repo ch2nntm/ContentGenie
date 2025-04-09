@@ -72,14 +72,14 @@ function ChangePassword(){
             toast.error(t("enter_full"));
             return;
         }
-        else if (!passwordRegex.test(newPassword) || !passwordRegex.test(newPassword)) {
-            toast.error(t("password_not_format"));
-            return;
-        } 
         else if(password !== oldPassword){
             toast.error(t("password_incorrect"));
             return;
         }
+        else if (!passwordRegex.test(newPassword) || !passwordRegex.test(newPassword)) {
+            toast.error(t("password_not_format"));
+            return;
+        } 
         else if(newPassword !== confirmPassword){
             toast.error(t("password_not_match"));
             return;
