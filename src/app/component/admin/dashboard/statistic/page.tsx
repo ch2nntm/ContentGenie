@@ -19,7 +19,9 @@ Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 interface statistic {
     month: number;
-    total_posts: number;
+    year: number;
+    total_posts_paiding: number;
+    total_posts_posted: number;
     total_credits: number;
 }
 
@@ -27,19 +29,23 @@ function Statistic() {
 
     const t = useTranslations("statistics");
     const [selectedYear, setSelectedYear] = useState("2020");
-    const [data, setData] = useState<statistic[]> ([]);
+    const [dataStatistics, setDataStatistic] = useState<statistic[]> ([]);
+    const [list, setList] = useState<statistic[]> ([]);
+    const [isClickList, setIsClickList] = useState(false);
     const [labels, setLabels] = useState<string[]> ([]);
-    const [totalPosts, setTotalPosts] = useState<number[]> ([]);
+    const [totalPostsPaiding, setTotalPostsPaiding] = useState<number[]> ([]);
+    const [totalPostsPosted, setTotalPostsPosted] = useState<number[]> ([]);
     const [totalCredits, setTotalCredits] = useState<number[]> ([]);
     const listLabels: string[] = [];
-    const listPost: number[] = [];
+    const listPostPaiding: number[] = [];
+    const listPostPosted: number[] = [];
     const listCredit: number[] = [];
     
     const fetchData = async() => {
         try{
             const token = Cookies.get("token");
             if(!token){
-                console.error("Missing token");
+                window.location.href = "/component/account_user/login_user";
             }
             const response = await fetch("/api/admin/statistic",{
                 method: "POST",
@@ -49,15 +55,17 @@ function Statistic() {
                 body: JSON.stringify({year: selectedYear})
             });
             const data = await response.json();
-            setData(data.posts);
+            setDataStatistic(data.posts);
             listLabels.length = 0;
             for(let i=0; i<=11; i++){
                 listLabels.push(`${t("month")} ${i+1}`);
-                listPost.push(data.posts[i].total_posts);
+                listPostPaiding.push(data.posts[i].total_posts_paiding);
+                listPostPosted.push(data.posts[i].total_posts_posted);
                 listCredit.push(data.posts[i].total_credits)
             }
             setLabels(listLabels);
-            setTotalPosts(listPost);
+            setTotalPostsPaiding(listPostPaiding);
+            setTotalPostsPosted(listPostPosted);
             setTotalCredits(listCredit);
 
             console.log("Data: ",data.posts);
@@ -70,8 +78,8 @@ function Statistic() {
     },[selectedYear])
 
     useEffect(() => {
-        console.log("DATA Updated: ", data);
-    }, [data]); 
+        console.log("DATA Updated: ", dataStatistics);
+    }, [dataStatistics]); 
     
     const slidesRef = useRef<HTMLDivElement | null>(null);
     const handleGeneratePdf = () => {
@@ -86,6 +94,25 @@ function Statistic() {
             html2pdf().from(slidesRef.current).set(opt).save();
         }
     };
+
+    const handleList = async () => {
+        const token = Cookies.get("token");
+        if (!token) {
+            return;
+        }
+        setIsClickList(true);
+        const response = await fetch("/api/admin/statistic", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+        if(!response.ok){
+            return;
+        }
+        const data = await response.json();
+        setList(data.rows);
+    }
     
     return(
         <div className={styles.container}>
@@ -114,7 +141,9 @@ function Statistic() {
                         <div className={styles.icon_analytics}>
                             <TrendingUpIcon></TrendingUpIcon>
                         </div>
-                        <p className={styles.text_analytics}>{t("sidebar_analytics")}</p>
+                        <div className={styles.container_text_analytics}>
+                            <p className={styles.text_analytics}>{t("sidebar_analytics")}</p>
+                        </div>
                     </div>
                     <div className={styles.settings}>
                         <div className={styles.icon_settings}>
@@ -129,48 +158,76 @@ function Statistic() {
                     </p>
                     <div className={styles.time}>
                         <label htmlFor="year">{t("label_year")}</label>
-                        <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)} className={styles.select_time}>
+                        <select value={selectedYear} onChange={(e) => { setSelectedYear(e.target.value); setIsClickList(false); }} className={styles.select_time}>
                         {[...Array(26 - 0)].map((_, i) => (
                             <option key={i} value={2020 + i}>{2020 + i}</option>
                         ))}
                         </select>
-                        <button className={styles.btn_export} type="button" onClick={() => handleGeneratePdf()}>{t("export_pdf")}</button>
+                        { isClickList === false && <button className={styles.btn_export} type="button" onClick={() => handleGeneratePdf()}>{t("export_pdf")}</button>}
+                        <button className={styles.btn_export_list} type="button" onClick={() => handleList()}>{t("btn_list_statistics")}</button>
                     </div>
-                    <div className={styles.statistic} ref={slidesRef}>
-                            <Bar className={styles.table_statistic} data={{
-                                labels: labels,
-                                datasets: [
-                                    {
-                                        label: t("label_post"),
-                                        backgroundColor: ["#3e95cd"],
-                                        data: totalPosts,
-                                    },
-                                    {
-                                        label: t("label_credit"),
-                                        backgroundColor: ["#c13ecd"],
-                                        data: totalCredits,
-                                    },
-                                ],
-                            }}
-                              
-                              options = {{
-                                plugins: {
-                                    legend: {
-                                        display: true
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: t("title_statistic"),
-                                        position: "bottom",
-                                        font: {
-                                            size: 24
-                                        }
-                                    },
+                    { isClickList === false && <div className={styles.statistic} ref={slidesRef}>
+                        <Bar className={styles.table_statistic} data={{
+                            labels: labels,
+                            datasets: [
+                                {
+                                    label: t("label_post_paiding"),
+                                    backgroundColor: ["#3e95cd"],
+                                    data: totalPostsPaiding,
                                 },
-                            }}
+                                {
+                                    label: t("label_post_posted"),
+                                    backgroundColor: ["#66cd3e"],
+                                    data: totalPostsPosted,
+                                },
+                                {
+                                    label: t("label_credit"),
+                                    backgroundColor: ["#c13ecd"],
+                                    data: totalCredits,
+                                },
+                            ],
+                        }}
+                              
+                        options = {{
+                            plugins: {
+                                legend: {
+                                    display: true
+                                },
+                                title: {
+                                    display: true,
+                                    text: t("title_statistic"),
+                                    position: "bottom",
+                                    font: {
+                                        size: 24
+                                    }
+                                },
+                            },
+                        }}
                         />
                         <canvas height="363" width="726" className="chartjs-render-monitor" style={{ display: "block", width: "726px", height: "363px" }}></canvas>
                     </div>
+                    }
+                    { isClickList === true && 
+                        <div className={styles.list_statistics}>
+                            <p className={styles.title_list_statistics}>{t("title_list_statistics")}</p>
+                            <table className={styles.table_list}>
+                                <tr className={styles.tablerow}>
+                                    <td className={styles.title_tablecell}>{t("lable_time")}</td>
+                                    <td className={styles.title_tablecell}>{t("label_post_paiding")}</td>
+                                    <td className={styles.title_tablecell}>{t("label_post_posted")}</td>
+                                    <td className={styles.title_tablecell}>{t("label_credit")}</td>
+                                </tr>
+                                {list.map((item: statistic, index: number) => (
+                                    <tr key={index} className={styles.tablerow}>
+                                        <td className={styles.tablecell}>{item.month} - {item.year}</td>
+                                        <td className={styles.tablecell}>{item.total_posts_paiding}</td>
+                                        <td className={styles.tablecell}>{item.total_posts_posted}</td>
+                                        <td className={styles.tablecell}>{item.total_credits}</td>
+                                    </tr>
+                                ))}
+                            </table>
+                        </div>
+                    }
                 </div>
             </div>
         </div>

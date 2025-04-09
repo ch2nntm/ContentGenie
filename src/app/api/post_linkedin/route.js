@@ -29,8 +29,8 @@ import { NextResponse } from "next/server";
           headers: { Authorization: `Bearer ${token}` },
         });
         
-        const data = await response;
-        console.log("LinkedIn Profile Data:", data);
+        const data = await response.json();
+        console.log("LinkedIn Profile Data:", data.sub);
     
         return NextResponse.json(data, { status: 200 });
       } catch (error) {
@@ -51,7 +51,6 @@ export async function POST(req) {
     console.log("Authorization Header:", token);
 
     if(image === ""){
-      // Post content
       const postData = {
         author: `urn:li:person:${userId}`,
         lifecycleState: "PUBLISHED",

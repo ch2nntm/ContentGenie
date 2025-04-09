@@ -99,6 +99,10 @@ function ListPostUser() {
     }
 
     useEffect(() => {
+        const token = Cookies.get("token");
+        if(!token){
+            window.location.href = "/component/account_user/login_user";
+        }
         if(isClickMastodon===true)
             handlePostMastodon();
     }, [image]);
@@ -346,6 +350,9 @@ function ListPostUser() {
 
         if(postDate.getTime() > currentDate.getTime())
             return `${postDate.getDate()}-${postDate.getMonth()}-${postDate.getFullYear()}`;
+        if(daysAgo===0){
+            return `${Math.floor(timeDiff / (1000 * 60))} ${t("minutes")}`;
+        }
         if(daysAgo<24)
             return `${daysAgo} ${t("hours")}`;
         else if(daysAgo<720){

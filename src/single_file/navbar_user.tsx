@@ -30,6 +30,7 @@ function NavbarUser(){
 
     useEffect(() => {
         const token = Cookies.get("token");
+        console.log("token: ",token);
         if (token) {
             fetch("/api/manage_account/login", {
                 method: "GET",
@@ -38,12 +39,9 @@ function NavbarUser(){
                 },
             })
             .then(async (res) => {
-                if (!res) {
+                if (!res.ok) {
+                    window.location.href = "/component/account_user/login_user";
                     throw new Error(`t("error_http") ${res}`);
-                }
-                const contentType = res.headers.get("content-type");
-                if (!contentType || !contentType.includes("application/json")) {
-                    throw new Error(t('invalid_json'));
                 }
                 return res.json();
             })
@@ -54,7 +52,7 @@ function NavbarUser(){
                     setAvtUser(data.user.avatar);
                 }
             })
-            .catch((error) => console.error(t('error_get_user'), error));
+            .catch((error) => console.log(t('error_get_user'), error));
         }
       }, []);
 

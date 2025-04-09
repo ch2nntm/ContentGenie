@@ -80,11 +80,14 @@ function EditProfilePage() {
     }
 
     useEffect(() => {
+        const token = Cookies.get("token");
+        if(!token){
+            window.location.href = "/component/account_user/login_user";
+        }
        fetchUserData();
     },[auth?.user]);
 
     const handleSubmitSave = async () => {
-
         if (!inputName || !inputEmail) {
             toast.error(t("enter_full"));
             return;

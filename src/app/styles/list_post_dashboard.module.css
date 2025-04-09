@@ -29,17 +29,21 @@
     margin-top: 10px;
 }
 
-.posts{
+.container_text_post{
     position: relative;
 }
 
-.posts::after{
+.text_posts{
+    display: inline-block;
+}
+
+.text_posts::after{
     position: absolute;
     content: "";
     border: 1px solid rgb(223, 223, 223);
-    width: 35px;
-    top: 20px;
-    left: 30px;
+    width: 100%;
+    top: 50px;
+    left: 0px;
 }
 
 .users,
@@ -69,6 +73,7 @@
     font-size: 16px;
     font-family: "Open Sans";
     line-height: 19px;
+    margin-top: 30px;
 }
 
 .section{

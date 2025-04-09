@@ -115,21 +115,29 @@
     height: 20px;
     text-decoration: none;
     color: #000;
+} 
+
+.container_text_dashboard{
+    position: relative;
 }
 
 .dashboard{
     margin-top: 10px;
-    position: relative;
 }
 
-.dashboard::after{
+.text_dashboard{
+    display: inline-block;
+}
+
+.text_dashboard::after{
     position: absolute;
     content: "";
     border: 1px solid rgb(223, 223, 223);
-    width: 70px;
-    top: 20px;
-    left: 30px;
+    width: 100%;
+    top: 50px;
+    left: 0px;
 }
+
 
 .users,
 .posts,
@@ -157,6 +165,7 @@
     font-size: 16px;
     font-family: "Open Sans";
     line-height: 19px;
+    margin-top: 30px;
 }
 
 .section{

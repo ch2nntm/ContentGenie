@@ -98,10 +98,11 @@ function PreviewPage() {
     const fetchData = async (input: string) => {
         try {
             messages.push({role: "user", content: input});
-
             setLoading(true);
             const token = Cookies.get("token");
-            if (!token) return;
+            if(!token){
+                window.location.href = "/component/account_user/login_user";
+            }
             console.log("user_Id:",user_Id);
             const responseData = await fetch("/api/manage_account/openai", {
                 method: "POST",

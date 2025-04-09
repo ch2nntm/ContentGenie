@@ -9,6 +9,7 @@
 
 .btn_mastodon,
 .btn_linkedin{
+    cursor: pointer;
     width: 100px;
     height: 30px;
     box-shadow: 0 0 4px grey;

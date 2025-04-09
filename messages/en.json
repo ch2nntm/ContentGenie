@@ -200,6 +200,7 @@
         "posted": "Posted",
         "pending": "Pending",
         "hours": "hours ago",
+        "minutes": "minutes ago",
         "days": "days ago",
         "months": "months ago",
         "years": "years ago",
@@ -273,7 +274,18 @@
         "sidebar_posts": "Posts",
         "sidebar_analytics": "Statistics",
         "sidebar_settings": "Settings",
-        "section_no_post":"No posts found"
+        "section_no_post":"No posts found",
+        "year": "Year",
+        "month": "Month",
+        "week": "Week",
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday",
+        "sunday": "Sunday",
+        "detail": "Detail"
     },
     "list_user_dashboard":{
         "sidebar_dashboard": "Dashboard",
@@ -292,10 +304,14 @@
         "title_page": "STATISTICS",
         "label_year": "Year:",
         "title_statistic": "Number of posts and credits per year",
-        "label_post": "Posts",
+        "label_post_paiding": "Posts Paiding",
+        "label_post_posted": "Posts Posted",
         "label_credit": "Credits",
+        "lable_time": "Time",
+        "title_list_statistics": "List of results has been statistic",
         "month": "Month",
-        "export_pdf": "Export PDF"
+        "export_pdf": "Export PDF",
+        "btn_list_statistics": "List Statistics"
     },
     "upgrade": {
         "text_credits": "Your remaining cards: ",

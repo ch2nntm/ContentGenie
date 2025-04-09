@@ -24,7 +24,10 @@ function ChangePassword(){
 
     const fetchUserData = () => {
         const token = Cookies.get("token");
-        if (token) {
+        if(!token){
+            window.location.href = "/component/account_user/login_user";
+        }
+        else{
             fetch("/api/manage_account/login", {
                 method: "GET",
                 headers: {

@@ -98,7 +98,9 @@ function PreviewPage() {
 
             setLoading(true);
             const token = Cookies.get("token");
-            if (!token) return;
+            if(!token){
+                window.location.href = "/component/account_user/login_user";
+            }
             const responseData = await fetch("/api/manage_account/openai", {
                 method: "POST",
                 headers: { 
@@ -206,7 +208,7 @@ function PreviewPage() {
     const hanldeUpload = async () => {
         try {
             const linkedin_id_token = Cookies.get("linkedin_id_token");
-            const linkedin_access_token = Cookies.get("linkedin_access_token");
+            // const linkedin_access_token = Cookies.get("linkedin_access_token");
             const responseGetInfo = await fetch("/api/linkedin",{
                 method: "GET",
                 headers: {
@@ -216,27 +218,31 @@ function PreviewPage() {
             const dataresponseGetInfo = await responseGetInfo.json();
             console.log("dataresponseGetInfo: ",dataresponseGetInfo);
 
-            const linkedinRes = await fetch("/api/post_linkedin", {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${linkedin_access_token}`,
-                },
-                body: JSON.stringify({userId: dataresponseGetInfo.sub, content,  audience: audience === "public" ? "PUBLIC" : "CONNECTIONS", image: imgUrl}),
-            });
+            // const linkedinRes = await fetch("/api/post_linkedin", {
+            //     method: "POST",
+            //     headers: {
+            //         Authorization: `Bearer ${linkedin_access_token}`,
+            //     },
+            //     body: JSON.stringify({userId: dataresponseGetInfo.sub, content,  audience: audience === "public" ? "PUBLIC" : "CONNECTIONS", image: imgUrl}),
+            // });
     
-            const linkedInData = await linkedinRes.json();
-            console.log("LinkedIn response:", linkedInData.postId.id);
+            // const linkedInData = await linkedinRes.json();
+            // console.log("LinkedIn response:", linkedInData.postId.id);
     
-            if (!linkedinRes.ok) {
-                toast.error("Lỗi khi gửi bài viết đến Linkedin");
-                return;
-            }
+            // if (!linkedinRes.ok) {
+            //     toast.error("Lỗi khi gửi bài viết đến Linkedin");
+            //     return;
+            // }
     
-            toast.success("Linkedin post successful!");
+            // toast.success("Linkedin post successful!");
             const token = Cookies.get("token");
-
+            const id_post = Math.floor(1000 + Math.random() * 9000).toString();
             const userId = auth?.user?.id || null; 
-            const formattedPostTime = postTime instanceof Date ? postTime.toISOString() : postTime || null; 
+            const formattedPostTime = postTime instanceof Date 
+            ? postTime.toLocaleString("en-CA", { timeZone: "Asia/Ho_Chi_Minh" }) 
+            : postTime 
+                ? new Date(postTime).toLocaleString("en-CA", { timeZone: "Asia/Ho_Chi_Minh", hour12: false}) 
+                : null;
             fetch("/api/post_manage/upload_post", {
                 method: "POST",
                 headers: {
@@ -245,14 +251,14 @@ function PreviewPage() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    id: linkedInData.postId.id,
+                    id: id_post,
                     keyword,
                     content,
                     imgUrl,
                     posttime: formattedPostTime,
                     user_id: userId,
                     platform,
-                    status,
+                    status: 0,
                     audience
                 }),
             })

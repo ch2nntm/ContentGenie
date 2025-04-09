@@ -84,8 +84,9 @@ export default function DashBoard() {
   console.log("searchQueryerre: ",searchQuery);
 
   const token = Cookies.get("token");
-  if (!token) return [];
-
+  if(!token){
+      window.location.href = "/component/account_user/login_user";
+  }
 
   return (
     <div className={styles.container}>
@@ -96,7 +97,9 @@ export default function DashBoard() {
                         <div className={styles.icon_dashboard}>
                             <SearchIcon></SearchIcon>
                         </div>
-                        <p className={styles.text_dashboard}>{t("sidebar_dashboard")}</p>
+                        <div className={styles.container_text_dashboard}>
+                            <p className={styles.text_dashboard}>{t("sidebar_dashboard")}</p>
+                        </div>
                     </Link>
                     <Link href="/component/admin/dashboard/list_user" className={styles.users}>
                         <div className={styles.icon_users}>

@@ -201,6 +201,7 @@
         "posted": "Đã đăng",
         "pending": "Chưa đăng",
         "hours": "giờ trước",
+        "minutes": "phút trước",
         "days": "ngày trước",
         "months": "tháng trước",
         "years": "năm trước",
@@ -273,7 +274,18 @@
         "sidebar_posts": "Bài Viết",
         "sidebar_analytics": "Thống Kê",
         "sidebar_settings": "Cài Đặt",
-        "section_no_post":"Không có bài đăng nào được tìm thấy"
+        "section_no_post":"Không có bài đăng nào được tìm thấy",
+        "year": "Năm",
+        "month": "Tháng",
+        "week": "Tuần",
+        "monday": "Thứ 2",
+        "tuesday": "Thứ 3",
+        "wednesday": "Thứ 4",
+        "thursday": "Thứ 5",
+        "friday": "Thứ 6",
+        "saturday": "Thứ 7",
+        "sunday": "Chủ nhật",
+        "detail": "Chi tiết"
     },
     "list_user_dashboard":{
         "sidebar_dashboard": "Trang Tổng Quan",
@@ -292,10 +304,14 @@
         "title_page": "THỐNG KÊ",
         "label_year": "Năm:",
         "title_statistic": "Số lượng bài đăng và thẻ trong từng năm",
-        "label_post": "Bài đăng",
+        "label_post_paiding": "Bài chưa đăng",
+        "label_post_posted": "Bài đã đăng",
         "label_credit": "Số thẻ",
+        "lable_time": "Thời gian",
+        "title_list_statistics": "Danh sách kết quả đã được thống kê",
         "month": "Tháng",
-        "export_pdf": "Xuất file PDF"
+        "export_pdf": "Xuất file PDF",
+        "btn_list_statistics": "Danh sách thống kê"
     },
     "upgrade": {
         "text_credits": "Số thẻ còn lại của bạn: ",

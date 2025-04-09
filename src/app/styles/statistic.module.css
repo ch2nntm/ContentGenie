@@ -25,23 +25,26 @@
     text-decoration: none;
 }
 
+.container_text_analytics{
+    position: relative;
+}
+
 .dashboard{
     margin-top: 10px;
 }
 
-.analytics{
-    position: relative;
+.text_analytics{
+    display: inline-block;
 }
 
-.analytics::after{
+.text_analytics::after{
     position: absolute;
     content: "";
     border: 1px solid rgb(223, 223, 223);
-    width: 58px;
-    top: 20px;
-    left: 33px;
+    width: 100%;
+    top: 50px;
+    left: 0px;
 }
-
 .users,
 .posts,
 .analytics,
@@ -69,6 +72,7 @@
     font-size: 16px;
     font-family: "Open Sans";
     line-height: 19px;
+    margin-top: 30px;
 }
 
 .section{
@@ -92,7 +96,8 @@
     width: 1000px;
 }
 
-.btn_export{
+.btn_export,
+.btn_export_list{
     cursor: pointer;
     float: right;
     border: none;
@@ -101,4 +106,36 @@
     color: #fff;
     border-radius: 5px;
     box-shadow: 2px 4px 4px 0 #69b6e2ba;
+}
+
+.btn_export_list{
+    margin-right: 30px;
+    background-color: #33d554;
+    box-shadow: 2px 4px 4px 0 #69e26fba;
+}
+
+.list_statistics{
+    margin-top: 50px;
+}
+
+.title_list_statistics{
+    font-weight: bold;
+    font-size: 24px;
+    text-align: center;
+}
+
+.tablerow{
+    text-align: center;
+}
+
+.tablecell{
+    width: 244px;
+    height: 30px;
+    box-shadow: 0px 4px 4px rgb(79, 142, 79);
+}
+
+.title_tablecell{
+    font-weight: bold;
+    background-color: #edf7ef;
+    border: none;
 }

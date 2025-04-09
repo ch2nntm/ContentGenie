@@ -23,9 +23,9 @@ export default function UpgradePro() {
             try{
                 const token = Cookies.get("token");
                 if(!token){
-                    return;
+                    window.location.href = "/component/account_user/login_user";
                 }
-                if (token) {
+                else{
                     fetch("/api/manage_account/login", {
                         method: "GET",
                         headers: {

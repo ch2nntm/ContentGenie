@@ -17,7 +17,8 @@ const getUserDetail = async (id: string) => {
       headers: { "Accept": "application/json" },
       cache: "no-store" ,
     });
-    if (!res.ok) return null;
+    if (!res.ok) 
+      window.location.href = "/component/account_user/login_user";
 
     const dataResponse = await res.json();
 

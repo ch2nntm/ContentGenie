@@ -30,7 +30,9 @@ function ListUserDashboard() {
     useEffect(()=>{
         const fetchData = async () => {
             const token = Cookies.get("token");
-            if (!token) return;
+            if(!token){
+                window.location.href = "/component/account_user/login_user";
+            }
             setLoading(true);
             try{
                 const response = await fetch("/api/manage_account/user",{
@@ -69,7 +71,9 @@ function ListUserDashboard() {
                         <div className={styles.icon_users}>
                             <PeopleAltIcon></PeopleAltIcon>
                         </div>
-                        <p className={styles.text_users}>{t("sidebar_users")}</p>
+                        <div className={styles.container_text_users}>
+                            <p className={styles.text_users}>{t("sidebar_users")}</p>
+                        </div>
                     </div>
                     <Link href="/component/admin/dashboard/list_post" className={styles.posts}>
                         <div className={styles.icon_posts}>
