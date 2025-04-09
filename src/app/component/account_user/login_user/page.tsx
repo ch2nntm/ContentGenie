@@ -87,12 +87,12 @@ function Login() {
                     <Image src="/main_login_register.png" alt="Icon" fill></Image>
                 </div>
                 <div className={styles.content}>
-                    <div className={styles.title}>
+                    <Link href="/" className={styles.title}>
                         <div className={styles.img_sub}>
                             <Image src="/sub_login_register.png" alt="Icon" fill></Image>
                         </div>
                         <h1 className={styles.text_main}>ContentGenie</h1>
-                    </div>
+                    </Link>
                     <form onSubmit={handleSubmit} className={styles.form}>
                         <label className={styles.label} htmlFor="email">{t("label_email")}</label>
                         <input

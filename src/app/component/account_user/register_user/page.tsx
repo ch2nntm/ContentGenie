@@ -107,12 +107,12 @@ function Register() {
                     <Image src="/main_login_register.png" alt="Icon" fill></Image>
                 </div>
                 <div className={!isEnterCode ? styles.content : styles.content_verify}>
-                    <div className={styles.title}>
+                    <Link href="/" className={styles.title}>
                         <div className={styles.img_sub}>
                             <Image src="/sub_login_register.png" alt="Icon" fill></Image>
                         </div>
                         <h1 className={styles.text_main}>ContentGenie</h1>
-                    </div>
+                    </Link>
                     {!isEnterCode && 
                     <div>
                         <form className={styles.form}>

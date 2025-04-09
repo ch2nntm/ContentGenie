@@ -19,7 +19,7 @@
     flex-direction: column;
     white-space: normal;
     overflow: visible;
-    margin-top: -20px;
+    margin-top: 0px;
 }
 
 .content_verify{
@@ -39,6 +39,7 @@
     margin-top: 5%;
     gap: 20px;
     align-items: center;
+    text-decoration: none;
 }
 
 .img_sub{

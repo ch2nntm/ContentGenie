@@ -30,6 +30,7 @@
     margin-left: 200px;
     gap: 20px;
     align-items: center;
+    text-decoration: none;
 }
 
 .img_sub,
@@ -38,6 +39,7 @@
     width: 30px;
     height: 36px;
 }
+
 
 .text_main{
     color: #030303;

@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
-import Redis from "ioredis";
+// import Redis from "ioredis";
+import { Redis } from "@upstash/redis";
 
-const redis = new Redis(process.env.REDIS_URL);
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
+
+// const redis = new Redis(process.env.REDIS_URL);
 
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -31,12 +37,13 @@ export async function POST(req) {
 
         const otp = generateOTP();
 
-        await redis.setex(`otp:${email}`, 300, otp);
+        await redis.set(`otp:${email}`, otp, { ex: 300 });
 
-        sendEmail(email, otp);
+        await sendEmail(email, otp);
 
         return NextResponse.json({ message: "OTP sent successfully" }, { status: 200 });
     } catch (error) {
+        console.log("Error sending OTP:", error);
         return NextResponse.json({ error: "Error sending OTP: "+error  }, { status: 500 });
     }
 }

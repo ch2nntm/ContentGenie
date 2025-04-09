@@ -47,7 +47,6 @@ function ContentGeneratorPage() {
             timeZone: "Asia/Ho_Chi_Minh", 
             hour12: false 
         }));
-        console.log("Date Time: ",selectedTime);
     }
 
     useEffect(() => {
