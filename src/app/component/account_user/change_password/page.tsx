@@ -13,7 +13,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 function ChangePassword(){
     const t = useTranslations("change_password");
     const [nameUser, setNameUser] = useState("");
-    const [userName, setUserName] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showOldPassword, setShowOldPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
@@ -47,7 +47,7 @@ function ChangePassword(){
             .then((data) => {
                 if (data.user) {
                     setNameUser(data.user.name);
-                    setUserName(data.user.username);
+                    setEmail(data.user.email);
                     setPassword(data.user.password);
                 }
             })
@@ -72,17 +72,22 @@ function ChangePassword(){
             toast.error(t("enter_full"));
             return;
         }
-        else if(newPassword !== confirmPassword){
-            toast.error(t("password_not_match"));
+        else if (!passwordRegex.test(newPassword) || !passwordRegex.test(newPassword)) {
+            toast.error(t("password_not_format"));
             return;
-        }
+        } 
         else if(password !== oldPassword){
             toast.error(t("password_incorrect"));
             return;
         }
-        else if (!passwordRegex.test(password)) {
-            toast.error(t("password_not_format"));
-        } 
+        else if(newPassword !== confirmPassword){
+            toast.error(t("password_not_match"));
+            return;
+        }
+        else if(oldPassword === newPassword){
+            toast.error(t("password_same"));
+            return;
+        }
         else{
             const token = Cookies.get("token");
             if (token) {
@@ -93,7 +98,7 @@ function ChangePassword(){
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        userName: userName,
+                        email: email,
                         password: password,
                         newPassword: newPassword,
                     }),

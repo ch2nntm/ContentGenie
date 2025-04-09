@@ -145,7 +145,8 @@
         "password_not_format": "Password must be at least 8 characters long, including letters, numbers, and special characters!",
         "invalid_json": "Invalid JSON response!",
         "error_get_user": "Error getting user information!",
-        "error_change_password": "Error changing password!"
+        "error_change_password": "Error changing password!",
+        "password_same": "New password is the same as old password"
     },
     "edit_profile":{
         "hi": "Hi",

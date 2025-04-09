@@ -33,12 +33,12 @@ async function generateToken(payload) {
     }
 
     try {
-        const { userName, password, newPassword } = await req.json();
+        const { email, password, newPassword } = await req.json();
 
         const connection = await mysql.createConnection(dbConfig);
         const [result] = await connection.execute(
-            "UPDATE account SET password = ? WHERE username = ? AND password = ?",
-            [newPassword, userName, password]
+            "UPDATE account SET password = ? WHERE email = ? AND password = ?",
+            [newPassword, email, password]
         );
 
         if (result.affectedRows === 0) {
@@ -47,8 +47,8 @@ async function generateToken(payload) {
         }
 
         const [updatedUser] = await connection.execute(
-            "SELECT * FROM account WHERE username = ? AND password = ?",
-            [userName, newPassword]
+            "SELECT * FROM account WHERE email = ? AND password = ?",
+            [email, newPassword]
         );
         await connection.end();
 
