@@ -85,7 +85,7 @@ function Statistic() {
     const handleGeneratePdf = () => {
         const opt = {
             margin: 1,
-            filename: `statistics_${selectedYear}.pdf`,
+            filename: `statistics_list.pdf`,
             image: { type: "jpeg", quality: 0.98 },
             html2canvas: { scale: 2, useCORS: true },
             jsPDF: { unit: "in", format: "letter", orientation: "portrait" }
@@ -163,10 +163,10 @@ function Statistic() {
                             <option key={i} value={2020 + i}>{2020 + i}</option>
                         ))}
                         </select>
-                        { isClickList === false && <button className={styles.btn_export} type="button" onClick={() => handleGeneratePdf()}>{t("export_pdf")}</button>}
+                        { isClickList === true && <button className={styles.btn_export} type="button" onClick={() => handleGeneratePdf()}>{t("export_pdf")}</button>}
                         <button className={styles.btn_export_list} type="button" onClick={() => handleList()}>{t("btn_list_statistics")}</button>
                     </div>
-                    { isClickList === false && <div className={styles.statistic} ref={slidesRef}>
+                    { isClickList === false && <div className={styles.statistic}>
                         <Bar className={styles.table_statistic} data={{
                             labels: labels,
                             datasets: [
@@ -208,7 +208,7 @@ function Statistic() {
                     </div>
                     }
                     { isClickList === true && 
-                        <div className={styles.list_statistics}>
+                        <div ref={slidesRef} className={styles.list_statistics}>
                             <p className={styles.title_list_statistics}>{t("title_list_statistics")}</p>
                             <table className={styles.table_list}>
                                 <tr className={styles.tablerow}>
