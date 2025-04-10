@@ -349,7 +349,7 @@ function ListPostUser() {
 
 
         if(postDate.getTime() > currentDate.getTime())
-            return `${postDate.getDate()}-${postDate.getMonth()}-${postDate.getFullYear()}`;
+            return `${postDate.getDate()}-${postDate.getMonth()+1}-${postDate.getFullYear()}`;
         if(daysAgo===0){
             return `${Math.floor(timeDiff / (1000 * 60))} ${t("minutes")}`;
         }
@@ -430,7 +430,8 @@ function ListPostUser() {
                                         </div>
                                         <div className={styles.content_post}>
                                             <p className={styles.item_content}>{item.content}</p>
-                                            {item.image && <img src={item.image} className={styles.img_post}/>}
+                                            {item.image && !item.image.startsWith("https://www.youtube.com") && <img src={item.image} className={styles.img_post}/>}
+                                            {item.image && item.image.startsWith("https://www.youtube.com") && <iframe src={item.image} className={styles.video_post} ></iframe>}
                                         </div>
                                         <div className={styles.interact_post}>
                                             <div className={styles.back}>
