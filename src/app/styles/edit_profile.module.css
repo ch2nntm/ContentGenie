@@ -122,14 +122,21 @@
     width: 150px;
     height: 150px;
     margin-left: 350px;
-    margin-top: -20px;
+    margin-top: -50px;
+}
+
+.button_close_img{
+    position: relative;
+    /* margin-left: 2000px; */
+    left: 500px;
+    top: -20px;
 }
 
 .avt_user{
     width: 150px;
     height: 150px;
     margin-left: 350px;
-    margin-top: -150px;
+    margin-top: -170px;
     margin-bottom: 50px;
 }
 
@@ -141,7 +148,7 @@
     border: none;
     padding-left: 20px;
     margin-left: 270px;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .avt{
@@ -150,7 +157,7 @@
 
 .name,
 .user_name{
-    margin-top: 0px;
+    margin-top: 10px;
 }
 
 .section_btn{

@@ -157,7 +157,8 @@ function ListPostDashboard() {
                                                                 <AccessTimeIcon/>
                                                                 <p key={post.post_id}>{new Date(post.posttime).getHours()}: {new Date(post.posttime).getMinutes()}</p>
                                                             </div>
-                                                            {post.image && <img src={post.image} className={styles.item_image}/>}
+                                                            {post.image && !post.image.startsWith("https://www.youtube.com") && <img src={post.image} className={styles.item_image}/>}
+                                                            {post.image && post.image.startsWith("https://www.youtube.com") && <iframe className={styles.item_image} src={post.image} ></iframe>}
                                                             <p className={post.image ? styles.item_content_img : styles.item_content}>{post.content}</p>
                                                             <div className={styles.footer}>
                                                                 <Link href={`/component/admin/dashboard/post/${post.post_id}`} className={styles.btn_detail}>

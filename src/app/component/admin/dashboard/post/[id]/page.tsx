@@ -101,7 +101,10 @@ export default async function ViewUserDetail(props : { params: PageProps }) {
         </div>
         <div className={styles.inf_post}>
           <p>{detailPost.content}</p>
-          {detailPost.image && <img src={detailPost.image} className={styles.img}/>}
+          {/* {detailPost.image && <img src={detailPost.image} className={styles.img}/>} */}
+          {detailPost.image && !detailPost.image.startsWith("https://www.youtube.com") && <img src={detailPost.image} className={styles.img}/>}
+           {detailPost.image && detailPost.image.startsWith("https://www.youtube.com") && <iframe className={styles.img} src={detailPost.image} ></iframe>}
+                                                            
         </div>
         <div className={styles.interact_post}>
           <div className={styles.back}>

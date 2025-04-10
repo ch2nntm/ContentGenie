@@ -39,8 +39,12 @@ async function postToMastodon(post, token_mastodon) {
 
         const statusFormData = new URLSearchParams();
         const connection = await mysql.createConnection(dbConfig);
+
+        let fullContent = post.content;
+        const isYouTube = post.image?.includes("youtube.com") || post.image?.includes("youtu.be");
+
         
-        if (post.image) {
+        if (post.image && !isYouTube) {
             const imageResponse = await fetch(post.image);
             if (!imageResponse.ok) throw new Error("Không tải được ảnh từ Cloudinary");
 
@@ -66,10 +70,12 @@ async function postToMastodon(post, token_mastodon) {
             const mediaData = await mediaResponse.json();
             console.log("Ảnh đã tải lên Mastodon: ", mediaData);
             statusFormData.append("media_ids[]", mediaData.id);
+        }else if (isYouTube) {
+          fullContent += `\n\n📺 Video: ${post.image}`;
         }
 
-        statusFormData.append("status", post.content);
-        statusFormData.append("visibility", post.audience === "public" ? "PUBLIC" : "CONNECTIONS");
+        statusFormData.append("status", fullContent);
+        statusFormData.append("visibility", post.audience);
 
         const statusResponse = await fetch(`${process.env.MASTODON_INSTANCE}/api/v1/statuses`, {
             method: "POST",

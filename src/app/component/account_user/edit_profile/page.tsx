@@ -9,6 +9,8 @@ import { toast, ToastContainer } from "react-toastify";
 import dynamic from "next/dynamic";
 import { useAuth } from "../../authProvider"; 
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import { Button } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface User {
     name: string;
@@ -201,6 +203,10 @@ function EditProfilePage() {
         .catch((error) => console.error(t("error_update"), error));
     }
 
+    const handleClickBtnCloseImg = () => {
+        setAvatar("");
+    }
+
     const NavbarComponent = dynamic(() => import("@/single_file/navbar_user"), {ssr: false});
     return (
         <div className={styles.container}>
@@ -227,6 +233,9 @@ function EditProfilePage() {
                     {!isSend && <div className={styles.form_section}>
                         <div className={styles.avt}>
                             <label htmlFor="avt" className={styles.label}>{t("avt")} <span className={styles.icon_start}>*</span></label>
+                            <Button className={styles.button_close_img} onClick={handleClickBtnCloseImg}>
+                                <CloseIcon className={styles.icon_close_img}></CloseIcon>
+                            </Button>
                             <div onClick={handleImageClick}>
                                 <img className={styles.upload_avt} src={avatar ? avatar : "/upload_avt.png"} alt="avt"/>
                             </div>
