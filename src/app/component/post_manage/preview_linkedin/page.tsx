@@ -38,7 +38,8 @@ function PreviewPage() {
     const [content, setContent] = useState("");
     const [updateContent, setUpdateContent] = useState("");
     const [openModal, setOpenModal] = useState(false);
-    const [video, setVideo] = useState("");
+    const [isVideo, setIsVideo] = useState(false);
+    const [isVideoTest, setIsVideoTest] = useState(true);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -56,19 +57,60 @@ function PreviewPage() {
 
     const [loading, setLoading] = useState(false); 
 
+    // const uploadToCloudinary = async (file: string | Blob) => {
+    //     const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
+    //     const uploadPreset = "demo-upload";
+    //     const form = new FormData();
+    //     form.append("upload_preset", uploadPreset);
+
+    //     if (typeof file === "string" && file.startsWith("blob:")) {
+    //         const responseConvert = await fetch(file);
+    //         const blob = await responseConvert.blob();
+    //         const fileConvert = new File([blob], "image.jpg", { type: blob.type });
+    //         form.append("file", fileConvert);
+    //     }
+    //     else{
+    //         form.append("file", file);
+    //     }
+    
+    //     try {
+    //         const response = await fetch(cloudinaryUrl, {
+    //             method: "POST",
+    //             body: form,
+    //         });
+    
+    //         const dataImg = await response.json();
+    //         if (dataImg.secure_url) {
+    //             console.log("IMAGE UPLOADED: ", dataImg.secure_url);
+    //             return dataImg.secure_url; 
+    //         } else {
+    //             toast.error("Upload ảnh thất bại!");
+    //             return null;
+    //         }
+    //     } catch (error) {
+    //         console.error("Lỗi khi upload ảnh:", error);
+    //         return null;
+    //     }
+    // };
+
     const uploadToCloudinary = async (file: string | Blob) => {
+        if (typeof file === "string" && file.startsWith("http")) {
+            console.log("Skipping upload for already uploaded URL:", file);
+            return file; // Trả luôn URL cũ
+        }
+    
         const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
         const uploadPreset = "demo-upload";
         const form = new FormData();
         form.append("upload_preset", uploadPreset);
-
+    
         if (typeof file === "string" && file.startsWith("blob:")) {
             const responseConvert = await fetch(file);
             const blob = await responseConvert.blob();
-            const fileConvert = new File([blob], "image.jpg", { type: blob.type });
+            const fileName = blob.type.startsWith("video/") ? "video.mp4" : "image.jpg";
+            const fileConvert = new File([blob], fileName, { type: blob.type });
             form.append("file", fileConvert);
-        }
-        else{
+        } else {
             form.append("file", file);
         }
     
@@ -80,7 +122,6 @@ function PreviewPage() {
     
             const dataImg = await response.json();
             if (dataImg.secure_url) {
-                console.log("IMAGE UPLOADED: ", dataImg.secure_url);
                 return dataImg.secure_url; 
             } else {
                 toast.error("Upload ảnh thất bại!");
@@ -91,7 +132,7 @@ function PreviewPage() {
             return null;
         }
     };
-
+    
     const fetchData = async (input: string) => {
         try {
             messages.push({role: "user", content: input});
@@ -126,7 +167,8 @@ function PreviewPage() {
                 }
             }
             else if(topic.includes("Âm nhạc")){
-                setVideo(data.music);
+                setImgUrl(`https://www.youtube.com/embed/`+data.music);
+                setIsVideo(true);
             }
         } catch (error) {
             console.error("Error fetching AI response:", error);
@@ -170,23 +212,39 @@ function PreviewPage() {
         setUpdateContent(content);
         setOpenModal(false);
         setImgUrlTest("");
+        setIsVideoTest(true);
+    }
+
+    const handleCloseForm = () => {
+        setUpdateContent(content);
+        setOpenModal(false);
+        setImgUrlTest("");
+        setIsVideoTest(true);
     }
 
     const handleClickBtnCloseImg = () => {
         if(imgUrlTest !== "/upload_avt.png")
             setImgUrlTest("/upload_avt.png");
+        setIsVideoTest(false);
     }
 
 
     const hanldeSave = async () => {
         setContent(updateContent);
         setOpenModal(false);
-        if(imgUrlTest !== "/upload_avt.png"){
-            const uploadedImgUrl = await uploadToCloudinary(imgUrlTest);
-            setImgUrl(uploadedImgUrl);
+        if(!imgUrl.startsWith("https://www.youtube.com")){
+            if(imgUrlTest !== "/upload_avt.png"){
+                const uploadedImgUrl = await uploadToCloudinary(imgUrlTest);
+                setImgUrl(uploadedImgUrl);
+            }
+            else{
+                setImgUrl("");
+            }
+            setIsVideo(false);
         }
         else{
-            setImgUrl("");
+            setImgUrl(imgUrlTest);
+            setIsVideo(true);
         }
     };
 
@@ -196,12 +254,12 @@ function PreviewPage() {
         }
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
             const imageUrlTest = URL.createObjectURL(file);
-            setImgUrlTest(imageUrlTest);
-            console.log("Image Test: ", imageUrlTest);
+            const uploadedImgUrl = await uploadToCloudinary(imageUrlTest);
+            setImgUrlTest(uploadedImgUrl);
         }
     };
 
@@ -317,12 +375,13 @@ function PreviewPage() {
                                 <p className={styles.content_post}>
                                     {content}
                                 </p>
-                                {imgUrl && <img className={styles.img_main_post} src={imgUrl}/>}
-                                <iframe style={{ display: video ? "block" : "none" }} className={styles.img_main_post} width="560" height="315" 
-                                    src={`https://www.youtube.com/embed/${video}`}
+                                {!isVideo && imgUrl && <img className={styles.img_main_post} src={imgUrl}/>}
+                                {isVideo && imgUrl && <iframe style={{ display: imgUrl ? "block" : "none" }} className={styles.img_main_post} width="560" height="315" 
+                                    src={imgUrl}
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                     >
                                 </iframe>
+                                }
                             </div>
                             <div className={styles.interact_post}>
                                 <div className={styles.back}>
@@ -369,7 +428,7 @@ function PreviewPage() {
             </form>
             <Modal className={styles.modal_container} show={openModal}>
                 <Modal.Header className={styles.modal_header}>
-                    <Button className={styles.button_close} onClick={()=>setOpenModal(false)}>
+                    <Button className={styles.button_close} onClick={handleCloseForm}>
                         <CloseIcon className={styles.icon_close}></CloseIcon>
                     </Button>
                     <Modal.Title className={styles.modal_title}>{t("btn_edit")}</Modal.Title>
@@ -383,8 +442,16 @@ function PreviewPage() {
                         <Form.Group className={styles.form_group}>
                             <Form.Label className={styles.label_img}>{t("img")}</Form.Label>
                             <div onClick={handleImageClick}>
-                                {!imgUrl && <img src={imgUrlTest ? imgUrlTest : "/upload_avt.png"} className={imgUrlTest ? styles.img_edit_main_post : styles.img_edit_main_post_upload} alt="avt"/>}
-                                {imgUrl && <img src={imgUrlTest ? imgUrlTest : imgUrl} className={imgUrlTest ? styles.img_edit_main_post : styles.img_edit_main_post_upload} />}
+                                {!imgUrl && !isVideo && <img src={imgUrlTest ? imgUrlTest : "/upload_avt.png"} className={imgUrlTest ? styles.img_edit_main_post : styles.img_edit_main_post_upload} alt="avt"/>}
+                                {imgUrl && !isVideo && <img src={imgUrlTest ? imgUrlTest : imgUrl} className={imgUrlTest ? styles.img_edit_main_post : styles.img_edit_main_post_upload} />}
+                                {isVideo && imgUrl && <iframe style={{ display: isVideoTest ? "block" : "none" }} className={styles.img_edit_main_post} width="560" height="315" 
+                                    src={imgUrl}
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    >
+                                </iframe>
+                                }
+                                {!isVideoTest && <img className={styles.img_edit_main_post} src={imgUrlTest ? imgUrlTest : "/upload_avt.png"} alt="avt"/>}
+                                
                             </div>
                             <Form.Control
                                 ref={fileInputRef} 

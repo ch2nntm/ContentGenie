@@ -40,7 +40,7 @@ export async function GET(req) {
         sameSite: "Lax",
       });
 
-      const redirectParams = cookieStore.get("redirect_params") || "";
+      const redirectParams = cookieStore.get("redirect_params_mastodon") || "";
 
       if(!redirectParams){
         return Response.redirect(new URL(`/component/post_manage/list_post_user`, req.url), 302);

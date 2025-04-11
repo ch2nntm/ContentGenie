@@ -52,6 +52,7 @@ function ListPostUser() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [image, setImage] = useState("");
     const [isClickMastodon, setIsClickMastodon] = useState(true);
+    // const [isVideoTest, setIsVideoTest] = useState(true);
 
     const slidesRef = useRef<{ [key: number]: HTMLElement | null }>({});
     const handleGeneratePdf = (postId: number) => {
@@ -85,17 +86,19 @@ function ListPostUser() {
         }
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
             const imageUrl = URL.createObjectURL(file);
-            setImage(imageUrl);
+            const imgUrlTest = await uploadToCloudinary(imageUrl);
+            setImage(imgUrlTest);
         }
     };
 
     const handleClickBtnCloseImg = () => {
         console.log("Click close img");
         setImage("/upload_avt.png");
+        // setIsVideoTest(true);
     }
 
     useEffect(() => {
@@ -106,6 +109,46 @@ function ListPostUser() {
         if(isClickMastodon===true)
             handlePostMastodon();
     }, [image]);
+
+    const uploadToCloudinary = async (file: string | Blob) => {
+        if (typeof file === "string" && file.startsWith("http")) {
+            console.log("Skipping upload for already uploaded URL:", file);
+            return file; // Trả luôn URL cũ
+        }
+    
+        const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
+        const uploadPreset = "demo-upload";
+        const form = new FormData();
+        form.append("upload_preset", uploadPreset);
+    
+        if (typeof file === "string" && file.startsWith("blob:")) {
+            const responseConvert = await fetch(file);
+            const blob = await responseConvert.blob();
+            const fileName = blob.type.startsWith("video/") ? "video.mp4" : "image.jpg";
+            const fileConvert = new File([blob], fileName, { type: blob.type });
+            form.append("file", fileConvert);
+        } else {
+            form.append("file", file);
+        }
+    
+        try {
+            const response = await fetch(cloudinaryUrl, {
+                method: "POST",
+                body: form,
+            });
+    
+            const dataImg = await response.json();
+            if (dataImg.secure_url) {
+                return dataImg.secure_url; 
+            } else {
+                toast.error("Upload ảnh thất bại!");
+                return null;
+            }
+        } catch (error) {
+            console.error("Lỗi khi upload ảnh:", error);
+            return null;
+        }
+    };
 
     const handlePostMastodon = async() => {
         setIsClickMastodon(true);
@@ -213,6 +256,7 @@ function ListPostUser() {
     const handleCancel = () => {
         setIsClickBtnEdit(false);
         setImage("");
+        // setIsVideoTest(true);
     }
 
     const handleDelete = async (id: number) => {
@@ -252,7 +296,7 @@ function ListPostUser() {
         }
     }
 
-    const hanldeSave = async (id: number, img: string) => {
+    const handleSave = async (id: number, img: string) => {
         const token_mastodon = Cookies.get("mastodon_token");
 
         if(!token_mastodon){
@@ -269,27 +313,29 @@ function ListPostUser() {
             uploadedImageUrl = null;
         }
         else{
-            uploadedImageUrl = image;
-            if (fileInputRef.current?.files?.length) {
-                const file = fileInputRef.current.files[0];
-                const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
-                const uploadPreset = "demo-upload";
-                const form = new FormData();
-                form.append("file", file);
-                form.append("upload_preset", uploadPreset);
+            const imgUrlTest = await uploadToCloudinary(image);
+            uploadedImageUrl = imgUrlTest;
+            // uploadedImageUrl = image;
+            // if (fileInputRef.current?.files?.length) {
+            //     const file = fileInputRef.current.files[0];
+            //     const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
+            //     const uploadPreset = "demo-upload";
+            //     const form = new FormData();
+            //     form.append("file", file);
+            //     form.append("upload_preset", uploadPreset);
     
-                const response = await fetch(cloudinaryUrl, {
-                    method: "POST",
-                    body: form,
-                });
+            //     const response = await fetch(cloudinaryUrl, {
+            //         method: "POST",
+            //         body: form,
+            //     });
     
-                const data = await response.json();
-                if (data.secure_url) {
-                    uploadedImageUrl = data.secure_url;
-                } else {
-                    return;
-                }
-            }
+            //     const data = await response.json();
+            //     if (data.secure_url) {
+            //         uploadedImageUrl = data.secure_url;
+            //     } else {
+            //         return;
+            //     }
+            // }
         }
 
         const token = Cookies.get("token");
@@ -320,7 +366,7 @@ function ListPostUser() {
             .catch((error) => console.error(error));
 
         const formData = new FormData();
-        formData.append("image", uploadedImageUrl);
+        formData.append("image", image);
         formData.append("content", updateContent);
         try {
             const response = await fetch(`/api/mastodon/${id}`, {
@@ -476,8 +522,24 @@ function ListPostUser() {
                                                 <Form.Group className={styles.form_group}>
                                                     <Form.Label htmlFor="avt" className={styles.label_title}>{t("image")} <span className={styles.icon_start}>*</span></Form.Label>
                                                     <div onClick={handleImageClick}>
-                                                        {!image && <img className={styles.upload_avt_modal} src={item.image ? item.image : "/upload_avt.png"} alt="avt"/>}
-                                                        {image && <img src={image} className={styles.upload_avt_modal} />}
+                                                        {!image && item.image && (!item.image.startsWith("https://www.youtube.com") 
+                                                        ? <img className={styles.upload_avt_modal} src={item.image ? item.image : "/upload_avt.png"} alt="avt"/> 
+                                                        : <iframe className={styles.img_edit_main_post} width="560" height="315" 
+                                                            src={item.image}
+                                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                                            >
+                                                        </iframe>)}
+                                                        {!image && !item.image && <img className={styles.upload_avt_modal} src="/upload_avt.png" alt="avt"/>}
+                                                        {image && <img className={styles.upload_avt_modal} src={image} alt="avt"/>}
+                                                        {/* {image && !item.image.startsWith("https://www.youtube.com") && <img src={image} className={styles.upload_avt_modal} />} */}
+                                                        {/* {!image && item.image && item.image.startsWith("https://www.youtube.com") && <iframe className={styles.img_edit_main_post} width="560" height="315" 
+                                                            src={item.image}
+                                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                                            >
+                                                        </iframe> */}
+                                                        {/* } */}
+                                                        {/* {!isVideoTest && <img className={styles.img_edit_main_post} src={!item.image.startsWith("https://www.youtube.com") ? item.image : "/upload_avt.png"} alt="avt"/>} */}
+                                                        
                                                     </div>
                                                     <Form.Control
                                                         ref={fileInputRef} 
@@ -498,7 +560,7 @@ function ListPostUser() {
                                             <Button className={styles.btn_close} onClick={handleCancel}>
                                                 <span className={styles.text_close}>{t("btn_close")}</span>
                                             </Button>
-                                            <Button className={styles.btn_save} onClick={() => hanldeSave(item.id, item.image)}>
+                                            <Button className={styles.btn_save} onClick={() => handleSave(item.id, item.image)}>
                                                 <span className={styles.text_save}>{t("btn_save")}</span>
                                             </Button>
                                         </Modal.Footer>
@@ -602,7 +664,7 @@ function ListPostUser() {
                                             <Button className={styles.btn_close} onClick={handleCancel}>
                                                 <span className={styles.text_close}>{t("btn_close")}</span>
                                             </Button>
-                                            <Button className={styles.btn_save} onClick={() => hanldeSave(item.id, item.image)}>
+                                            <Button className={styles.btn_save} onClick={() => handleSave(item.id, item.image)}>
                                                 <span className={styles.text_save}>{t("btn_save")}</span>
                                             </Button>
                                         </Modal.Footer>

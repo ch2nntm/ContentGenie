@@ -27,7 +27,13 @@ export async function POST() {
             expires: new Date(0)
         }),
 
-        serialize("redirect_params", "", {
+        serialize("redirect_params_mastodon", "", {
+            path: "/",
+            sameSite: "strict",
+            expires: new Date(0)
+        }),
+
+        serialize("redirect_params_linkedin", "", {
             path: "/",
             sameSite: "strict",
             expires: new Date(0)

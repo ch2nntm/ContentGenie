@@ -22,7 +22,7 @@ interface User {
 function ContentGeneratorPage() {
     const t = useTranslations("content_generator");
     const [selectedPlatform, setSelectedPlatform] = useState("");
-    const [selectTopic, setSelectTopic] = useState("");
+    const [selectTopic, setSelectTopic] = useState("Âm nhạc");
     const [enterKeyword, setEnterKeyword] = useState("");
     const [selectedAudience, setSelectedAudience] = useState("public");
     const router = useRouter();
@@ -106,7 +106,7 @@ function ContentGeneratorPage() {
                     const token = Cookies.get("mastodon_token");
                 
                     if (!token) {
-                        Cookies.set("redirect_params", new URLSearchParams({
+                        Cookies.set("redirect_params_mastodon", new URLSearchParams({
                             platform: selectedPlatform,
                             date: `${selectedDate}T${selectedTime}`,
                             topic: selectTopic,
@@ -134,7 +134,7 @@ function ContentGeneratorPage() {
                     const linkedin_access_token = Cookies.get("linkedin_access_token");
                 
                     if (!linkedin_access_token) {
-                        Cookies.set("redirect_params", new URLSearchParams({
+                        Cookies.set("redirect_params_linkedin", new URLSearchParams({
                             platform: selectedPlatform,
                             date: `${selectedDate}T${selectedTime}`,
                             topic: selectTopic,

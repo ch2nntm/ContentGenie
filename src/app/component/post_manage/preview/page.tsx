@@ -103,7 +103,7 @@ function PreviewPage() {
     const uploadToCloudinary = async (file: string | Blob) => {
         if (typeof file === "string" && file.startsWith("http")) {
             console.log("Skipping upload for already uploaded URL:", file);
-            return file; // Trả luôn URL cũ
+            return file; 
         }
     
         const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
@@ -371,7 +371,7 @@ function PreviewPage() {
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                     >
                                 </iframe>
-            }
+                                }
                             </div>
                             <div className={styles.interact_post}>
                                 <div className={styles.back}>

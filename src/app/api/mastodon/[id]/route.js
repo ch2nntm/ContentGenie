@@ -51,7 +51,8 @@ export async function GET(req, {params}) {
 export async function DELETE(req, { params }) {
     const statusId = params?.id;
     console.log("Id:", statusId); 
-    const token_mastodon = cookies().get("mastodon_token")?.value;
+    const cookieStore = await cookies();
+    const token_mastodon = cookieStore.get("mastodon_token")?.value;
     console.log("Token từ cookies: ", token_mastodon);
 
     if (!token_mastodon) {
@@ -127,17 +128,20 @@ export async function PUT(req, {params}) {
         }
         statusFormData.append("status",content);
 
-        if(!imageUrl){
-            const imageResponse = await fetch(imageUrl);
+        if(imageUrl){
+            const newImageUrl = imageUrl.slice(0, -4) + ".png";
+            console.log("Image URL: ",newImageUrl);
+            const imageResponse = await fetch(newImageUrl);
             if(!imageResponse.ok){
                 throw new Error("Don't upload image from Cloudary");
             }
-        
+
             const imageBuffer = await imageResponse.arrayBuffer();
-            const imageBlob = new Blob([imageBuffer], {type: 'image/png'});
-        
+            const contentType = imageResponse.headers.get("content-type") || "image/png";
+            const imageBlob = new Blob([imageBuffer], { type: contentType });
+
             const mediaFormData = new FormData();
-            mediaFormData.append("file", imageBlob, "image.png");
+            mediaFormData.append("file", imageBlob, "media-file");
         
             const mediaResponse = await fetch(`${process.env.MASTODON_INSTANCE}/api/v1/media`,{
                 method: "POST",
