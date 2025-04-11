@@ -115,6 +115,7 @@ export async function PUT(req, {params}) {
         const formData = await req.formData();
         const content = formData.get("content");
         const imageUrl = formData.get("image");
+        const status = formData.get("status");
         const body = await params;
         const statusId = body?.id;
 
@@ -128,59 +129,74 @@ export async function PUT(req, {params}) {
         }
         statusFormData.append("status",content);
 
-        if(imageUrl){
-            const newImageUrl = imageUrl.slice(0, -4) + ".png";
-            console.log("Image URL: ",newImageUrl);
-            const imageResponse = await fetch(newImageUrl);
-            if(!imageResponse.ok){
-                throw new Error("Don't upload image from Cloudary");
+        if(status === "1"){
+            if(imageUrl){
+                const newImageUrl = imageUrl.slice(0, -4) + ".png";
+                console.log("Image URL: ",newImageUrl);
+                const imageResponse = await fetch(newImageUrl);
+                if(!imageResponse.ok){
+                    throw new Error("Don't upload image from Cloudary");
+                }
+
+                const imageBuffer = await imageResponse.arrayBuffer();
+                const contentType = imageResponse.headers.get("content-type") || "image/png";
+                const imageBlob = new Blob([imageBuffer], { type: contentType });
+
+                const mediaFormData = new FormData();
+                mediaFormData.append("file", imageBlob, "media-file");
+            
+                const mediaResponse = await fetch(`${process.env.MASTODON_INSTANCE}/api/v1/media`,{
+                    method: "POST",
+                    headers:{
+                    "Authorization": `Bearer ${token_mastodon}`,
+                    },
+                    body: mediaFormData,
+                });
+            
+                if(!mediaResponse.ok){
+                    const errorData = await mediaResponse.json();
+                    throw new Error(errorData.error || "Failed to upload media");
+                }
+            
+                const mediaData = await mediaResponse.json();
+                console.log("Image was uploaded to Mastodon: ",mediaData);
+            
+                statusFormData.append("media_ids[]",mediaData.id);
             }
-
-            const imageBuffer = await imageResponse.arrayBuffer();
-            const contentType = imageResponse.headers.get("content-type") || "image/png";
-            const imageBlob = new Blob([imageBuffer], { type: contentType });
-
-            const mediaFormData = new FormData();
-            mediaFormData.append("file", imageBlob, "media-file");
+            
         
-            const mediaResponse = await fetch(`${process.env.MASTODON_INSTANCE}/api/v1/media`,{
-                method: "POST",
+            const statusResponse = await fetch(`${process.env.MASTODON_INSTANCE}/api/v1/statuses/${statusId}`,{
+                method: "PUT",
                 headers:{
                 "Authorization": `Bearer ${token_mastodon}`,
+                "Content-Type": "application/x-www-form-urlencoded",
                 },
-                body: mediaFormData,
+                body: statusFormData,
             });
         
-            if(!mediaResponse.ok){
-                const errorData = await mediaResponse.json();
-                throw new Error(errorData.error || "Failed to upload media");
+            if(!statusResponse.ok){
+                const errorData = await statusResponse.json();
+                throw new Error(errorData.error || "Failed to post status");
             }
         
-            const mediaData = await mediaResponse.json();
-            console.log("Image was uploaded to Mastodon: ",mediaData);
-        
-            statusFormData.append("media_ids[]",mediaData.id);
+            const postData = await statusResponse.json();
+            console.log("Post: ",postData);
         }
-        
-    
-        const statusResponse = await fetch(`${process.env.MASTODON_INSTANCE}/api/v1/statuses/${statusId}`,{
-            method: "PUT",
-            headers:{
-            "Authorization": `Bearer ${token_mastodon}`,
-            "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: statusFormData,
-        });
-    
-        if(!statusResponse.ok){
-            const errorData = await statusResponse.json();
-            throw new Error(errorData.error || "Failed to post status");
+
+        const connection = await mysql.createConnection(dbConfig);
+        const [result] = await connection.execute(
+            "UPDATE post SET content = ?, image = ? WHERE id = ?",
+            [content, imageUrl, statusId]
+        );
+
+        if (result.affectedRows === 0) {
+            await connection.end();
+            return NextResponse.json({ error: "Không thể cập nhật thông tin" }, { status: 400 });
         }
-    
-        const postData = await statusResponse.json();
-        console.log("Post: ",postData);
-    
-        return NextResponse.json({success: true, postData}, {status: 200});
+
+        return NextResponse.json({
+            message: "Cập nhật bài đăng thành công",
+        }, { status: 200 });
     }catch(error){
       console.error("Error: ",error);
       return NextResponse.json({error: error.message}, {status: 500});

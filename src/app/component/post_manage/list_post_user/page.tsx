@@ -296,7 +296,7 @@ function ListPostUser() {
         }
     }
 
-    const handleSave = async (id: number, img: string) => {
+    const handleSave = async (id: number, img: string, status: number) => {
         const token_mastodon = Cookies.get("mastodon_token");
 
         if(!token_mastodon){
@@ -338,36 +338,37 @@ function ListPostUser() {
             // }
         }
 
-        const token = Cookies.get("token");
-        if (!token) return;
-        fetch("/api/post_manage/edit_post", {
-            method: "PUT",
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                id: id,
-                content: updateContent,
-                image: uploadedImageUrl,
-            }),
-            })
-            .then(async (res) => {
-                if (!res.ok) {
-                    throw new Error(`t("error_http") ${res.status}`);
-                }
-                return res.json();
-            })
-            .then((data) => {
-                if (data.accessToken) {
-                    Cookies.set("token", data.accessToken, { expires: 1 });
-                }
-            })
-            .catch((error) => console.error(error));
+        // const token = Cookies.get("token");
+        // if (!token) return;
+        // fetch("/api/post_manage/edit_post", {
+        //     method: "PUT",
+        //     headers: {
+        //         Authorization: `Bearer ${token}`,
+        //         "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify({
+        //         id: id,
+        //         content: updateContent,
+        //         image: uploadedImageUrl,
+        //     }),
+        //     })
+        //     .then(async (res) => {
+        //         if (!res.ok) {
+        //             throw new Error(`t("error_http") ${res.status}`);
+        //         }
+        //         return res.json();
+        //     })
+        //     .then((data) => {
+        //         if (data.accessToken) {
+        //             Cookies.set("token", data.accessToken, { expires: 1 });
+        //         }
+        //     })
+        //     .catch((error) => console.error(error));
 
         const formData = new FormData();
-        formData.append("image", image);
+        formData.append("image", uploadedImageUrl);
         formData.append("content", updateContent);
+        formData.append("status", status.toString());
         try {
             const response = await fetch(`/api/mastodon/${id}`, {
                 method: "PUT",
@@ -560,7 +561,7 @@ function ListPostUser() {
                                             <Button className={styles.btn_close} onClick={handleCancel}>
                                                 <span className={styles.text_close}>{t("btn_close")}</span>
                                             </Button>
-                                            <Button className={styles.btn_save} onClick={() => handleSave(item.id, item.image)}>
+                                            <Button className={styles.btn_save} onClick={() => handleSave(item.id, item.image, item.status)}>
                                                 <span className={styles.text_save}>{t("btn_save")}</span>
                                             </Button>
                                         </Modal.Footer>
@@ -626,7 +627,7 @@ function ListPostUser() {
                                             <button className={styles.dots_export} type="button" onClick={() => handleGeneratePdf(item.id)}>{t("export_pdf")}</button>
                                         </div>
                                     )}
-                                    {activeEdit === item.id && <Modal className={styles.modal_container} show={isClickBtnEdit}>
+                                    {/* {activeEdit === item.id && <Modal className={styles.modal_container} show={isClickBtnEdit}>
                                         <Modal.Header className={styles.modal_header}>
                                             <Button className={styles.button_close} onClick={()=>setIsClickBtnEdit(false)}>
                                                 <CloseIcon className={styles.icon_close}></CloseIcon>
@@ -664,11 +665,11 @@ function ListPostUser() {
                                             <Button className={styles.btn_close} onClick={handleCancel}>
                                                 <span className={styles.text_close}>{t("btn_close")}</span>
                                             </Button>
-                                            <Button className={styles.btn_save} onClick={() => handleSave(item.id, item.image)}>
+                                            <Button className={styles.btn_save} onClick={() => handleSave(item.id, item.image, item.status)}>
                                                 <span className={styles.text_save}>{t("btn_save")}</span>
                                             </Button>
                                         </Modal.Footer>
-                                    </Modal>}
+                                    </Modal>} */}
                                     </div>
                                 }
                             </div>
