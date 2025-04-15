@@ -333,6 +333,7 @@
     },
     "upgrade_package": {
         "text_credits": "Your remaining cards: ",
+        "text_expiration_date": "Unlimited card expiration date: ",
         "title_page": "Upgrade to Pro",
         "subtitle_page": "Unlock the full power of the app",
         "package_credits_title": "Credits Package",

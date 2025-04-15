@@ -12,6 +12,7 @@ import { CheckCircle } from "@mui/icons-material";
 export default function UpgradePackagePage(){
     const [userId, setUserId] = useState(0);
     const [credits, setCredits] = useState(0);
+    const [expirationDate, setExpirationDate] = useState("");
     const searchParams = useSearchParams();
     const code = searchParams.get("code") || "";
     const status = searchParams.get("status") || "";
@@ -54,21 +55,19 @@ export default function UpgradePackagePage(){
                                 const statusCode = resCode.dataResponse.data.status;
                                 const amount = resCode.dataResponse.data.amount;
                                 if(statusCode === "PAID"){
-                                    if(amount === 1){
-                                        const putRes = await fetch("/api/manage_account/check_credit", {
-                                            method: "PUT",
-                                            headers: {
-                                            "Authorization": `Bearer ${token}`,
-                                            "Content-Type": "application/json",
-                                            },
-                                            body: JSON.stringify({ id: data.user.id })
-                                        });
-                                    
-                                        if (!putRes.ok) {
-                                            throw new Error("PUT credit thất bại");
-                                        }
-                                        toast.success("Upgrade pro success");
+                                    const putRes = await fetch("/api/manage_account/check_credit", {
+                                        method: "PUT",
+                                        headers: {
+                                        "Authorization": `Bearer ${token}`,
+                                        "Content-Type": "application/json",
+                                        },
+                                        body: JSON.stringify({ id: data.user.id, amount })
+                                    });
+                                
+                                    if (!putRes.ok) {
+                                        throw new Error("PUT credit thất bại");
                                     }
+                                    toast.success("Upgrade pro success");
                                 }
                             }
                             fetch("/api/manage_account/check_credit",{
@@ -90,6 +89,8 @@ export default function UpgradePackagePage(){
                             .then((data) => {
                                 console.log("dataResponse: ",data.data[0].credits);
                                 setCredits(data.data[0].credits);
+                                const date = new Date(data.data[0].expiration_date).getDate() + "/" + (new Date(data.data[0].expiration_date).getMonth()+1) + "/" + new Date(data.data[0].expiration_date).getFullYear();;
+                                setExpirationDate(date);
                             })
                         }
                     })
@@ -191,6 +192,7 @@ export default function UpgradePackagePage(){
             <NavbarUser/>
             <div className={styles.container_content}>
                 <p className={styles.text_credits}>{t("text_credits")}<span style={{fontWeight: "bolder"}}>{credits}</span></p>
+                {expirationDate && <p className={styles.text_expiration_date}>{t("text_expiration_date")}<span style={{fontWeight: "bolder"}}>{expirationDate}</span></p>}
                 <div className={styles.package}>
                     <h2 className={styles.title}>{t("title_page")}</h2>
                     <p className={styles.subtitle}>{t("subtitle_page")}</p>

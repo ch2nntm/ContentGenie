@@ -333,6 +333,7 @@
     },
     "upgrade_package": {
         "text_credits": "Số thẻ còn lại của bạn: ",
+        "text_expiration_date": "Thời gian hết hạn sử dụng thẻ không giới hạn: ",
         "title_page": "Nâng cấp lên Pro",
         "subtitle_page": "Mở khóa toàn bộ tính năng mạnh mẽ của ứng dụng",
         "package_credits_title": "Gói Thẻ",

@@ -15,6 +15,12 @@ model account {
   password String?
   role     Int     @default(0)
   credits  Int     @default(0)
+  purchase_date DateTime?
+  expiration_date DateTime?
+
+  posts    post[]   @relation("AccountPosts")
+
+  creditUsages credits[] @relation("AccountCredits")
 }
 
 model post {
@@ -27,6 +33,8 @@ model post {
   platform String
   status   Boolean
   audience String
+
+  author    account   @relation("AccountPosts", fields: [user_id], references: [id])
 }
 
 model credits{
@@ -34,6 +42,8 @@ model credits{
   date DateTime
   credit_use Int
   @@id([user_id, date])
+
+  user    account   @relation("AccountCredits", fields: [user_id], references: [id])
 }
 
 model dashboard{

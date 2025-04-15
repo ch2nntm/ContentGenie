@@ -97,7 +97,9 @@ function ContentGeneratorPage() {
             })
             const dataQuantity = await responseQuantity.json();
             const quantity_credit = dataQuantity.data[0].credits;
-            if(quantity_credit === 0){
+            const expiration_date = dataQuantity.data[0].expiration_date;
+            
+            if((quantity_credit === 0 && !expiration_date) || (quantity_credit === 0 && expiration_date < Date.now())){
                 toast.error(t("not_enough_credit"));
                 return;
             }

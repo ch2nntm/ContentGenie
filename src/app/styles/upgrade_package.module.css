@@ -7,9 +7,15 @@
     margin-top: 0px;
 }
 
-.text_credits{
-    margin-left: -750px;
+.text_credits,
+.text_expiration_date{
     font-size: 20px;
+    align-self: flex-start;
+    margin-left: 250px;
+}
+
+.text_expiration_date{
+    margin-top: -10px;
 }
 
 .package{

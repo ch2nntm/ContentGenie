@@ -42,6 +42,7 @@ function PreviewPage() {
     const [isVideoTest, setIsVideoTest] = useState(true);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const hasFetched = useRef(false);
 
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
@@ -56,42 +57,6 @@ function PreviewPage() {
     ]);
 
     const [loading, setLoading] = useState(false); 
-
-    // const uploadToCloudinary = async (file: string | Blob) => {
-    //     const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
-    //     const uploadPreset = "demo-upload";
-    //     const form = new FormData();
-    //     form.append("upload_preset", uploadPreset);
-
-    //     if (typeof file === "string" && file.startsWith("blob:")) {
-    //         const responseConvert = await fetch(file);
-    //         const blob = await responseConvert.blob();
-    //         const fileConvert = new File([blob], "image.jpg", { type: blob.type });
-    //         form.append("file", fileConvert);
-    //     }
-    //     else{
-    //         form.append("file", file);
-    //     }
-    
-    //     try {
-    //         const response = await fetch(cloudinaryUrl, {
-    //             method: "POST",
-    //             body: form,
-    //         });
-    
-    //         const dataImg = await response.json();
-    //         if (dataImg.secure_url) {
-    //             console.log("IMAGE UPLOADED: ", dataImg.secure_url);
-    //             return dataImg.secure_url; 
-    //         } else {
-    //             toast.error("Upload ảnh thất bại!");
-    //             return null;
-    //         }
-    //     } catch (error) {
-    //         console.error("Lỗi khi upload ảnh:", error);
-    //         return null;
-    //     }
-    // };
 
     const uploadToCloudinary = async (file: string | Blob) => {
         if (typeof file === "string" && file.startsWith("http")) {
@@ -178,35 +143,11 @@ function PreviewPage() {
     };
 
     useEffect(() => {
-        fetchData(keyword);
+        if (!hasFetched.current) {
+            fetchData(keyword);
+            hasFetched.current = true;
+        }
     }, [keyword]);
-
-    // useEffect(()=>{
-    //     const fetchDataAsync = async () => {
-    //         const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
-    //         const uploadPreset = "demo-upload";
-    //         const form = new FormData();
-    //         form.append("file", imgUrl);
-    //         form.append("upload_preset", uploadPreset);
-
-    //         const response = await fetch(cloudinaryUrl, {
-    //             method: "POST",
-    //             body: form,
-    //         });
-
-    //         const dataImg = await response.json();
-    //         if (dataImg.secure_url) {
-    //             console.log("IMAGE1: ",dataImg.secure_url);
-    //             setImgUrl(dataImg.secure_url);
-    //             console.log("IMAGE2: ",imgUrl);
-    //         } else {
-    //             toast.error("Upload ảnh thất bại!");
-    //             return;
-    //         }
-    //         console.log("IMAGE: ",imgUrl);
-    //     };
-    //     fetchDataAsync();
-    // },[imgUrl]);
 
     const handleCancel = () => {
         setUpdateContent(content);
@@ -266,7 +207,6 @@ function PreviewPage() {
     const hanldeUpload = async () => {
         try {
             const linkedin_id_token = Cookies.get("linkedin_id_token");
-            // const linkedin_access_token = Cookies.get("linkedin_access_token");
             const responseGetInfo = await fetch("/api/linkedin",{
                 method: "GET",
                 headers: {
@@ -276,23 +216,6 @@ function PreviewPage() {
             const dataresponseGetInfo = await responseGetInfo.json();
             console.log("dataresponseGetInfo: ",dataresponseGetInfo);
 
-            // const linkedinRes = await fetch("/api/post_linkedin", {
-            //     method: "POST",
-            //     headers: {
-            //         Authorization: `Bearer ${linkedin_access_token}`,
-            //     },
-            //     body: JSON.stringify({userId: dataresponseGetInfo.sub, content,  audience: audience === "public" ? "PUBLIC" : "CONNECTIONS", image: imgUrl}),
-            // });
-    
-            // const linkedInData = await linkedinRes.json();
-            // console.log("LinkedIn response:", linkedInData.postId.id);
-    
-            // if (!linkedinRes.ok) {
-            //     toast.error("Lỗi khi gửi bài viết đến Linkedin");
-            //     return;
-            // }
-    
-            // toast.success("Linkedin post successful!");
             const token = Cookies.get("token");
             const id_post = Math.floor(1000 + Math.random() * 9000).toString();
             const userId = auth?.user?.id || null; 

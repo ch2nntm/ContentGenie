@@ -344,3 +344,7 @@ cron.schedule('* * * * *', async () => {
         await connect.end();
     });
 });
+
+cron.schedule('* 14 * * *', async () => {
+    console.log("At 2pm to console");
+});

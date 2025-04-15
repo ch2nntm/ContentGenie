@@ -45,6 +45,7 @@ function PreviewPage() {
     const [isVideoTest, setIsVideoTest] = useState(true);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const hasFetched = useRef(false);
 
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
@@ -59,46 +60,6 @@ function PreviewPage() {
     ]);
 
     const [loading, setLoading] = useState(false); 
-
-    // const uploadToCloudinary = async (file: string | Blob) => {
-    //     const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
-    //     const uploadPreset = "demo-upload";
-    //     const form = new FormData();
-    //     form.append("upload_preset", uploadPreset);
-
-    //     if (typeof file === "string" && file.startsWith("blob:")) {
-    //         const responseConvert = await fetch(file);
-    //         const blob = await responseConvert.blob();
-    //         // const fileConvert = new File([blob], "image.jpg", { type: blob.type });
-    //         const fileName = blob.type.startsWith("video/") ? "video.mp4" : "image.jpg";
-    //         const fileConvert = new File([blob], fileName, { type: blob.type });
-
-    //         form.append("file", fileConvert);
-    //     }
-    //     else{
-    //         form.append("file", file);
-    //     }
-    
-    //     try {
-    //         const response = await fetch(cloudinaryUrl, {
-    //             method: "POST",
-    //             body: form,
-    //         });
-    
-    //         const dataImg = await response.json();
-    //         if (dataImg.secure_url) {
-    //             // console.log("IMAGE UPLOADED: ", dataImg.secure_url);
-    //             return dataImg.secure_url; 
-    //         } else {
-    //             toast.error("Upload ảnh thất bại!");
-    //             return null;
-    //         }
-    //     } catch (error) {
-    //         console.error("Lỗi khi upload ảnh:", error);
-    //         return null;
-    //     }
-    // };
-
    
     const uploadToCloudinary = async (file: string | Blob) => {
         if (typeof file === "string" && file.startsWith("http")) {
@@ -185,35 +146,11 @@ function PreviewPage() {
     };
 
     useEffect(() => {
-        fetchData(keyword);
-    }, [keyword]);
-
-    // useEffect(()=>{
-    //     const fetchDataAsync = async () => {
-    //         const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
-    //         const uploadPreset = "demo-upload";
-    //         const form = new FormData();
-    //         form.append("file", imgUrl);
-    //         form.append("upload_preset", uploadPreset);
-
-    //         const response = await fetch(cloudinaryUrl, {
-    //             method: "POST",
-    //             body: form,
-    //         });
-
-    //         const dataImg = await response.json();
-    //         if (dataImg.secure_url) {
-    //             console.log("IMAGE1: ",dataImg.secure_url);
-    //             setImgUrl(dataImg.secure_url);
-    //             console.log("IMAGE2: ",imgUrl);
-    //         } else {
-    //             toast.error("Upload ảnh thất bại!");
-    //             return;
-    //         }
-    //         console.log("IMAGE: ",imgUrl);
-    //     };
-    //     fetchDataAsync();
-    // },[imgUrl]);
+        if (!hasFetched.current) {  // Tránh gọi hàm fetchData nhiều lần
+            fetchData(keyword);
+            hasFetched.current = true;
+        }
+    },[]);
 
     const handleCancel = () => {
         setUpdateContent(content);
@@ -261,25 +198,6 @@ function PreviewPage() {
                 setImgUrl(uploadedImgUrl);
             }
 
-            // const formData = new FormData();
-            // formData.append("url", uploadedImgUrl);
-            // formData.append("content", content);
-            // formData.append("audience", audience);
-
-            // const mastodonRes = await fetch("/api/mastodon", {
-            //     method: "POST",
-            //     body: formData,
-            // });
-    
-            // const mastodonData = await mastodonRes.json();
-            // console.log("Mastodon response:", mastodonData.postData.id);
-    
-            // if (!mastodonRes.ok) {
-            //     toast.error("Lỗi khi gửi bài viết đến Mastodon");
-            //     return;
-            // }
-    
-            // toast.success("Mastodon post successful!");
             const token = Cookies.get("token");
 
             const id_post = Math.floor(1000 + Math.random() * 9000).toString();

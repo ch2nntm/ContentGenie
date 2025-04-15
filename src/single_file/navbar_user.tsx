@@ -145,7 +145,7 @@ function NavbarUser(){
                                 </div>
                                 <p>{t("dashboard")}</p>
                             </Link>
-                            <Link href="/component/upgrade" className={styles.dashboard}>
+                            <Link href="/component/upgrade_package" className={styles.dashboard}>
                                 <div className={styles.icon_dashboard}>
                                     <PaymentIcon/>
                                 </div>
