@@ -5,6 +5,7 @@
         "account_exists": "Tài khoản đã tồn tại!",
         "error": "Đã xảy ra lỗi, vui lòng thử lại!",
         "wrong_account": "Sai tài khoản hoặc mật khẩu!" ,
+        "email_not_found": "Email không tồn tại!",
         "pls_login": "Vui lòng đăng nhập!",
         "signout_success": "Đăng xuất thành công!",
         "signout_fail": "Đăng xuất thất bại!"
@@ -21,7 +22,7 @@
     "login": {
         "label_email": "Email",
         "label_password": "Mật khẩu",
-        "input_username": "Nhập tên tài khoản",
+        "input_email": "Nhập email",
         "input_password": "Nhập mật khẩu",
         "signin": "Đăng Nhập",
         "signup": "Đăng Ký",
@@ -74,7 +75,9 @@
         "code":"Mã",
         "send_code_successful":"Gửi mã thành công!",
         "exist_account": "Tài khoản đã tồn tại!",
-        "wrong_code":"Mã sai!"
+        "wrong_code":"Mã sai!",
+        "resend_code": "Gửi lại mã",
+        "resend_code_again": "Đã gửi lại mã"
     },
     "preview": {
         "time": "giờ trước",
@@ -194,7 +197,8 @@
         "error_code": "Mã không đúng!",
         "resend_code": "Gửi lại mã",
         "resend_code_again": "Đã gửi lại mã",
-        "password_match": "Mật khẩu mới trùng với mật khẩu cũ!"
+        "password_match": "Mật khẩu mới trùng với mật khẩu cũ!",
+        "email_wrong": "Email không tồn tại!"
     },
     "list_post_user":{
         "title_page": "Danh sách bài đăng",
@@ -326,5 +330,31 @@
         "subtitle_footer": "Nhận ngay 20 thẻ sử dụng tính năng!",
         "btn_upgrade1": "Nâng cấp",
         "btn_upgrade2": "PRO"
+    },
+    "upgrade_package": {
+        "text_credits": "Số thẻ còn lại của bạn: ",
+        "title_page": "Nâng cấp lên Pro",
+        "subtitle_page": "Mở khóa toàn bộ tính năng mạnh mẽ của ứng dụng",
+        "package_credits_title": "Gói Thẻ",
+        "package_credits_subtitle": "Chỉ với 10.000đ",
+        "package_credits_check1": "Có ngay 20 thẻ dùng",
+        "package_credits_check2": "Không giới hạn thời gian",
+        "package_credits_check3": "Sử dụng linh hoạt theo nhu cầu cá nhân",
+        "package_credits_check4": "Phù hợp với người dùng muốn trải nghiệm thử hoặc sử dụng không thường xuyên",
+        "package_credits_button": "Chọn Gói",
+        "package_month_title": "Gói Tháng",
+        "package_month_subtitle": "Miễn phí lượt dùng",
+        "package_month_check1": "Không giới hạn lượt sử dụng",
+        "package_month_check2": "Thời hạn sử dụng: 30 ngày",
+        "package_month_check3": "Lý tưởng cho người dùng thường xuyên, học tập hoặc làm việc liên tục",
+        "package_month_check4": "Thoải mái trải nghiệm - Không lo giới hạn",
+        "package_month_button": "Nâng cấp",
+        "package_year_title": "Gói Năm",
+        "package_year_subtitle": "Miễn phí lượt dùng",
+        "package_year_check1": "Không giới hạn lượt sử dụng",
+        "package_year_check2": "Thời hạn sử dụng: 365 ngày",
+        "package_year_check3": "Tiết kiệm chi phí hơn so với gói tháng nếu dùng lâu dài",
+        "package_year_check4": "Lựa chọn tốt nhất cho người cần dùng thường xuyên trong thời gian dài",
+        "package_year_button": "Nâng cấp"
     }
 }

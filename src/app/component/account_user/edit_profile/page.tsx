@@ -59,6 +59,7 @@ function EditProfilePage() {
             const data = await response.json();
             if (data.secure_url) {
                 setAvatar(data.secure_url);
+                console.log("Uploaded image URL:", data.secure_url);
             } else {
                 toast.error(t("error_upload_img"));
                 return;

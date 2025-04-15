@@ -52,6 +52,18 @@ export async function POST(req) {
         const {email, password } = await req.json();
 
         const connection = await mysql.createConnection(dbConfig);
+        const [rowsCheckEmail] = await connection.execute(
+            "SELECT * FROM account WHERE email = ?",
+            [email]
+        );
+
+        if(rowsCheckEmail.length === 0) {
+            return new Response(
+                JSON.stringify({ error: "Email not found!" }),
+                { status: 402, headers: { "Content-Type": "application/json" } }
+            );
+        }
+
         const [rows] = await connection.execute(
             "SELECT * FROM account WHERE email = ? AND password = ?",
             [email, password]
@@ -65,8 +77,8 @@ export async function POST(req) {
             return NextResponse.json({ message: "Log in successfully!", user, token }, { status: 200 });
         } else {
             return new Response(
-                JSON.stringify({ error: "Wrong account or password!" }),
-                { status: 401, headers: { "Content-Type": "application/json" } }
+                JSON.stringify({ error: "Wrong password!" }),
+                { status: 402, headers: { "Content-Type": "application/json" } }
             );
         }
     } catch (error) {

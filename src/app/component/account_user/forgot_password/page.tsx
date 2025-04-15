@@ -10,11 +10,11 @@ import { useTranslations } from "next-intl";
 function ForgotPassword(){
     const t = useTranslations("forgot_password");
     const [email, setEmail] = useState<string>("");
-    const [code, setCode] = useState<string>("");
+    // const [code, setCode] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isClickForgotPassword, setIsClickForgotPassword] = useState(false);
-    const [isClickSendCode, setIsClickSendCode] = useState(false);
+    // const [isClickSendCode, setIsClickSendCode] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -25,38 +25,38 @@ function ForgotPassword(){
     }
 
     const hanldeCancelResetPassword = () => {
-        setIsClickSendCode(false);
-        setIsClickForgotPassword(true);
-    }
-
-    const hanldeCancelSendCode = () => {
+        // setIsClickSendCode(false);
         setIsClickForgotPassword(false);
-        setEmail("");
     }
 
-    const handleSendCode = async() => {
-        if(!code){
-            toast.error(t("code_not_full"));
-            return;
-        }
-        const response = await fetch("/api/verify_otp",{
-            method: "POST",
-            body: JSON.stringify({email, otp: code, password: "check", message1: t("message1"), message2: t("message2"), checkOnly: true})
-        })
-        if(response.ok)
-            setIsClickSendCode(true);
-        else{
-            toast.error(t("error_code"));
-        }
-    }
+    // const hanldeCancelSendCode = () => {
+    //     setIsClickForgotPassword(false);
+    //     setEmail("");
+    // }
 
-    const handleResendCode = () => {
-        fetch("/api/send_otp",{
-            method: "POST",
-            body: JSON.stringify({email})
-        });
-        toast.success(t("resend_code_again"));
-    }
+    // const handleSendCode = async() => {
+    //     if(!code){
+    //         toast.error(t("code_not_full"));
+    //         return;
+    //     }
+    //     const response = await fetch("/api/verify_otp",{
+    //         method: "POST",
+    //         body: JSON.stringify({email, otp: code, password: "check", message1: t("message1"), message2: t("message2"), checkOnly: true})
+    //     })
+    //     if(response.ok)
+    //         setIsClickSendCode(true);
+    //     else{
+    //         toast.error(t("error_code"));
+    //     }
+    // }
+
+    // const handleResendCode = () => {
+    //     fetch("/api/send_otp",{
+    //         method: "POST",
+    //         body: JSON.stringify({email})
+    //     });
+    //     toast.success(t("resend_code_again"));
+    // }
 
     const handleForgotPassword = () => {
         if(!email){
@@ -75,14 +75,15 @@ function ForgotPassword(){
             .then((res) => res.json())
             .then((res) => {
                 if(res.message){
-                    setCode("");
-                    fetch("/api/send_otp",{
-                        method: "POST",
-                        body: JSON.stringify({email})
-                    })
-                    .then(()=>{
-                        setIsClickForgotPassword(true);
-                    });
+                    setIsClickForgotPassword(true);
+                    // setCode("");
+                    // fetch("/api/send_otp",{
+                    //     method: "POST",
+                    //     body: JSON.stringify({email})
+                    // })
+                    // .then(()=>{
+                    //     setIsClickForgotPassword(true);
+                    // });
                 }
                 else if(res.error){
                     toast.error(t("email_wrong"));
@@ -119,7 +120,6 @@ function ForgotPassword(){
                 .then((res) => res.json())
                 .then((res) => {
                     if(res.message){
-                        console.log("res: ", res);
                         fetch("/api/verify_otp",{
                             method: "PUT",
                             body: JSON.stringify({oldEmail: "Check", newEmail: email, password, message1: t("message1"), message2: t("message2")})
@@ -154,7 +154,7 @@ function ForgotPassword(){
                     <button onClick={handleForgotPassword} type="button" className={styles.btn_forgot_password}>{t("title")}</button>
                 </div>
 
-                <div className={styles.container_code} style={{display: isClickForgotPassword && !isClickSendCode ? "block" : "none"}}>
+                {/* <div className={styles.container_code} style={{display: isClickForgotPassword && !isClickSendCode ? "block" : "none"}}>
                     <p className={styles.title}>
                         {t("title_code")}
                     </p>
@@ -170,9 +170,9 @@ function ForgotPassword(){
                     </div>
                     <button onClick={hanldeCancelSendCode} type="button" className={styles.btn_cancel}>{t("btn_cancel")}</button>
                     <button onClick={handleSendCode} type="button" className={styles.btn_forgot_password}>{t("send_code")}</button>
-                </div>
+                </div> */}
 
-                <div className={styles.container_reset_password} style={{display: isClickSendCode ? "block" : "none"}}>
+                <div className={styles.container_reset_password} style={{display: isClickForgotPassword ? "block" : "none"}}>
                     <p className={styles.title}>
                             {t("reset_password")}
                         </p>

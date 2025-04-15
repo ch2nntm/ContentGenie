@@ -99,6 +99,14 @@ function Register() {
             toast.error(t("wrong_code"));
         }
     }
+
+    const handleResendCode = () => {
+        fetch("/api/send_otp",{
+            method: "POST",
+            body: JSON.stringify({email})
+        });
+        toast.success(t("resend_code_again"));
+    }
     
     return(
         <>
@@ -205,6 +213,9 @@ function Register() {
                                         onChange={(e) => setEnterCode(e.target.value)}
                                         />
                                 </div>
+                            </div>
+                            <div className={styles.div_resend_code}>
+                                <button onClick={handleResendCode} type="button" className={styles.btn_resend_code}>{t("resend_code")}</button>
                             </div>
                             <div className={styles.btn_group}>
                                 <button className={styles.btn_cancel} onClick={cancelEnterCode}>

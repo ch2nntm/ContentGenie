@@ -37,7 +37,12 @@ export async function POST(req) {
 
         const otp = generateOTP();
 
-        await redis.set(`otp:${email}`, otp, { ex: 300 });
+        const storedOTP = await redis.get(`otp:${email}`);
+        if(storedOTP){
+            await redis.del(`otp:${email}`);
+        }
+
+        await redis.set(`otp:${email}`, otp, { ex: 30 });
 
         await sendEmail(email, otp);
 

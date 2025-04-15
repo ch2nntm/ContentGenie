@@ -4,7 +4,8 @@
         "password_not_match": "Passwords do not match!",
         "account_exists": "Account already exists!",
         "error": "An error occurred, please try again!",
-        "wrong_account": "Wrong account or password!" ,
+        "wrong_account": "Wrong password!" ,
+        "email_not_found": "Email does not exists!",
         "pls_login": "Please sign in!",
         "signout_success": "Sign out successfully!",
         "signout_fail": "Sign out failed!"
@@ -21,7 +22,7 @@
     "login": {
         "label_email": "Email",
         "label_password": "Password",
-        "input_username": "Enter your username",
+        "input_email": "Enter your email",
         "input_password": "Enter your password",
         "signin": "Sign In",
         "signup": "Sign Up",
@@ -73,7 +74,9 @@
         "btn_cancel": "Cancel",
         "code": "Code",
         "send_code_successful":"Send code successful!",
-        "wrong_code":"Wrong code!"
+        "wrong_code":"Wrong code!",
+        "resend_code": "Resend code",
+        "resend_code_again": "Code sent again"
     },
     "preview": {
         "time": "hours ago",
@@ -193,7 +196,8 @@
         "error_code": "Code is incorrect!",
         "resend_code": "Resend code",
         "resend_code_again": "Code sent again",
-        "password_match": "New password matches old password!"
+        "password_match": "New password matches old password!",
+        "email_wrong": "Email does not exist!"
     },
     "list_post_user":{
         "title_page": "List Post",
@@ -326,6 +330,32 @@
         "subtitle_footer": "Get 20 feature cards now!",
         "btn_upgrade1": "Upgrade to",
         "btn_upgrade2": "PRO"
+    },
+    "upgrade_package": {
+        "text_credits": "Your remaining cards: ",
+        "title_page": "Upgrade to Pro",
+        "subtitle_page": "Unlock the full power of the app",
+        "package_credits_title": "Credits Package",
+        "package_credits_subtitle": "Only 10,000 VND",
+        "package_credits_check1": "Get 20 credits immediately",
+        "package_credits_check2": "Unlimited time",
+        "package_credits_check3": "Flexible use according to personal needs",
+        "package_credits_check4": "Suitable for users who want to try it out or use it infrequently",
+        "package_credits_button": "Choose Package",
+        "package_month_title": "Month Package",
+        "package_month_subtitle": "Free usage",
+        "package_month_check1": "Unlimited usage",
+        "package_month_check2": "Validity period: 30 days",
+        "package_month_check3": "Ideal for regular users, continuous study or work",
+        "package_month_check4": "Free experience - No worries about limits",
+        "package_month_button": "Upgrade",
+        "package_year_title": "Year Package",
+        "package_year_subtitle": "Free usage",
+        "package_year_check1": "Unlimited usage",
+        "package_year_check2": "Validity: 365 days",
+        "package_year_check3": "More cost-effective than monthly package if used long term",
+        "package_year_check4": "Best choice for people who need to use regularly for a long time",
+        "package_year_button": "Upgrade"
     }
 }
 

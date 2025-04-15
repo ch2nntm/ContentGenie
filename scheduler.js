@@ -1,9 +1,10 @@
-import { NextResponse } from 'next/server';
 import cron from 'node-cron';
+import fs from 'fs';
 import mysql from "mysql2/promise";
-import fs from "fs";
-import { cookies } from 'next/headers';
 import nodemailer from "nodemailer";
+import { error } from 'console';
+import dotenv from 'dotenv';
+dotenv.config(); // để gọi process.env
 
 const dbConfig = {
     host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
@@ -155,9 +156,8 @@ async function postToLinkedin(post, token_linkedin, sub_ID) {
             sendEmail(email[0][0].email);
     
             await connection.end();
-            return NextResponse.json({ success: true, postId: data });
           } else {
-            return NextResponse.json({ error: "Failed to post", details: data }, { status: 400 });
+            console.error(error);
           }
         }
         else{
@@ -261,81 +261,86 @@ async function postToLinkedin(post, token_linkedin, sub_ID) {
                 sendEmail(email[0][0].email);
         
                 await connection.end();
-                return NextResponse.json({ success: true, postId: dataResult });
               } else {
-                return NextResponse.json({ error: "Failed to post", details: data }, { status: 400 });
+                console.error(error);
               }
             }
-            
-            return NextResponse.json({error},{status: 400});
           } catch (error) {
             console.error('Error during the upload process:', error);
           }
-        return NextResponse.json({message: "Error"}, {status: 400});
         }
       }catch(error){
         console.log("error: ",error);
-        return NextResponse.json({error}, {status: 500});
       }
 }
 
 
-let isScheduled = false;
+const filePath = './token.txt';
 
-export async function GET() {
-    try {
-        const cookieStore = await cookies();
-        const token_mastodon = cookieStore.get("mastodon_token")?.value;
-        const token_linkedin = cookieStore.get("linkedin_access_token")?.value;
-        if (!token_mastodon) {
-            return NextResponse.json({ error: "Thiếu token Mastodon!" }, { status: 401 });
-        }
+if (!fs.existsSync(filePath)) {
+    fs.writeFile(filePath, '', function (err) {
+    if (err) throw err;
+    console.log('File created successfully');
+    });
+}
+cron.schedule('* * * * *', async () => {
+    // console.log("process.env.EMAIL_USER: ",process.env.EMAIL_USER);
+    // console.log("process.env.EMAIL_PASS: ",process.env.EMAIL_PASS);
+    console.log("Running cron!");
+    fs.readFile('./token.txt', async function (err, data) {
+        if (err) throw err;
+        const lines = data.toString().split('\n');
+        let token_linkedin = '';
+        let token_mastodon = '';
+
+        lines.forEach(line => {
+            if (line.startsWith('linkedin_token:')) {
+                token_linkedin = line.replace('linkedin_token:', '').trim();
+            } else if (line.startsWith('mastodon_token:')) {
+                token_mastodon = line.replace('mastodon_token:', '').trim();
+            }
+        });
 
         const response = await fetch("https://api.linkedin.com/v2/userinfo", {
             method: "GET",
             headers: { Authorization: `Bearer ${token_linkedin}` },
         });
         
-        const data = await response.json();
+        const dataResponse = await response.json();
 
-        const sub_ID = data.sub;
+        const sub_ID = dataResponse.sub;
+        const connect = await mysql.createConnection(dbConfig);
+        const currentTime =  new Date().toLocaleString("en-CA", { 
+            timeZone: "Asia/Ho_Chi_Minh", 
+            hour12: false 
+        }).replace(",", "");
+        console.log("CurrentTime: ",currentTime);
 
-        console.log("token_linkedin: ",token_linkedin);
+        const [resultPost] = await connect.execute(
+            "SELECT * FROM post WHERE post.posttime <= ? AND post.status = 0", [currentTime]
+        );
 
-        if (!isScheduled) {
-            isScheduled = true;
-            cron.schedule('* * * * *', async () => {
-                console.log("Chạy cron job...");
+        if(resultPost.length === 0)
+            console.log("No posts have been posted yet!");
 
-                const connect = await mysql.createConnection(dbConfig);
-                const currentTime =  new Date().toLocaleString("en-CA", { 
-                    timeZone: "Asia/Ho_Chi_Minh", 
-                    hour12: false 
-                }).replace(",", "");
-                console.log("CurrentTime: ",currentTime);
-
-                const [resultPost] = await connect.execute(
-                    "SELECT * FROM post WHERE post.posttime <= ? AND post.status = 0", [currentTime]
-                );
-
-                if (resultPost.length > 0) {
-                    for (let post of resultPost) {
-                        if (post.platform === "Mastodon") {
-                            await postToMastodon(post, token_mastodon);
-                        }
-                        else{
-                            await postToLinkedin(post, token_linkedin, sub_ID);
-                        }
+        if (resultPost.length > 0) {
+            for (let post of resultPost) {
+                if (post.platform === "Mastodon") {
+                    if(!token_mastodon){
+                        console.log("Not logged in Mastodon");
+                        return;
                     }
+                    await postToMastodon(post, token_mastodon);
                 }
-                await connect.end();
-            });
+                else{
+                    if(!token_linkedin){
+                        console.log("Not logged in Linkedin");
+                        return;
+                    }
+                    await postToLinkedin(post, token_linkedin, sub_ID);
+                }
+            }
         }
-
-        return NextResponse.json({ message: "Scheduler is running" }, { status: 200 });
-
-    } catch (error) {
-        console.error("Lỗi: ", error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-}
+        await connect.end();
+    });
+});

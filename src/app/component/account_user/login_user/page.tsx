@@ -75,7 +75,10 @@ function Login() {
                     }
                 });
             } else {
-                toast.error(noti_toast("wrong_account"));
+                if(data.error === "Email not found!")
+                    toast.error(noti_toast("email_not_found"));
+                else if(data.error === "Wrong password!")
+                    toast.error(noti_toast("wrong_account"));
             }
         });
     };
@@ -98,7 +101,7 @@ function Login() {
                         <input
                             type="email"
                             id="email"
-                            placeholder={t("input_username")}
+                            placeholder={t("input_email")}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className={styles.input}

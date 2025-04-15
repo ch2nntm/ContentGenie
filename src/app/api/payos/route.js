@@ -62,24 +62,27 @@ export async function POST(req) {
 }
 
 
-// export async function GET() {
-//   try{
-//     const api_key = process.env.NEXT_PUBLIC_PAYOS_API_KEY;
-//     const client_id = process.env.NEXT_PUBLIC_PAYOS_CLIENT_ID;
+export async function GET(req) {
+  try{
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
+    console.log("ID từ client:", id);
+    const api_key = process.env.NEXT_PUBLIC_PAYOS_API;
+    const client_id = process.env.NEXT_PUBLIC_PAYOS_CLIENT_ID;
 
-//     const response = await fetch("https://api-merchant.payos.vn/v2/payment-requests/27", {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//         "x-api-key": api_key,
-//         "x-client-id": client_id,
-//       },
-//     });
+    const response = await fetch(`https://api-merchant.payos.vn/v2/payment-requests/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": api_key,
+        "x-client-id": client_id,
+      },
+    });
   
-//     const dataResponse = await response.json();
-//     console.log("Response từ PayOS:", dataResponse);
-//     return NextResponse.json({ dataResponse: dataResponse }, { status: 200 });
-//   }catch(error){
-//     return NextResponse.json({ error }, { status: 500 });
-//   }
-// }
+    const dataResponse = await response.json();
+    console.log("Response từ PayOS:", dataResponse.data.status);
+    return NextResponse.json({ dataResponse: dataResponse }, { status: 200 });
+  }catch(error){
+    return NextResponse.json({ error }, { status: 500 });
+  }
+}

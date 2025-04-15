@@ -150,7 +150,7 @@ export default function UpgradePro() {
                         <CheckCircle className={styles.icon_checkcircle}/>
                         <span>{t("check_3")}</span>
                     </div>
-                    </div>
+                </div>
             </div>
             <div className={styles.footer}>
                 <div className={styles.footet_text}>

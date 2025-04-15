@@ -1,0 +1,273 @@
+"use client"
+import styles from "../../styles/upgrade_package.module.css"
+import NavbarUser from "@/single_file/navbar_user";
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { toast, ToastContainer } from "react-toastify";
+import { CheckCircle } from "@mui/icons-material";
+
+
+export default function UpgradePackagePage(){
+    const [userId, setUserId] = useState(0);
+    const [credits, setCredits] = useState(0);
+    const searchParams = useSearchParams();
+    const code = searchParams.get("code") || "";
+    const status = searchParams.get("status") || "";
+    const orderCode = searchParams.get("orderCode") || "";
+    const t = useTranslations("upgrade_package");
+    // const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(()=>{
+        const fetchData = async() => {
+            try{
+                const token = Cookies.get("token");
+                if(!token){
+                    window.location.href = "/component/account_user/login_user";
+                }
+                else{
+                    fetch("/api/manage_account/login", {
+                        method: "GET",
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    })
+                    .then(async (res) => {
+                        if (!res) {
+                            throw new Error(`Lỗi HTTP: ${res}`);
+                        }
+                        const contentType = res.headers.get("content-type");
+                        if (!contentType || !contentType.includes("application/json")) {
+                            throw new Error("Phản hồi không phải JSON hợp lệ");
+                        }
+                        return res.json();
+                    })
+                    .then(async (data) => {
+                        if (data.user) {
+                            setUserId(data.user.id);
+                            if(code==="00" && status==="PAID"){
+                                const getCode = await fetch(`/api/payos?id=${orderCode}`,{
+                                    method: "GET"
+                                })
+                                const resCode = await getCode.json();
+                                const statusCode = resCode.dataResponse.data.status;
+                                const amount = resCode.dataResponse.data.amount;
+                                if(statusCode === "PAID"){
+                                    if(amount === 1){
+                                        const putRes = await fetch("/api/manage_account/check_credit", {
+                                            method: "PUT",
+                                            headers: {
+                                            "Authorization": `Bearer ${token}`,
+                                            "Content-Type": "application/json",
+                                            },
+                                            body: JSON.stringify({ id: data.user.id })
+                                        });
+                                    
+                                        if (!putRes.ok) {
+                                            throw new Error("PUT credit thất bại");
+                                        }
+                                        toast.success("Upgrade pro success");
+                                    }
+                                }
+                            }
+                            fetch("/api/manage_account/check_credit",{
+                                method: "POST",
+                                headers:{
+                                    "Authorization": `Bearer ${token}`
+                                },
+                                body: JSON.stringify({id: data.user.id})
+                            }).then(async (res) => {
+                                if (!res) {
+                                    throw new Error(`Lỗi HTTP: ${res}`);
+                                }
+                                const contentType = res.headers.get("content-type");
+                                if (!contentType || !contentType.includes("application/json")) {
+                                    throw new Error("Phản hồi không phải JSON hợp lệ");
+                                }
+                                return res.json();
+                            })
+                            .then((data) => {
+                                console.log("dataResponse: ",data.data[0].credits);
+                                setCredits(data.data[0].credits);
+                            })
+                        }
+                    })
+                    .catch((error) => console.error("Lỗi lấy thông tin user:", error));
+                }
+            }catch(error){
+                console.log(error);
+            }finally{
+                // setIsLoading(false);
+            }
+        };
+        fetchData();
+        
+    },[]);
+
+    const hanldeUpgradeCredits = async () => {
+        if(userId){
+            const response = await fetch("/api/payos", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    amount: 1,
+                    description: "Upgrade credits",
+                    cancelUrl: "/component/upgrade_package",
+                    returnUrl: "/component/upgrade_package"
+                })
+            });
+        
+            const data = await response.json();
+
+            if(data.error) {
+                console.error("Lỗi từ PayOS:", data.desc);
+            }
+            if (data && data.paymentUrl.code === '00') {
+                window.location.href = data.paymentUrl.data.checkoutUrl;
+            } 
+        }
+        else{
+            toast.error("Vui long dang nhap!");
+        }
+    }
+
+    const hanldeUpgradeMonth = async () => {
+        if(userId){
+            const response = await fetch("/api/payos", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    amount: 3,
+                    description: "Upgrade month",
+                    cancelUrl: "/component/upgrade_package",
+                    returnUrl: "/component/upgrade_package"
+                })
+            });
+        
+            const data = await response.json();
+
+            if(data.error) {
+                console.error("Lỗi từ PayOS:", data.desc);
+            }
+            if (data && data.paymentUrl.code === '00') {
+                window.location.href = data.paymentUrl.data.checkoutUrl;
+            } 
+        }
+        else{
+            toast.error("Vui long dang nhap!");
+        }
+    }
+
+    const hanldeUpgradeYear = async () => {
+        if(userId){
+            const response = await fetch("/api/payos", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    amount: 20,
+                    description: "Upgrade year",
+                    cancelUrl: "/component/upgrade_package",
+                    returnUrl: "/component/upgrade_package"
+                })
+            });
+        
+            const data = await response.json();
+
+            if(data.error) {
+                console.error("Lỗi từ PayOS:", data.desc);
+            }
+            if (data && data.paymentUrl.code === '00') {
+                window.location.href = data.paymentUrl.data.checkoutUrl;
+            } 
+        }
+        else{
+            toast.error("Vui long dang nhap!");
+        }
+    }
+
+	return(
+        <div className={styles.container}>
+            <NavbarUser/>
+            <div className={styles.container_content}>
+                <p className={styles.text_credits}>{t("text_credits")}<span style={{fontWeight: "bolder"}}>{credits}</span></p>
+                <div className={styles.package}>
+                    <h2 className={styles.title}>{t("title_page")}</h2>
+                    <p className={styles.subtitle}>{t("subtitle_page")}</p>
+                    <div className={styles.package_container}>
+                        <div className={styles.package_credits}>
+                            <h2>{t("package_credits_title")}</h2>
+                            <p className={styles.subtitle_package}>{t("package_credits_subtitle")}</p>
+                            <div className={styles.checkcircle}>
+                                <div className={styles.item_checkcircle}>
+                                    <CheckCircle className={styles.icon_checkcircle_credits}/>
+                                    <span className={styles.span}>{t("package_credits_check1")}</span>
+                                </div>
+                                <div className={styles.item_checkcircle}>
+                                    <CheckCircle className={styles.icon_checkcircle_credits}/>
+                                    <span className={styles.span}>{t("package_credits_check2")}</span>
+                                </div>
+                                <div className={styles.item_checkcircle}>
+                                    <CheckCircle className={styles.icon_checkcircle_credits}/>
+                                    <span className={styles.span}>{t("package_credits_check3")}</span>
+                                </div>
+                                <div className={styles.item_checkcircle}>
+                                    <CheckCircle className={styles.icon_checkcircle_credits}/>
+                                    <span className={styles.span}>{t("package_credits_check4")}</span>
+                                </div>
+                            </div>
+                            <button onClick={hanldeUpgradeCredits} className={styles.btn_package_credits} type="button">{t("package_credits_button")}</button>
+                        </div>
+                        <div className={styles.package_month}>
+                            <h2>{t("package_month_title")}</h2>
+                            <p className={styles.subtitle_package}>{t("package_month_subtitle")}</p>
+                            <div className={styles.checkcircle}>
+                                <div className={styles.item_checkcircle}>
+                                    <CheckCircle className={styles.icon_checkcircle_month}/>
+                                    <span className={styles.span}>{t("package_month_check1")}</span>
+                                </div>
+                                <div className={styles.item_checkcircle}>
+                                    <CheckCircle className={styles.icon_checkcircle_month}/>
+                                    <span className={styles.span}>{t("package_month_check2")}</span>
+                                </div>
+                                <div className={styles.item_checkcircle}>
+                                    <CheckCircle className={styles.icon_checkcircle_month}/>
+                                    <span className={styles.span}>{t("package_month_check3")}</span>
+                                </div>
+                                <div className={styles.item_checkcircle}>
+                                    <CheckCircle className={styles.icon_checkcircle_month}/>
+                                    <span className={styles.span}>{t("package_month_check4")}</span>
+                                </div>
+                            </div>
+                            <button onClick={hanldeUpgradeMonth} className={styles.btn_package_month} type="button">{t("package_month_button")}</button>
+                        </div>
+                        <div className={styles.package_year}>
+                            <h2>{t("package_year_title")}</h2>
+                            <p className={styles.subtitle_package}>{t("package_year_subtitle")}</p>
+                            <div className={styles.checkcircle}>
+                                <div className={styles.item_checkcircle}>
+                                    <CheckCircle className={styles.icon_checkcircle_year}/>
+                                    <span className={styles.span}>{t("package_year_check1")}</span>
+                                </div>
+                                <div className={styles.item_checkcircle}>
+                                    <CheckCircle className={styles.icon_checkcircle_year}/>
+                                    <span className={styles.span}>{t("package_year_check2")}</span>
+                                </div>
+                                <div className={styles.item_checkcircle}>
+                                    <CheckCircle className={styles.icon_checkcircle_year}/>
+                                    <span className={styles.span}>{t("package_year_check3")}</span>
+                                </div>
+                                <div className={styles.item_checkcircle}>
+                                    <CheckCircle className={styles.icon_checkcircle_year}/>
+                                    <span className={styles.span}>{t("package_year_check4")}</span>
+                                </div>
+                            </div>
+                            <button onClick={hanldeUpgradeYear} className={styles.btn_package_year} type="button">{t("package_month_button")}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ToastContainer/>
+        </div>
+    );
+}
