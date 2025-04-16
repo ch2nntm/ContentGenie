@@ -75,23 +75,6 @@ export async function POST(req) {
             const token = await generateToken(user);
             console.log("Authorization Header:", token);
             
-            const filePath = './token.txt';
-            const newToken = "token_user: "+token;
-            const content = fs.readFileSync(filePath, 'utf8');
-
-            if (content.includes('token_user:')) {
-                const updatedContent = content.replace(/token_user: .*/g, newToken);
-
-                fs.writeFile(filePath, updatedContent, function (err) {
-                    if (err) throw err;
-                    console.log('token_user updated');
-            });
-            } else {
-                fs.appendFile(filePath, '\n' + newToken, function (err) {
-                    if (err) throw err;
-                    console.log('linkedin_token appended');
-                });
-            }
             return NextResponse.json({ message: "Log in successfully!", user, token }, { status: 200 });
         } else {
             return new Response(
