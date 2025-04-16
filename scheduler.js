@@ -4,7 +4,7 @@ import mysql from "mysql2/promise";
 import nodemailer from "nodemailer";
 import { error } from 'console';
 import dotenv from 'dotenv';
-dotenv.config(); // để gọi process.env
+dotenv.config(); // Call process.env
 
 const dbConfig = {
     host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
@@ -72,7 +72,7 @@ async function postToMastodon(post, token_mastodon) {
             console.log("Ảnh đã tải lên Mastodon: ", mediaData);
             statusFormData.append("media_ids[]", mediaData.id);
         }else if (isYouTube) {
-          fullContent += `\n\n📺 Video: ${post.image}`;
+          fullContent += `\n\nVideo: ${post.image}`;
         }
 
         statusFormData.append("status", fullContent);
@@ -113,17 +113,364 @@ async function postToMastodon(post, token_mastodon) {
     }
 }
 
+async function postMastondonDaily(post, token_mastodon) {
+  try {
+    if (!token_mastodon) throw new Error("Thiếu token Mastodon!");
+
+    const statusFormData = new URLSearchParams();
+    const connection = await mysql.createConnection(dbConfig);
+
+    let fullContent = post.content;
+    const isYouTube = post.image?.includes("youtube.com") || post.image?.includes("youtu.be");
+
+    
+    if (post.image && !isYouTube) {
+        const imageResponse = await fetch(post.image);
+        if (!imageResponse.ok) throw new Error("Không tải được ảnh từ Cloudinary");
+
+        const imageBuffer = await imageResponse.arrayBuffer();
+        const imageBlob = new Blob([imageBuffer], {type: 'image/png'});
+
+        const mediaFormData = new FormData();
+        mediaFormData.append("file", imageBlob, "image.png");   
+
+        const mediaResponse = await fetch(`${process.env.MASTODON_INSTANCE}/api/v1/media`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token_mastodon}`,
+            },
+            body: mediaFormData,
+        });
+
+        if (!mediaResponse.ok) {
+            const errorData = await mediaResponse.json();
+            throw new Error(errorData.error || "Lỗi khi tải ảnh lên Mastodon");
+        }
+
+        const mediaData = await mediaResponse.json();
+        console.log("Ảnh đã tải lên Mastodon: ", mediaData);
+        statusFormData.append("media_ids[]", mediaData.id);
+    }else if (isYouTube) {
+      fullContent += `\n\nVideo: ${post.image}`;
+    }
+
+    statusFormData.append("status", fullContent);
+    statusFormData.append("visibility", post.audience);
+
+    const statusResponse = await fetch(`${process.env.MASTODON_INSTANCE}/api/v1/statuses`, {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${token_mastodon}`,
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: statusFormData,
+    });
+
+    if (!statusResponse.ok) {
+        const errorData = await statusResponse.json();
+        throw new Error(errorData.error || "Lỗi khi đăng bài lên Mastodon");
+    }
+
+    const postData = await statusResponse.json();
+    console.log("Bài đăng: ", postData);
+    await connection.execute(
+        "INSERT INTO post(id, title, content, image, posttime, user_id, platform, status, audience, set_daily) VALUES(?,?,?,?,?,?,?,?,?,?)",
+        [postData.id, post.title, post.content, post.image, new Date(), post.user_id, post.platform, 1, post.audience, "false"]
+    );
+
+    const email = await connection.execute(
+        "SELECT email FROM account WHERE id = ?", [post.user_id]
+    );
+    console.log("Email: ",email[0][0].email," - user_id: ",post.user_id);
+
+    sendEmail(email[0][0].email);
+
+    await connection.end();
+
+  } catch (error) {
+      console.error("Lỗi đăng bài Mastodon: ", error);
+  }
+}
+
 async function postToLinkedin(post, token_linkedin, sub_ID) {
-    try{
-        const connection = await mysql.createConnection(dbConfig);
-        if(post.image === null){
+  try{
+      const connection = await mysql.createConnection(dbConfig);
+      if(post.image === null){
+        const postData = {
+          author: `urn:li:person:${sub_ID}`,
+          lifecycleState: "PUBLISHED",
+          specificContent: {
+            "com.linkedin.ugc.ShareContent": {
+              shareCommentary: { text: post.content },
+              shareMediaCategory: "NONE"
+            },
+          },
+          visibility: { "com.linkedin.ugc.MemberNetworkVisibility": post.audience === "public" ? "PUBLIC" : "CONNECTIONS" }, 
+        };
+      
+        const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token_linkedin}`,
+            "Content-Type": "application/json",
+            "X-Restli-Protocol-Version": "2.0.0",
+          },
+          body: JSON.stringify(postData),
+        });
+      
+        const data = await response.json();
+        console.log("DATA: ",data);
+      
+        if (response.ok) {
+          await connection.execute(
+              "UPDATE post SET id = ?, status = 1, posttime = ? WHERE id = ?",
+              [data.id, new Date(), post.id]
+          );
+  
+          const email = await connection.execute(
+              "SELECT email FROM account WHERE id = ?", [post.user_id]
+          );
+          console.log("Email: ",email[0][0].email," - user_id: ",post.user_id);
+  
+          sendEmail(email[0][0].email);
+  
+          await connection.end();
+        } else {
+          console.error(error);
+        }
+      }
+      else{
+        //Register the image
+        const registerUploadRequest = {
+          registerUploadRequest: {
+            owner: `urn:li:person:${sub_ID}`, 
+            recipes: [
+              "urn:li:digitalmediaRecipe:feedshare-image"
+            ],
+            serviceRelationships: [
+              {
+                identifier: "urn:li:userGeneratedContent",
+                relationshipType: "OWNER"
+              }
+            ]
+          }
+        };
+  
+        try {
+          const response = await fetch('https://api.linkedin.com/v2/assets?action=registerUpload', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token_linkedin}`,  
+              'LinkedIn-Version': '202503',         
+              'Content-Type': 'application/json',
+              'X-Restli-Protocol-Version': '2.0.0'
+            },
+            body: JSON.stringify(registerUploadRequest) 
+          });
+      
+          const data = await response.json();
+          console.log("data.value.uploadMechanism: ",data);
+          const uploadUrl = data.value.uploadMechanism["com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest"].uploadUrl;
+  
+          // const imageUrl = image;
+          const imageResponse = await fetch(post.image);
+          if (!imageResponse.ok) throw new Error("Failed to fetch image");
+          const imageBuffer = await imageResponse.arrayBuffer();
+          const assets = data.value.asset;
+  
+          // Upload Image Binary File
+          const responseUploadUrl = await fetch(uploadUrl,{
+            method: "POST",
+            headers: {
+              'Authorization': `Bearer ${token_linkedin}`,
+              'Content-Type': 'image/jpeg',
+              'media-type-family': 'STILLIMAGE'
+            },
+            body: imageBuffer
+          });
+  
+          if(responseUploadUrl.status === 201){
+            // Create the Image Share
+            const postData = {
+              author: `urn:li:person:${sub_ID}`,
+              lifecycleState: "PUBLISHED",
+              specificContent: {
+                "com.linkedin.ugc.ShareContent": {
+                  shareCommentary: { text: post.content },
+                  shareMediaCategory: "IMAGE",
+                    media: [
+                        {
+                            status: "READY",
+                            description: {
+                                text: "Center stage!"
+                            },
+                            media: `${assets}`,
+                            title: {
+                                text: "LinkedIn Talent Connect 2025"
+                            }
+                        }
+                    ]
+                },
+              },
+              visibility: { "com.linkedin.ugc.MemberNetworkVisibility": post.audience === "public" ? "PUBLIC" : "CONNECTIONS" }, 
+            };
+          
+            const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${token_linkedin}`,
+                "Content-Type": "application/json",
+                "X-Restli-Protocol-Version": "2.0.0",
+              },
+              body: JSON.stringify(postData),
+            });
+  
+            const dataResult = await response.json();
+            if (response.ok) {
+              await connection.execute(
+                  "UPDATE post SET id = ?, status = 1, posttime = ? WHERE id = ?",
+                  [dataResult.id, new Date(), post.id]
+              );
+      
+              const email = await connection.execute(
+                  "SELECT email FROM account WHERE id = ?", [post.user_id]
+              );
+              console.log("Email: ",email[0][0].email," - user_id: ",post.user_id);
+      
+              sendEmail(email[0][0].email);
+      
+              await connection.end();
+            } else {
+              console.error(error);
+            }
+          }
+        } catch (error) {
+          console.error('Error during the upload process:', error);
+        }
+      }
+    }catch(error){
+      console.log("error: ",error);
+    }
+}
+
+async function postLinkedinDaily(post, token_linkedin, sub_ID) {
+  try{
+    const connection = await mysql.createConnection(dbConfig);
+    if(post.image === null){
+      const postData = {
+        author: `urn:li:person:${sub_ID}`,
+        lifecycleState: "PUBLISHED",
+        specificContent: {
+          "com.linkedin.ugc.ShareContent": {
+            shareCommentary: { text: post.content },
+            shareMediaCategory: "NONE"
+          },
+        },
+        visibility: { "com.linkedin.ugc.MemberNetworkVisibility": post.audience === "public" ? "PUBLIC" : "CONNECTIONS" }, 
+      };
+    
+      const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token_linkedin}`,
+          "Content-Type": "application/json",
+          "X-Restli-Protocol-Version": "2.0.0",
+        },
+        body: JSON.stringify(postData),
+      });
+    
+      const data = await response.json();
+      console.log("DATA: ",data);
+    
+      if (response.ok) {
+        await connection.execute(
+            "UPDATE post SET id = ?, status = 1, posttime = ? WHERE id = ?",
+            [data.id, new Date(), post.id]
+        );
+
+        const email = await connection.execute(
+            "SELECT email FROM account WHERE id = ?", [post.user_id]
+        );
+        console.log("Email: ",email[0][0].email," - user_id: ",post.user_id);
+
+        sendEmail(email[0][0].email);
+
+        await connection.end();
+      } else {
+        console.error(error);
+      }
+    }
+    else{
+      //Register the image
+      const registerUploadRequest = {
+        registerUploadRequest: {
+          owner: `urn:li:person:${sub_ID}`, 
+          recipes: [
+            "urn:li:digitalmediaRecipe:feedshare-image"
+          ],
+          serviceRelationships: [
+            {
+              identifier: "urn:li:userGeneratedContent",
+              relationshipType: "OWNER"
+            }
+          ]
+        }
+      };
+
+      try {
+        const response = await fetch('https://api.linkedin.com/v2/assets?action=registerUpload', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token_linkedin}`,  
+            'LinkedIn-Version': '202503',         
+            'Content-Type': 'application/json',
+            'X-Restli-Protocol-Version': '2.0.0'
+          },
+          body: JSON.stringify(registerUploadRequest) 
+        });
+    
+        const data = await response.json();
+        console.log("data.value.uploadMechanism: ",data);
+        const uploadUrl = data.value.uploadMechanism["com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest"].uploadUrl;
+
+        // const imageUrl = image;
+        const imageResponse = await fetch(post.image);
+        if (!imageResponse.ok) throw new Error("Failed to fetch image");
+        const imageBuffer = await imageResponse.arrayBuffer();
+        const assets = data.value.asset;
+
+        // Upload Image Binary File
+        const responseUploadUrl = await fetch(uploadUrl,{
+          method: "POST",
+          headers: {
+            'Authorization': `Bearer ${token_linkedin}`,
+            'Content-Type': 'image/jpeg',
+            'media-type-family': 'STILLIMAGE'
+          },
+          body: imageBuffer
+        });
+
+        if(responseUploadUrl.status === 201){
+          // Create the Image Share
           const postData = {
             author: `urn:li:person:${sub_ID}`,
             lifecycleState: "PUBLISHED",
             specificContent: {
               "com.linkedin.ugc.ShareContent": {
                 shareCommentary: { text: post.content },
-                shareMediaCategory: "NONE"
+                shareMediaCategory: "IMAGE",
+                  media: [
+                      {
+                          status: "READY",
+                          description: {
+                              text: "Center stage!"
+                          },
+                          media: `${assets}`,
+                          title: {
+                              text: "LinkedIn Talent Connect 2025"
+                          }
+                      }
+                  ]
               },
             },
             visibility: { "com.linkedin.ugc.MemberNetworkVisibility": post.audience === "public" ? "PUBLIC" : "CONNECTIONS" }, 
@@ -138,21 +485,19 @@ async function postToLinkedin(post, token_linkedin, sub_ID) {
             },
             body: JSON.stringify(postData),
           });
-        
-          const data = await response.json();
-          console.log("DATA: ",data);
-        
+
+          const dataResult = await response.json();
           if (response.ok) {
             await connection.execute(
-                "UPDATE post SET id = ?, status = 1, posttime = ? WHERE id = ?",
-                [data.id, new Date(), post.id]
+              "INSERT INTO post(id, title, content, image, posttime, user_id, platform, status, audience, set_daily) VALUES(?,?,?,?,?,?,?,?,?,?)",
+                [dataResult.id, post.title, post.content, post.image, new Date(), post.user_id, post.platform, 1, post.audience, "false"]
             );
-    
+        
             const email = await connection.execute(
                 "SELECT email FROM account WHERE id = ?", [post.user_id]
             );
             console.log("Email: ",email[0][0].email," - user_id: ",post.user_id);
-    
+        
             sendEmail(email[0][0].email);
     
             await connection.end();
@@ -160,120 +505,14 @@ async function postToLinkedin(post, token_linkedin, sub_ID) {
             console.error(error);
           }
         }
-        else{
-          //Register the image
-          const registerUploadRequest = {
-            registerUploadRequest: {
-              owner: `urn:li:person:${sub_ID}`, 
-              recipes: [
-                "urn:li:digitalmediaRecipe:feedshare-image"
-              ],
-              serviceRelationships: [
-                {
-                  identifier: "urn:li:userGeneratedContent",
-                  relationshipType: "OWNER"
-                }
-              ]
-            }
-          };
-    
-          try {
-            const response = await fetch('https://api.linkedin.com/v2/assets?action=registerUpload', {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${token_linkedin}`,  
-                'LinkedIn-Version': '202503',         
-                'Content-Type': 'application/json',
-                'X-Restli-Protocol-Version': '2.0.0'
-              },
-              body: JSON.stringify(registerUploadRequest) 
-            });
-        
-            const data = await response.json();
-            console.log("data.value.uploadMechanism: ",data);
-            const uploadUrl = data.value.uploadMechanism["com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest"].uploadUrl;
-    
-            // const imageUrl = image;
-            const imageResponse = await fetch(post.image);
-            if (!imageResponse.ok) throw new Error("Failed to fetch image");
-            const imageBuffer = await imageResponse.arrayBuffer();
-            const assets = data.value.asset;
-    
-            // Upload Image Binary File
-            const responseUploadUrl = await fetch(uploadUrl,{
-              method: "POST",
-              headers: {
-                'Authorization': `Bearer ${token_linkedin}`,
-                'Content-Type': 'image/jpeg',
-                'media-type-family': 'STILLIMAGE'
-              },
-              body: imageBuffer
-            });
-    
-            if(responseUploadUrl.status === 201){
-              // Create the Image Share
-              const postData = {
-                author: `urn:li:person:${sub_ID}`,
-                lifecycleState: "PUBLISHED",
-                specificContent: {
-                  "com.linkedin.ugc.ShareContent": {
-                    shareCommentary: { text: post.content },
-                    shareMediaCategory: "IMAGE",
-                      media: [
-                          {
-                              status: "READY",
-                              description: {
-                                  text: "Center stage!"
-                              },
-                              media: `${assets}`,
-                              title: {
-                                  text: "LinkedIn Talent Connect 2025"
-                              }
-                          }
-                      ]
-                  },
-                },
-                visibility: { "com.linkedin.ugc.MemberNetworkVisibility": post.audience === "public" ? "PUBLIC" : "CONNECTIONS" }, 
-              };
-            
-              const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {
-                method: "POST",
-                headers: {
-                  "Authorization": `Bearer ${token_linkedin}`,
-                  "Content-Type": "application/json",
-                  "X-Restli-Protocol-Version": "2.0.0",
-                },
-                body: JSON.stringify(postData),
-              });
-    
-              const dataResult = await response.json();
-              if (response.ok) {
-                await connection.execute(
-                    "UPDATE post SET id = ?, status = 1, posttime = ? WHERE id = ?",
-                    [dataResult.id, new Date(), post.id]
-                );
-        
-                const email = await connection.execute(
-                    "SELECT email FROM account WHERE id = ?", [post.user_id]
-                );
-                console.log("Email: ",email[0][0].email," - user_id: ",post.user_id);
-        
-                sendEmail(email[0][0].email);
-        
-                await connection.end();
-              } else {
-                console.error(error);
-              }
-            }
-          } catch (error) {
-            console.error('Error during the upload process:', error);
-          }
-        }
-      }catch(error){
-        console.log("error: ",error);
+      } catch (error) {
+        console.error('Error during the upload process:', error);
       }
+    }
+  }catch(error){
+    console.log("error: ",error);
+  }
 }
-
 
 const filePath = './token.txt';
 
@@ -284,24 +523,21 @@ if (!fs.existsSync(filePath)) {
     });
 }
 cron.schedule('* * * * *', async () => {
-    // console.log("process.env.EMAIL_USER: ",process.env.EMAIL_USER);
-    // console.log("process.env.EMAIL_PASS: ",process.env.EMAIL_PASS);
     console.log("Running cron!");
     fs.readFile('./token.txt', async function (err, data) {
         if (err) throw err;
         const lines = data.toString().split('\n');
         let token_linkedin = '';
         let token_mastodon = '';
-
         lines.forEach(line => {
-            if (line.startsWith('linkedin_token:')) {
-                token_linkedin = line.replace('linkedin_token:', '').trim();
-            } else if (line.startsWith('mastodon_token:')) {
-                token_mastodon = line.replace('mastodon_token:', '').trim();
-            }
+          if (line.startsWith('linkedin_token:')) {
+              token_linkedin = line.replace('linkedin_token:', '').trim();
+          } else if (line.startsWith('mastodon_token:')) {
+              token_mastodon = line.replace('mastodon_token:', '').trim();
+          }
         });
 
-        const response = await fetch("https://api.linkedin.com/v2/userinfo", {
+        const response = await fetch("https:/api.linkedin.com/v2/userinfo", {
             method: "GET",
             headers: { Authorization: `Bearer ${token_linkedin}` },
         });
@@ -310,14 +546,44 @@ cron.schedule('* * * * *', async () => {
 
         const sub_ID = dataResponse.sub;
         const connect = await mysql.createConnection(dbConfig);
-        const currentTime =  new Date().toLocaleString("en-CA", { 
-            timeZone: "Asia/Ho_Chi_Minh", 
-            hour12: false 
-        }).replace(",", "");
-        console.log("CurrentTime: ",currentTime);
+        // const currentTime =  new Date().toLocaleString("en-CA", { 
+        //     timeZone: "Asia/Ho_Chi_Minh", 
+        //     hour12: false 
+        // }).replace(",", "");
+
+        const currentTime = new Date(
+          new Date().toLocaleString("en-CA", {
+            timeZone: "Asia/Ho_Chi_Minh",
+            hour12: false
+          })
+        );
+
+        const [resultPostDaily] = await connect.execute(
+          "SELECT * FROM post"
+        );
+      
+        if (resultPostDaily.length > 0) {
+          for (let post of resultPostDaily) {
+            const onlyPostDate = new Date(post.posttime).toISOString().split('T')[0]; 
+            const onlyCurrentDate = new Date(new Date(now)).toISOString().split('T')[0];
+            if(post.set_daily === "true" && onlyCurrentDate > onlyPostDate){
+              const datetime = new Date(post.posttime);
+              const time_hour = datetime.getHours();
+              const time_minute = datetime.getMinutes();
+              if(currentTime.getHours() === time_hour && currentTime.getMinutes() === time_minute){
+                console.log(`Running cron daily ${post.id}!`);
+                if(post.platform==="Mastodon"){
+                  postMastondonDaily(post, token_mastodon);
+                }else if(post.platform==="LinkedIn"){
+                  postLinkedinDaily(post, token_linkedin, sub_ID);
+                }
+              }
+            }
+          }
+        }
 
         const [resultPost] = await connect.execute(
-            "SELECT * FROM post WHERE post.posttime <= ? AND post.status = 0", [currentTime]
+            "SELECT * FROM post WHERE post.posttime <= ? AND post.status = 0 AND post.set_daily = ?", [currentTime,"false"]
         );
 
         if(resultPost.length === 0)
@@ -326,25 +592,22 @@ cron.schedule('* * * * *', async () => {
         if (resultPost.length > 0) {
             for (let post of resultPost) {
                 if (post.platform === "Mastodon") {
-                    if(!token_mastodon){
-                        console.log("Not logged in Mastodon");
-                        return;
-                    }
-                    await postToMastodon(post, token_mastodon);
+                  if(!token_mastodon){
+                      console.log("Not logged in Mastodon");
+                      return;
+                  }
+                  await postToMastodon(post, token_mastodon);
                 }
-                else{
-                    if(!token_linkedin){
-                        console.log("Not logged in Linkedin");
-                        return;
-                    }
-                    await postToLinkedin(post, token_linkedin, sub_ID);
+                else if(post.platform === "LinkedIn"){
+                  if(!token_linkedin){
+                      console.log("Not logged in Linkedin");
+                      return;
+                  }
+                  await postToLinkedin(post, token_linkedin, sub_ID);
                 }
             }
         }
+
         await connect.end();
     });
-});
-
-cron.schedule('* 14 * * *', async () => {
-    console.log("At 2pm to console");
 });

@@ -118,7 +118,7 @@ function NavbarUser(){
                         {avtUser && <img className={styles.avt_user} src={avtUser} alt={avtUser} />}
                         <p className={styles.name_user}>{user}</p>
                     </button>
-                    <div className={showDropdownUser ? styles.manage_user_show : styles.manage_user_hide}>
+                    {user && <div className={showDropdownUser ? styles.manage_user_show : styles.manage_user_hide}>
                         <div className={styles.link}>
                         {/* className={ roleUser===0 ? styles.edit_profile : styles.edit_profile_hide} */}
                             <Link href="/component/account_user/edit_profile" className={styles.edit_profile}> 
@@ -159,6 +159,7 @@ function NavbarUser(){
                             <p className={styles.text_signout}>{t("signout")}</p>
                         </button>
                     </div>
+                    }
                 </div>
         </div>
     )

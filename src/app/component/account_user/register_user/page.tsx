@@ -8,6 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { useTranslations } from "next-intl";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import NavbarUser from "@/single_file/navbar_user";
 
 function Register() {
     const [name, setName] = useState<string>("");
@@ -110,6 +111,7 @@ function Register() {
     
     return(
         <>
+            <NavbarUser/>
             <div className={styles.container}>
                 <div className={styles.img_main}>
                     <Image src="/main_login_register.png" alt="Icon" fill></Image>

@@ -32,12 +32,12 @@ export async function GET(req) {
 
         const connection = await mysql.createConnection(dbConfig);
         const [rows_mastodon] = await connection.execute(
-            "SELECT CAST(id AS CHAR) AS id, title, content, image, platform, posttime, status, user_id, audience FROM post WHERE user_id = ? AND platform = 'Mastodon'", 
+            "SELECT CAST(id AS CHAR) AS id, title, content, image, platform, posttime, status, user_id, audience FROM post WHERE user_id = ? AND platform = 'Mastodon' AND set_daily = 'false'", 
             [userId]
         );
 
         const [rows_linkedin] = await connection.execute(
-            "SELECT CAST(id AS CHAR) AS id, title, content, image, platform, posttime, status, user_id, audience FROM post WHERE user_id = ? AND platform = 'Linkedin'", 
+            "SELECT CAST(id AS CHAR) AS id, title, content, image, platform, posttime, status, user_id, audience FROM post WHERE user_id = ? AND platform = 'Linkedin' AND set_daily = 'false'", 
             [userId]
         );
 

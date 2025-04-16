@@ -33,6 +33,7 @@ model post {
   platform String
   status   Boolean
   audience String
+  set_daily String @default("false")
 
   author    account   @relation("AccountPosts", fields: [user_id], references: [id])
 }

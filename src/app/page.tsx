@@ -7,7 +7,6 @@ import { toast, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import Head from "next/head";
 
 export default function Home() {
   const router = useRouter();
@@ -83,10 +82,6 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>Trang Chủ</title>
-        <meta name="description" content="Đây là trang chủ của website" />
-      </Head>
       <div className={styles.container}>
         <div className={styles.card}>
           <div className={styles.img_card_container}>
@@ -95,7 +90,7 @@ export default function Home() {
         </div>
         <div className={styles.text}>
           <div className={styles.navbar}>
-            <label className={user ? styles.label_user : styles.label_user_hide}>{user ? t("hello")+` ${user}!` : t("account")}</label>
+            {user && <label className={user ? styles.label_user : styles.label_user_hide}>{t("hello")} {user}!</label>}
             <button onClick={handleLogout} className={user ? styles.btn_logout_show : styles.btn_logout_hide}>{t("signout")}</button>
           </div>
           <div className={styles.img_text_container}>

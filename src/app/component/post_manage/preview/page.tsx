@@ -38,6 +38,7 @@ function PreviewPage() {
     const [postTime, setPostTime] = useState(new Date(searchParams.get("date") || ""));
     const platform = searchParams.get("platform") || "";
     const user_Id = searchParams.get("user_Id") || 0;
+    const set_daily = searchParams.get("set_daily");
     const [content, setContent] = useState("");
     const [updateContent, setUpdateContent] = useState("");
     const [openModal, setOpenModal] = useState(false);
@@ -225,7 +226,8 @@ function PreviewPage() {
                     user_id: userId,
                     platform,
                     status: 0,
-                    audience
+                    audience,
+                    set_daily
                 }),
             })
             .then((res) => res.json())

@@ -18,11 +18,12 @@ export default function UpgradePackagePage(){
     const status = searchParams.get("status") || "";
     const orderCode = searchParams.get("orderCode") || "";
     const t = useTranslations("upgrade_package");
-    // const [isLoading, setIsLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     useEffect(()=>{
         const fetchData = async() => {
             try{
+                setLoading(true);
                 const token = Cookies.get("token");
                 if(!token){
                     window.location.href = "/component/account_user/login_user";
@@ -99,7 +100,7 @@ export default function UpgradePackagePage(){
             }catch(error){
                 console.log(error);
             }finally{
-                // setIsLoading(false);
+                setLoading(false);
             }
         };
         fetchData();
@@ -191,8 +192,18 @@ export default function UpgradePackagePage(){
         <div className={styles.container}>
             <NavbarUser/>
             <div className={styles.container_content}>
-                <p className={styles.text_credits}>{t("text_credits")}<span style={{fontWeight: "bolder"}}>{credits}</span></p>
-                {expirationDate && <p className={styles.text_expiration_date}>{t("text_expiration_date")}<span style={{fontWeight: "bolder"}}>{expirationDate}</span></p>}
+            {loading ? (
+                <div className={styles.loading}>
+                    <div className={styles.spinner}></div>
+                    Loading...
+                </div>
+                ) : (
+                    <>
+                        <p className={styles.text_credits}>{t("text_credits")}<span style={{fontWeight: "bolder"}}>{credits}</span></p>
+                        {expirationDate && <p className={styles.text_expiration_date}>{t("text_expiration_date")}<span style={{fontWeight: "bolder"}}>{expirationDate}</span></p>}
+                    </>
+                )
+            }
                 <div className={styles.package}>
                     <h2 className={styles.title}>{t("title_page")}</h2>
                     <p className={styles.subtitle}>{t("subtitle_page")}</p>

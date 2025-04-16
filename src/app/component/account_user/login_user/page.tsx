@@ -11,6 +11,7 @@ import { signIn, useSession} from "next-auth/react";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import GoogleIcon from '@mui/icons-material/Google';
+import NavbarUser from "@/single_file/navbar_user";
 
 function Login() {
     const router = useRouter();
@@ -85,6 +86,7 @@ function Login() {
 
     return(
         <>
+            <NavbarUser/>
             <div className={styles.container}>
                 <div className={styles.img_main}>
                     <Image src="/main_login_register.png" alt="Icon" fill></Image>

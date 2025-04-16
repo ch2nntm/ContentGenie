@@ -99,7 +99,7 @@
         "topic": "Topic and Keywords:",
         "enter_topic": "Enter keywords",
         "audience":"Choose Audience",
-        "enable_trend": "Enable Trending-Based Content:",
+        "post_daily": "Post Daily:",
         "btn_generate_content": "Generate Content",
         "account_management": "Account management",
         "noti_error":"Please fill in completely",

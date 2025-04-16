@@ -40,6 +40,7 @@ function Statistic() {
     const listPostPaiding: number[] = [];
     const listPostPosted: number[] = [];
     const listCredit: number[] = [];
+    const [loading, isLoading] = useState(false);
     
     const fetchData = async() => {
         try{
@@ -101,11 +102,14 @@ function Statistic() {
             return;
         }
         setIsClickList(true);
+        isLoading(true);
         const response = await fetch("/api/admin/statistic", {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`
             }
+        }).finally(() => {
+            isLoading(false);
         });
         if(!response.ok){
             return;
@@ -207,27 +211,34 @@ function Statistic() {
                         <canvas height="363" width="726" className="chartjs-render-monitor" style={{ display: "block", width: "726px", height: "363px" }}></canvas>
                     </div>
                     }
-                    { isClickList === true && 
-                        <div ref={slidesRef} className={styles.list_statistics}>
-                            <p className={styles.title_list_statistics}>{t("title_list_statistics")}</p>
-                            <table className={styles.table_list}>
-                                <tr className={styles.tablerow}>
-                                    <td className={styles.title_tablecell}>{t("lable_time")}</td>
-                                    <td className={styles.title_tablecell}>{t("label_post_paiding")}</td>
-                                    <td className={styles.title_tablecell}>{t("label_post_posted")}</td>
-                                    <td className={styles.title_tablecell}>{t("label_credit")}</td>
-                                </tr>
-                                {list.map((item: statistic, index: number) => (
-                                    <tr key={index} className={styles.tablerow}>
-                                        <td className={styles.tablecell}>{item.month} - {item.year}</td>
-                                        <td className={styles.tablecell}>{item.total_posts_paiding}</td>
-                                        <td className={styles.tablecell}>{item.total_posts_posted}</td>
-                                        <td className={styles.tablecell}>{item.total_credits}</td>
-                                    </tr>
-                                ))}
-                            </table>
+                    {loading ? (
+                        <div className={styles.loading}>
+                            <div className={styles.spinner}></div>
+                            Loading...
                         </div>
-                    }
+                        ) : (
+                            <>{ isClickList === true && 
+                            <div ref={slidesRef} className={styles.list_statistics}>
+                                <p className={styles.title_list_statistics}>{t("title_list_statistics")}</p>
+                                <table className={styles.table_list}>
+                                    <tr className={styles.tablerow}>
+                                        <td className={styles.title_tablecell}>{t("lable_time")}</td>
+                                        <td className={styles.title_tablecell}>{t("label_post_paiding")}</td>
+                                        <td className={styles.title_tablecell}>{t("label_post_posted")}</td>
+                                        <td className={styles.title_tablecell}>{t("label_credit")}</td>
+                                    </tr>
+                                    {list.map((item: statistic, index: number) => (
+                                        <tr key={index} className={styles.tablerow}>
+                                            <td className={styles.tablecell}>{item.month} - {item.year}</td>
+                                            <td className={styles.tablecell}>{item.total_posts_paiding}</td>
+                                            <td className={styles.tablecell}>{item.total_posts_posted}</td>
+                                            <td className={styles.tablecell}>{item.total_credits}</td>
+                                        </tr>
+                                    ))}
+                                </table>
+                            </div>
+                            }</>
+                    )}
                 </div>
             </div>
         </div>

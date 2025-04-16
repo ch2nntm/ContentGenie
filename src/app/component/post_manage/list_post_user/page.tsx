@@ -52,7 +52,6 @@ function ListPostUser() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [image, setImage] = useState("");
     const [isClickMastodon, setIsClickMastodon] = useState(true);
-    // const [isVideoTest, setIsVideoTest] = useState(true);
 
     const slidesRef = useRef<{ [key: number]: HTMLElement | null }>({});
     const handleGeneratePdf = (postId: number) => {
@@ -108,13 +107,13 @@ function ListPostUser() {
         }
         if(isClickMastodon===true)
             handlePostMastodon();
-    }, [image]);
+    }, []);
 
     const uploadToCloudinary = async (file: string | Blob) => {
-        if (typeof file === "string" && file.startsWith("http")) {
-            console.log("Skipping upload for already uploaded URL:", file);
-            return file; // Trả luôn URL cũ
-        }
+        // if (typeof file === "string" && file.startsWith("http")) {
+        //     console.log("Skipping upload for already uploaded URL:", file);
+        //     return file;
+        // }
     
         const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
         const uploadPreset = "demo-upload";
@@ -127,7 +126,7 @@ function ListPostUser() {
             const fileName = blob.type.startsWith("video/") ? "video.mp4" : "image.jpg";
             const fileConvert = new File([blob], fileName, { type: blob.type });
             form.append("file", fileConvert);
-        } else {
+        } else if(typeof file === "string" && file.startsWith("http")){
             form.append("file", file);
         }
     
@@ -156,10 +155,9 @@ function ListPostUser() {
             const token = Cookies.get("token");
             if (!token) {
                 setPosts([]);
-                setLoading(false);
                 return;
             }
-
+            setLoading(true);
             const token_mastodon = Cookies.get("mastodon_token");
 
             if(!token_mastodon){
@@ -219,9 +217,9 @@ function ListPostUser() {
             const token = Cookies.get("token");
             if (!token) {
                 setPosts([]);
-                setLoading(false);
                 return;
             }
+            setLoading(true);
 
             const token_mastodon = Cookies.get("linkedin_access_token");
 
@@ -286,10 +284,12 @@ function ListPostUser() {
                         return;
                     }
                     toast.success(t("post_delete"));
-                    // window.location.reload();
+                    window.location.reload();
                 }
             }catch (error) {
                 console.error(t("error_delete"), error);
+            }finally{
+                setLoading(false);
             }
         } else {
             toast.error(t("cancel_delete"));
@@ -315,55 +315,7 @@ function ListPostUser() {
         else{
             const imgUrlTest = await uploadToCloudinary(image);
             uploadedImageUrl = imgUrlTest;
-            // uploadedImageUrl = image;
-            // if (fileInputRef.current?.files?.length) {
-            //     const file = fileInputRef.current.files[0];
-            //     const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
-            //     const uploadPreset = "demo-upload";
-            //     const form = new FormData();
-            //     form.append("file", file);
-            //     form.append("upload_preset", uploadPreset);
-    
-            //     const response = await fetch(cloudinaryUrl, {
-            //         method: "POST",
-            //         body: form,
-            //     });
-    
-            //     const data = await response.json();
-            //     if (data.secure_url) {
-            //         uploadedImageUrl = data.secure_url;
-            //     } else {
-            //         return;
-            //     }
-            // }
         }
-
-        // const token = Cookies.get("token");
-        // if (!token) return;
-        // fetch("/api/post_manage/edit_post", {
-        //     method: "PUT",
-        //     headers: {
-        //         Authorization: `Bearer ${token}`,
-        //         "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify({
-        //         id: id,
-        //         content: updateContent,
-        //         image: uploadedImageUrl,
-        //     }),
-        //     })
-        //     .then(async (res) => {
-        //         if (!res.ok) {
-        //             throw new Error(`t("error_http") ${res.status}`);
-        //         }
-        //         return res.json();
-        //     })
-        //     .then((data) => {
-        //         if (data.accessToken) {
-        //             Cookies.set("token", data.accessToken, { expires: 1 });
-        //         }
-        //     })
-        //     .catch((error) => console.error(error));
 
         const formData = new FormData();
         formData.append("image", uploadedImageUrl);
@@ -394,7 +346,6 @@ function ListPostUser() {
         const timeDiff = Math.abs(currentDate.getTime() - postDate.getTime());
         const daysAgo = Math.floor(timeDiff / (1000 * 60 * 60));
 
-
         if(postDate.getTime() > currentDate.getTime())
             return `${postDate.getDate()}-${postDate.getMonth()+1}-${postDate.getFullYear()}`;
         if(daysAgo===0){
@@ -415,10 +366,7 @@ function ListPostUser() {
                 return `${monthsAgo} ${t("years")}`;
             }
         } 
-    };
-
-    
-    
+    };    
 
     return (
         <>
@@ -441,10 +389,14 @@ function ListPostUser() {
                         </div>
                     </button>
                 </div>
-                <div className="list_post">
+                <div className={styles.list_post}>
                     {loading ? (
-                        <p></p>
-                    ) : posts.length > 0 ? (
+                        <div className={styles.loading}>
+                            <div className={styles.spinner}></div>
+                            Loading...
+                        </div>
+                    ) : ( 
+                        <> {posts.length > 0 ? (
                         posts.map((item) => (
                             <div key={item.id}   className={styles.item_post}>
                                 {item.platform === "Mastodon" &&<div className={styles.mastodon_platform}>
@@ -509,7 +461,7 @@ function ListPostUser() {
                                     )}
                                     {activeEdit === item.id && <Modal className={styles.modal_container} show={isClickBtnEdit}>
                                         <Modal.Header className={styles.modal_header}>
-                                            <Button className={styles.button_close} onClick={()=>setIsClickBtnEdit(false)}>
+                                            <Button className={styles.button_close} onClick={()=>{setIsClickBtnEdit(false);setImage("")}}>
                                                 <CloseIcon className={styles.icon_close}></CloseIcon>
                                             </Button>
                                             <Modal.Title className={styles.modal_title}>{t("btn_edit")}</Modal.Title>
@@ -674,9 +626,12 @@ function ListPostUser() {
                                 }
                             </div>
                             
-                        ))
-                    ) : (
-                        <p>{t("no_post")}</p>
+                        )
+                            )
+                         ) : (
+                            <p>{t("no_post")}</p>
+                            )
+                        }</>
                     )}
                 </div>
                 <ToastContainer/>

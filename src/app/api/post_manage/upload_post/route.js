@@ -21,7 +21,7 @@ export async function POST(req) {
   }
   
   try {
-    const { id, keyword, content, imgUrl, posttime, user_id, platform, status, audience } = await req.json();
+    const { id, keyword, content, imgUrl, posttime, user_id, platform, status, audience, set_daily } = await req.json();
 
     console.log("Posttime:", posttime.toLocaleString("en-CA", { 
       timeZone: "Asia/Ho_Chi_Minh", 
@@ -35,8 +35,8 @@ export async function POST(req) {
     const connection = await mysql.createConnection(dbConfig);
 
     await connection.execute(
-      "INSERT INTO post (id, title, content, image, posttime, user_id, platform, status, audience) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      [id, safeTitle, content, safeImage, posttime, user_id, platform, safeStatus, audience]
+      "INSERT INTO post (id, title, content, image, posttime, user_id, platform, status, audience, set_daily) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      [id, safeTitle, content, safeImage, posttime, user_id, platform, safeStatus, audience, set_daily]
     );
 
     await connection.end(); 

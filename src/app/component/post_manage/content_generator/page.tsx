@@ -10,6 +10,7 @@ import WatchLaterIcon from '@mui/icons-material/WatchLater';
 import KeyIcon from '@mui/icons-material/Key';
 import { toast, ToastContainer } from "react-toastify";
 import PersonIcon from '@mui/icons-material/Person';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import { useAuth } from "../../authProvider";
 
 interface User {
@@ -25,6 +26,7 @@ function ContentGeneratorPage() {
     const [selectTopic, setSelectTopic] = useState("Âm nhạc");
     const [enterKeyword, setEnterKeyword] = useState("");
     const [selectedAudience, setSelectedAudience] = useState("public");
+    const [isOnDaily, setIsOnDaily] = useState(false);
     const router = useRouter();
     const auth = useAuth() as { user: User };
 
@@ -114,7 +116,8 @@ function ContentGeneratorPage() {
                             topic: selectTopic,
                             keyword: enterKeyword,
                             audience: selectedAudience,
-                            user_Id: auth?.user.id
+                            user_Id: auth?.user.id,
+                            set_daily: isOnDaily.toString(),
                         }).toString());
                         
                         window.location.href = "/api/mastodon/auth";  
@@ -127,7 +130,8 @@ function ContentGeneratorPage() {
                         topic: selectTopic,
                         keyword: enterKeyword,
                         audience: selectedAudience,
-                        user_Id: auth?.user.id
+                        user_Id: auth?.user.id,
+                        set_daily: isOnDaily.toString()
                     }).toString();
 
                     router.push(`/component/post_manage/preview?${queryParams}`);
@@ -142,7 +146,8 @@ function ContentGeneratorPage() {
                             topic: selectTopic,
                             keyword: enterKeyword,
                             audience: selectedAudience,
-                            user_Id: auth?.user.id
+                            user_Id: auth?.user.id,
+                            set_daily: isOnDaily.toString()
                         }).toString());
                         
                         window.location.href = "/api/linkedin/auth";  
@@ -155,7 +160,8 @@ function ContentGeneratorPage() {
                         topic: selectTopic,
                         keyword: enterKeyword,
                         audience: selectedAudience,
-                        user_Id: auth?.user.id
+                        user_Id: auth?.user.id,
+                        set_daily: isOnDaily.toString()
                     }).toString();
                     
                     router.push(`/component/post_manage/preview_linkedin?${queryParams}`);
@@ -248,20 +254,20 @@ function ContentGeneratorPage() {
                     </select>
                 </div>
             </div>
-            {/* <div className={styles.enable_trend}>
+            <div className={styles.enable_trend}>
                 <div className={styles.title_enable_trend}>
                     <div className={styles.icon_enable_trend}>
                         <LocalFireDepartmentIcon></LocalFireDepartmentIcon>
                     </div>
-                    <p className={styles.text_enable_trend}>{t("enable_trend")}</p>
+                    <p className={styles.text_enable_trend}>{t("post_daily")}</p>
                 </div>
                 <div 
-                    className={`${styles.toggle} ${isOn ? styles.on : ""}`} 
-                    onClick={() => setIsOn(!isOn)}
+                    className={`${styles.toggle} ${isOnDaily ? styles.on : ""}`} 
+                    onClick={() => setIsOnDaily(!isOnDaily)}
                     >
                     <div className={styles.circle}></div>
                 </div>
-            </div> */}
+            </div>
             <div className={styles.generate_content}>
                 <button onClick={hanldeCreateContent} className={styles.btn_generate_content}>{t("btn_generate_content")}</button>
             </div>
