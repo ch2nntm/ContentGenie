@@ -1,5 +1,10 @@
 import  {cookies} from "next/headers";
-import fs from 'fs';
+import { Redis } from "@upstash/redis";
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 
 export async function GET(req) {
     const { searchParams } = new URL(req.url);
@@ -44,23 +49,7 @@ export async function GET(req) {
 
       const redirectParams = cookieStore.get("redirect_params_mastodon") || "";
 
-      const filePath = './token.txt';
-      const newToken = 'mastodon_token: ' + tokenData.access_token;
-
-      const content = fs.readFileSync(filePath, 'utf8');
-      if (content.includes('mastodon_token:')) {
-        const updatedContent = content.replace(/mastodon_token: .*/g, newToken);
-
-        fs.writeFile(filePath, updatedContent, function (err) {
-          if (err) throw err;
-          console.log('mastodon_token updated');
-        });
-      } else {
-        fs.appendFile(filePath, '\n' + newToken, function (err) {
-          if (err) throw err;
-          console.log('mastodon_token appended');
-        });
-      }
+      await redis.set(`mastodon_token:`, tokenData.access_token);
 
       if(!redirectParams){
         return Response.redirect(new URL(`/component/post_manage/list_post_user`, req.url), 302);

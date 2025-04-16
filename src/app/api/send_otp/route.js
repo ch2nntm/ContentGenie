@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
-// import Redis from "ioredis";
 import { Redis } from "@upstash/redis";
 
 const redis = new Redis({

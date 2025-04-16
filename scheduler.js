@@ -5,6 +5,12 @@ import nodemailer from "nodemailer";
 import { error } from 'console';
 import dotenv from 'dotenv';
 dotenv.config(); // Call process.env
+import { Redis } from "@upstash/redis";
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 
 const dbConfig = {
     host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
@@ -514,100 +520,77 @@ async function postLinkedinDaily(post, token_linkedin, sub_ID) {
   }
 }
 
-const filePath = './token.txt';
-
-if (!fs.existsSync(filePath)) {
-    fs.writeFile(filePath, '', function (err) {
-    if (err) throw err;
-    console.log('File created successfully');
-    });
-}
 cron.schedule('* * * * *', async () => {
     console.log("Running cron!");
-    fs.readFile('./token.txt', async function (err, data) {
-        if (err) throw err;
-        const lines = data.toString().split('\n');
-        let token_linkedin = '';
-        let token_mastodon = '';
-        lines.forEach(line => {
-          if (line.startsWith('linkedin_token:')) {
-              token_linkedin = line.replace('linkedin_token:', '').trim();
-          } else if (line.startsWith('mastodon_token:')) {
-              token_mastodon = line.replace('mastodon_token:', '').trim();
-          }
-        });
-
-        const response = await fetch("https:/api.linkedin.com/v2/userinfo", {
-            method: "GET",
-            headers: { Authorization: `Bearer ${token_linkedin}` },
-        });
-        
-        const dataResponse = await response.json();
-
-        const sub_ID = dataResponse.sub;
-        const connect = await mysql.createConnection(dbConfig);
-        // const currentTime =  new Date().toLocaleString("en-CA", { 
-        //     timeZone: "Asia/Ho_Chi_Minh", 
-        //     hour12: false 
-        // }).replace(",", "");
-
-        const currentTime = new Date(
-          new Date().toLocaleString("en-CA", {
-            timeZone: "Asia/Ho_Chi_Minh",
-            hour12: false
-          })
-        );
-
-        const [resultPostDaily] = await connect.execute(
-          "SELECT * FROM post"
-        );
-      
-        if (resultPostDaily.length > 0) {
-          for (let post of resultPostDaily) {
-            const onlyPostDate = new Date(post.posttime).toISOString().split('T')[0]; 
-            const onlyCurrentDate = new Date(new Date(now)).toISOString().split('T')[0];
-            if(post.set_daily === "true" && onlyCurrentDate > onlyPostDate){
-              const datetime = new Date(post.posttime);
-              const time_hour = datetime.getHours();
-              const time_minute = datetime.getMinutes();
-              if(currentTime.getHours() === time_hour && currentTime.getMinutes() === time_minute){
-                console.log(`Running cron daily ${post.id}!`);
-                if(post.platform==="Mastodon"){
-                  postMastondonDaily(post, token_mastodon);
-                }else if(post.platform==="LinkedIn"){
-                  postLinkedinDaily(post, token_linkedin, sub_ID);
-                }
-              }
-            }
-          }
-        }
-
-        const [resultPost] = await connect.execute(
-            "SELECT * FROM post WHERE post.posttime <= ? AND post.status = 0 AND post.set_daily = ?", [currentTime,"false"]
-        );
-
-        if(resultPost.length === 0)
-            console.log("No posts have been posted yet!");
-
-        if (resultPost.length > 0) {
-            for (let post of resultPost) {
-                if (post.platform === "Mastodon") {
-                  if(!token_mastodon){
-                      console.log("Not logged in Mastodon");
-                      return;
-                  }
-                  await postToMastodon(post, token_mastodon);
-                }
-                else if(post.platform === "LinkedIn"){
-                  if(!token_linkedin){
-                      console.log("Not logged in Linkedin");
-                      return;
-                  }
-                  await postToLinkedin(post, token_linkedin, sub_ID);
-                }
-            }
-        }
-
-        await connect.end();
+    let token_linkedin = await redis.get(`linkedin_token:`);
+    let token_mastodon = await redis.get(`mastodon_token:`);
+    
+    const response = await fetch("https:/api.linkedin.com/v2/userinfo", {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token_linkedin}` },
     });
+    
+    const dataResponse = await response.json();
+
+    const sub_ID = dataResponse.sub;
+    const connect = await mysql.createConnection(dbConfig);
+
+    const currentTime = new Date(
+      new Date().toLocaleString("en-CA", {
+        timeZone: "Asia/Ho_Chi_Minh",
+        hour12: false
+      })
+    );
+
+    const [resultPostDaily] = await connect.execute(
+      "SELECT * FROM post"
+    );
+  
+    if (resultPostDaily.length > 0) {
+      for (let post of resultPostDaily) {
+        const onlyPostDate = new Date(post.posttime).toISOString().split('T')[0]; 
+        const onlyCurrentDate = new Date(new Date(now)).toISOString().split('T')[0];
+        if(post.set_daily === "true" && onlyCurrentDate > onlyPostDate){
+          const datetime = new Date(post.posttime);
+          const time_hour = datetime.getHours();
+          const time_minute = datetime.getMinutes();
+          if(currentTime.getHours() === time_hour && currentTime.getMinutes() === time_minute){
+            console.log(`Running cron daily ${post.id}!`);
+            if(post.platform==="Mastodon"){
+              postMastondonDaily(post, token_mastodon);
+            }else if(post.platform==="LinkedIn"){
+              postLinkedinDaily(post, token_linkedin, sub_ID);
+            }
+          }
+        }
+      }
+    }
+
+    const [resultPost] = await connect.execute(
+        "SELECT * FROM post WHERE post.posttime <= ? AND post.status = 0 AND post.set_daily = ?", [currentTime,"false"]
+    );
+
+    if(resultPost.length === 0)
+        console.log("No posts have been posted yet!");
+
+    if (resultPost.length > 0) {
+        for (let post of resultPost) {
+            if (post.platform === "Mastodon") {
+              if(!token_mastodon){
+                  console.log("Not logged in Mastodon");
+                  return;
+              }
+              await postToMastodon(post, token_mastodon);
+            }
+            else if(post.platform === "LinkedIn"){
+              if(!token_linkedin){
+                  console.log("Not logged in Linkedin");
+                  return;
+              }
+              await postToLinkedin(post, token_linkedin, sub_ID);
+            }
+        }
+    }
+
+    await connect.end();
 });

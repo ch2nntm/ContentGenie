@@ -14,7 +14,6 @@ const dbConfig = {
         ca: fs.readFileSync("/etc/ssl/cert.pem"), // Đọc file chứng chỉ CA
     },
   };
-  
 
 const secretKey = new TextEncoder().encode("your-secret-key"); //khóa bí mật dùng để ký JWT (JSON Web Token), chuyển đổi khoá bị mật thành một dạng Uint8Array (mảng byte).
 
