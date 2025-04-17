@@ -1,12 +1,12 @@
 "use client"
 
-import styles from "../../../../styles/statistic.module.css"
+import styles from "../statistic/statistic.module.css"
 import SearchIcon from "@mui/icons-material/Search";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import SettingsIcon from "@mui/icons-material/Settings";
-import NavbarUser from "@/single_file/navbar_user";
+import NavbarUser from "@/components/navbar_user";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
@@ -115,7 +115,7 @@ function Statistic() {
             return;
         }
         const data = await response.json();
-        setList(data.rows);
+        setList(data.posts);
     }
     
     return(

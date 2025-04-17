@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import styles from "../../../styles/login.module.css";
+import styles from "../login_user/login.module.css";
 import Link from "next/link";
 import { toast, ToastContainer } from "react-toastify";
 import { useEffect, useState } from "react";
@@ -11,7 +11,7 @@ import { signIn, useSession} from "next-auth/react";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import GoogleIcon from '@mui/icons-material/Google';
-import NavbarUser from "@/single_file/navbar_user";
+import NavbarUser from "@/components/navbar_user";
 
 function Login() {
     const router = useRouter();
@@ -26,7 +26,7 @@ function Login() {
     useEffect(()=>{
         if(session?.accessToken){
             Cookies.set("token", session.accessToken, {expires: 1, sameSite: "Lax"});
-            router.push("/");
+            // router.push("/");
         }
         document.title = t("title_page");
     },[session, status]);
@@ -71,6 +71,7 @@ function Login() {
                 })
                 .then((res) => res.json())
                 .then((data) => {
+                    console.log("data.user: ",data.user);
                     if (data.user) {
                         router.push("/");
                     }

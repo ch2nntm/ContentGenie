@@ -4,12 +4,13 @@ export async function GET() {
     const LINKEDIN_INSTANCE = process.env.LINKEDIN_INSTANCE;
     const CLIENT_ID = process.env.LINKEDIN_CLIENT_ID;
     const REDIRECT_URI = process.env.LINKEDIN_REDIRECT_URI;
+    const SCOPE = process.env.LINKEDIN_SCOPE;
   
     if (!CLIENT_ID) {
-      return new Response(JSON.stringify({ error: "Missing MASTODON_CLIENT_ID" }), { status: 500 });
+      return NextResponse.json({ status: "error", message: "Missing MASTODON_CLIENT_ID", code: 500, error }, { status: 500 });
     }
   
-    const authUrl = `${LINKEDIN_INSTANCE}/oauth/v2/authorization?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=openid profile email w_member_social`;
+    const authUrl = `${LINKEDIN_INSTANCE}/oauth/v2/authorization?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPE)}`;
   
     return NextResponse.redirect(authUrl);
   }

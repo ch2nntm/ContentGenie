@@ -23,50 +23,13 @@ async function generateToken(payload) {
         .setExpirationTime("1h") 
         .sign(secretKey);
 }
-// export async function POST(req) {
-//     const authHeader = req.headers.get("authorization"); 
-//     const token = authHeader?.split(" ")[1];
-
-//     if (!token) {
-//         return NextResponse.json({ message: "No tokens" }, { status: 401 });
-//     }
-
-//     try {
-//         const {inputEmail, email} = await req.json();
-//         console.log("inputEmail: ",inputEmail," - email: ",email);
-//         const connection = await mysql.createConnection(dbConfig);
-//         if (!inputEmail || !email) {
-//             return NextResponse.json({ error: "Thiếu dữ liệu đầu vào" }, { status: 400 });
-//         }
-
-//         const [rows] = await connection.execute(
-//             "SELECT * FROM account WHERE email = ?",
-//             [inputEmail]
-//         );
-        
-//         if (rows.length > 0) { 
-//             await connection.end();
-//             return new Response(
-//                 JSON.stringify({ error: "Email is exists" }),
-//                 { status: 409, headers: { "Content-Type": "application/json" } }
-//             );
-//         }
-
-//         return NextResponse.json({
-//             message: "Email is not exists",
-//         }, { status: 200 });
-//     }catch (error) {
-//         console.error("Error: ", error);
-//         return NextResponse.json({ error: "Lỗi hệ thống" }, { status: 500 });
-//     }
-// }
 
 export async function PUT(req) {
     const authHeader = req.headers.get("authorization"); 
     const token = authHeader?.split(" ")[1];
 
     if (!token) {
-        return NextResponse.json({ message: "No tokens" }, { status: 401 });
+        return NextResponse.json({ status: "error", message: "No tokens", error }, { status: 401 });
     }
 
     try {
@@ -74,7 +37,7 @@ export async function PUT(req) {
         console.log("inputEmail: ",inputEmail," - email: ",email);
         const connection = await mysql.createConnection(dbConfig);
         if (!password || !inputName || !inputEmail || !email) {
-            return NextResponse.json({ error: "Thiếu dữ liệu đầu vào" }, { status: 400 });
+            return NextResponse.json({ status: "error", message: "Missing input data", error }, { status: 400 });
         }
 
         if(inputEmail !== email){
@@ -85,10 +48,7 @@ export async function PUT(req) {
           
             if (rows.length = 0) { 
                 await connection.end();
-                return new Response(
-                    JSON.stringify({ error: "Email is not exists" }),
-                    { status: 409, headers: { "Content-Type": "application/json" } }
-                );
+                return NextResponse.json({ status: "error", message: "Email is not exists", error },{ status: 409});
             }
         }
 
@@ -99,7 +59,7 @@ export async function PUT(req) {
 
         if (result.affectedRows === 0) {
             await connection.end();
-            return NextResponse.json({ error: "Không thể cập nhật thông tin" }, { status: 400 });
+            return NextResponse.json({ status: "error", message: "Unable to update information", error }, { status: 400 });
         }
 
         const [updatedUser] = await connection.execute(
@@ -109,7 +69,7 @@ export async function PUT(req) {
         await connection.end();
 
         if (updatedUser.length === 0) {
-            return NextResponse.json({ error: "Không tìm thấy user" }, { status: 404 });
+            return NextResponse.json({ status: "error", message: "User not found", error }, { status: 404 });
         }
 
         const user = updatedUser[0];
@@ -117,13 +77,14 @@ export async function PUT(req) {
         const newToken = await generateToken(user);
 
         return NextResponse.json({
-            message: "Cập nhật thông tin thành công",
+            status: "success",
+            message: "Information updated successfully",
             accessToken: newToken, 
-            user, 
+            data: user, 
         }, { status: 200 });
 
     } catch (error) {
         console.error("Error: ", error);
-        return NextResponse.json({ error: "Lỗi hệ thống" }, { status: 500 });
+        return NextResponse.json({ status: "error", message: "System error", error }, { status: 500 });
     }
 }

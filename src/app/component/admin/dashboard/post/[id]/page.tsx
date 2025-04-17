@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import styles from "../../../../../styles/detail_post.module.css";
+import styles from "../[id]/detail_post.module.css";
 import PublicIcon from '@mui/icons-material/Public';
 import HttpsIcon from '@mui/icons-material/Https';
 import { getTranslations } from "next-intl/server";
@@ -17,7 +17,7 @@ type PageProps = Promise<{
 
 const getPostDetail = async (post_id: string) => {
   try {
-    const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+    const BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXTAUTH_URL;
     const res = await fetch(`${BASE_URL}/api/manage_account/list_post/${post_id}`, {
       method: "GET",
       headers: { "Accept": "application/json" },
@@ -27,7 +27,8 @@ const getPostDetail = async (post_id: string) => {
     if (!res.ok) return null;
 
     const data = await res.json();
-    return data;
+    console.log("DETAIL: ",data);
+    return data.data;
   } catch (error) {
     console.error("Error fetching user:", error);
     return null;
@@ -40,7 +41,7 @@ export default async function ViewUserDetail(props : { params: PageProps }) {
   console.log("Post detail:", detailPost);
 
   const t = getTranslations("detail_post");
-  const NavbarComponent = dynamic(() => import("@/single_file/navbar_user"));
+  const NavbarComponent = dynamic(() => import("@/components/navbar_user"));
 
   const convertDay = async (day: Date) => {
     const postDate = new Date(day);
@@ -102,8 +103,8 @@ export default async function ViewUserDetail(props : { params: PageProps }) {
         <div className={styles.inf_post}>
           <p>{detailPost.content}</p>
           {/* {detailPost.image && <img src={detailPost.image} className={styles.img}/>} */}
-          {detailPost.image && !detailPost.image.startsWith("https://www.youtube.com") && <img src={detailPost.image} className={styles.img}/>}
-           {detailPost.image && detailPost.image.startsWith("https://www.youtube.com") && <iframe className={styles.img} src={detailPost.image} ></iframe>}
+          {detailPost.image && !detailPost.image.startsWith(process.env.YOUTUBE_URL ?? "") && <img src={detailPost.image} className={styles.img}/>}
+          {detailPost.image && detailPost.image.startsWith(process.env.YOUTUBE_URL ?? "") && <iframe className={styles.img} src={detailPost.image} ></iframe>}
                                                             
         </div>
         <div className={styles.interact_post}>

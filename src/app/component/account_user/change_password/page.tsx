@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
-import styles from "../../../styles/change_password.module.css";
+import styles from "../change_password/change_password.module.css";
 import Cookies from "js-cookie";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { toast, ToastContainer } from "react-toastify";
-import NavbarUser from "../../../../single_file/navbar_user";
+import NavbarUser from "../../../../components/navbar_user";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';

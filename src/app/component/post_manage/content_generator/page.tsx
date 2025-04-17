@@ -1,9 +1,9 @@
 "use client"
 import { useTranslations } from "next-intl";
-import styles from "../../../styles/content_generator.module.css"
+import styles from "../content_generator/content_generator.module.css";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie"; //Client component
-import NavbarUser from "@/single_file/navbar_user";
+import NavbarUser from "@/components/navbar_user";
 import { useRouter } from "next/navigation";
 import ShareIcon from '@mui/icons-material/Share';
 import WatchLaterIcon from '@mui/icons-material/WatchLater';

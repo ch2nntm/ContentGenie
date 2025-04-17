@@ -1,5 +1,6 @@
 import  {cookies} from "next/headers";
 import { Redis } from "@upstash/redis";
+import { NextResponse } from "next/server";
 
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL,
@@ -12,12 +13,12 @@ export async function GET(req) {
     const cookieStore = await cookies();
   
     if (!code) {
-      return new Response(JSON.stringify({ error: "Missing authorization code" }), { status: 400 });
+      return NextResponse({ status: "error", message: "Missing authorization code", code: 400, error }, { status: 400 });
     }
   
     const LINKEDIN_INSTANCE = process.env.LINKEDIN_INSTANCE;
     const CLIENT_ID = process.env.LINKEDIN_CLIENT_ID;
-    const CLIENT_SECRET = "WPL_AP1.zXKedn8X5A1jLaA4.9+fuLA==";
+    const CLIENT_SECRET = process.env.LINKEDIN_CLIENT_SECRET;
     const REDIRECT_URI = process.env.LINKEDIN_REDIRECT_URI;
     console.log("Authorization Code:", code);
     console.log("LINKEDIN_INSTANCE:", LINKEDIN_INSTANCE);
@@ -64,7 +65,7 @@ export async function GET(req) {
     return Response.redirect(new URL(`/component/post_manage/preview_linkedin?${redirectParams.value}`, req.url), 302);
     } catch (error) {
       console.error("Error exchanging token:", error);
-      return new Response(JSON.stringify({ error: "Internal Server Error: "+error }), { status: 500 });
+      return NextResponse.json({ status: "error", message: "Internal Server Error: ", code: 500, error }, { status: 500 });
     }
   }
   

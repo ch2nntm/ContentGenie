@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import styles from "../../../styles/register.module.css";
+import styles from "../register_user/register.module.css";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -8,7 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { useTranslations } from "next-intl";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import NavbarUser from "@/single_file/navbar_user";
+import NavbarUser from "@/components/navbar_user";
 
 function Register() {
     const [name, setName] = useState<string>("");

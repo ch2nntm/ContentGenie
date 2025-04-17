@@ -19,9 +19,7 @@ const dbConfig = {
     console.log("Id:", id); 
     
     if (isNaN(id)) {
-        return new Response(JSON.stringify({ error: "Invalid user ID" }), {
-            status: 400,
-        });
+        return NextResponse.json({ status: "error", message: "Invalid user ID", error }, { status: 400 });
     }
 
     try {
@@ -35,18 +33,13 @@ const dbConfig = {
         await connection.end();
     
         if (rows.length === 0) {
-          return new Response(JSON.stringify({ error: "User not found" }), {
-            status: 404,
-          });
+          return NextResponse.json({ status: "error", message: "User not found", error }, { status: 404 });
         }
     
-        return NextResponse.json(rows, { status: 200 });
+        return NextResponse.json( {status: "success", message: "Get detail user success", data: rows}, { status: 200 });
       } catch (error) {
         console.error(error);
-        return new Response(
-          JSON.stringify({ error: "Database connection failed" }),
-          { status: 500 }
-        );
+        return NextResponse.json({ status: "error", message: "Database connection failed", error }, { status: 500 });
       }
 }
 
@@ -55,7 +48,7 @@ export async function DELETE(req, { params }) {
   console.log("Id:", id); 
   
   if (!id) {
-      return NextResponse.json({ error: "Missing post ID" }, { status: 400 });
+      return NextResponse.json({ status: "error", message: "Missing post ID", error }, { status: 400 });
   }
 
   try {
@@ -68,15 +61,12 @@ export async function DELETE(req, { params }) {
     await connection.end();
 
     if(result.affectedRows === 0) {
-        return NextResponse.json({ error: "User not found" }, { status: 400 });
+        return NextResponse.json({ status: "error", message: "User not found", error }, { status: 400 });
     }
 
-    return NextResponse({success: "Delete successful"}, { status: 200 });
+    return NextResponse({ status: "success", message: "Delete successful" }, { status: 200 });
   } catch (error) {
     console.error(error);
-    return NextResponse(
-      JSON.stringify({ error: "Database connection failed" }),
-      { status: 500 }
-    );
+    return NextResponse.json({ status: "error", message: "Database connection failed", error },{ status: 500 });
   }
 }

@@ -7,8 +7,6 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN,
 });
 
-// const redis = new Redis(process.env.REDIS_URL);
-
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
 const sendEmail = async (email, otp) => {
@@ -32,7 +30,7 @@ const sendEmail = async (email, otp) => {
 export async function POST(req) {
     try {
         const { email } = await req.json();
-        if (!email) return NextResponse.json({ error: "Email is required" }, { status: 400 });
+        if (!email) return NextResponse.json({ status: "error", message: "Email is required", error }, { status: 400 });
 
         const otp = generateOTP();
 
@@ -45,9 +43,9 @@ export async function POST(req) {
 
         await sendEmail(email, otp);
 
-        return NextResponse.json({ message: "OTP sent successfully" }, { status: 200 });
+        return NextResponse.json({ status: "success", message: "OTP sent successfully" }, { status: 200 });
     } catch (error) {
         console.log("Error sending OTP:", error);
-        return NextResponse.json({ error: "Error sending OTP: "+error  }, { status: 500 });
+        return NextResponse.json({ status: "error", message: "Error sending OTP", error  }, { status: 500 });
     }
 }

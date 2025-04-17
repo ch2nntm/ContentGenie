@@ -1,6 +1,6 @@
 "use client"
-import styles from "../../../../styles/list_post_dashboard.module.css";
-import NavbarUser from "@/single_file/navbar_user";
+import styles from "../list_post/list_post_dashboard.module.css";
+import NavbarUser from "@/components/navbar_user";
 import SearchIcon from "@mui/icons-material/Search";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
@@ -157,8 +157,8 @@ function ListPostDashboard() {
                                                                 <AccessTimeIcon/>
                                                                 <p key={post.post_id}>{new Date(post.posttime).getHours()}: {new Date(post.posttime).getMinutes()}</p>
                                                             </div>
-                                                            {post.image && !post.image.startsWith("https://www.youtube.com") && <img src={post.image} className={styles.item_image}/>}
-                                                            {post.image && post.image.startsWith("https://www.youtube.com") && <iframe className={styles.item_image} src={post.image} ></iframe>}
+                                                            {post.image && !post.image.startsWith(process.env.YOUTUBE_URL ?? "") && <img src={post.image} className={styles.item_image}/>}
+                                                            {post.image && post.image.startsWith(process.env.YOUTUBE_URL ?? "") && <iframe className={styles.item_image} src={post.image} ></iframe>}
                                                             <p className={post.image ? styles.item_content_img : styles.item_content}>{post.content}</p>
                                                             <div className={styles.footer}>
                                                                 <Link href={`/component/admin/dashboard/post/${post.post_id}`} className={styles.btn_detail}>

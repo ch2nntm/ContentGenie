@@ -44,6 +44,12 @@ export async function POST() {
             sameSite: "strict",
             expires: new Date(0)
         }),
+
+        serialize("token", "", {
+            path: "/",
+            sameSite: "strict",
+            expires: new Date(0)
+        }),
     ]
     await redis.del(`linkedin_token:`);
     await redis.del(`mastodon_token:`);

@@ -25,7 +25,7 @@ export async function GET(req) {
         console.log("searchQueryPost: ",searchQuery);
 
         if (!token) {
-            return new Response(JSON.stringify({ message: "Missing token" }), { status: 401 });
+            return NextResponse.json({ status: "error", message: "Missing token", error }, { status: 401 });
         }
 
         try {
@@ -36,23 +36,17 @@ export async function GET(req) {
                 const [rows] = await connection.execute("SELECT CAST(post.id AS CHAR) as post_id, post.title, post.content, post.image, post.posttime, post.audience, account.name, account.avatar, post.platform FROM post left join account on post.user_id = account.id WHERE post.content LIKE ? OR post.title LIKE ? OR account.name LIKE ?", [`%${searchQuery}%`, `%${searchQuery}%`, `%${searchQuery}%`]);
                 await connection.end();
 
-                return new Response(
-                    JSON.stringify({ message: "Get list post successfully", posts: rows }),
-                    { status: 200, headers: { "Content-Type": "application/json" } }
-                );
+                return NextResponse.json({ status: "success", message: "Get list post successfully", posts: rows }, { status: 200 });
             } else {
-                return new Response(JSON.stringify({ message: "Forbidden" }), { status: 403 });
+                return NextResponse.json({ status: "error", message: "Forbidden", error }, { status: 403 });
             }
         } catch (error) {
             console.error("JWT Verification Error: ", error);
-            return new Response(JSON.stringify({ message: "Invalid token" }), { status: 401 });
+            return NextResponse.json({ status: "error", message: "Invalid token", error }, { status: 401 });
         }
     } catch (error) {
         console.error("Database error:", error);
-        return new Response(
-            JSON.stringify({ error: "Database connection failed" }),
-            { status: 500 }
-        );
+        return NextResponse.json({ status: "error", message: "Database connection failed", error }, { status: 500 });
     }
 }
 
@@ -61,12 +55,12 @@ export async function POST(req) {
         const {year, month, week} = await req.json();
         console.log("Year: ",year," - month: ",month," - week: ",week);
         if(!year || !month || !week)
-            return NextResponse.json({message: "Missing the field"}, {status: 400});
+            return NextResponse.json({ status: "error", message: "Missing the field", error}, { status: 400 });
         const authHeader = req.headers.get("authorization"); 
         const token = authHeader?.split(" ")[1];
 
         if (!token) {
-            return NextResponse.json({ message: "Missing token" }, { status: 401 });
+            return NextResponse.json({ status: "error", message: "Missing token", error }, { status: 401 });
         }
 
         try {
@@ -81,20 +75,16 @@ export async function POST(req) {
                 
                     await connection.end();
 
-                return NextResponse.json({ message: "Get list post successfully", posts: rows },
-                    { status: 200, headers: { "Content-Type": "application/json" } }
-                );
+                return NextResponse.json({ status: "success", message: "Get list post successfully", posts: rows }, { status: 200 });
             } else {
-                return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+                return NextResponse.json({ status: "error", message: "Forbidden", error }, { status: 403 });
             }
         } catch (error) {
             console.error("JWT Verification Error: ", error);
-            return NextResponse.json({ message: "Invalid token" }, { status: 401 });
+            return NextResponse.json({ status: "error", message: "Invalid token", error }, { status: 401 });
         }
     } catch (error) {
         console.error("Database error:", error);
-        return NextResponse.json({ error: "Database connection failed" },
-            { status: 500 }
-        );
+        return NextResponse.json({ status: "error", message: "Database connection failed", error }, { status: 500 });
     }
 }

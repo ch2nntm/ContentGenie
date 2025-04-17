@@ -2,8 +2,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
-import styles from "../../../styles/preview_linkedin.module.css";
-import NavbarUser from "@/single_file/navbar_user";
+import styles from "../preview_linkedin/preview_linkedin.module.css";
+import NavbarUser from "@/components/navbar_user";
 import { useAuth } from "../../authProvider";
 import Modal from "react-bootstrap/Modal";
 import Cookies from "js-cookie";
@@ -64,7 +64,7 @@ function PreviewPage() {
             return file; // Trả luôn URL cũ
         }
     
-        const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
+        const cloudinaryUrl = process.env.CLOUDINARY_URL;
         const uploadPreset = "demo-upload";
         const form = new FormData();
         form.append("upload_preset", uploadPreset);
@@ -80,6 +80,10 @@ function PreviewPage() {
         }
     
         try {
+            if (!cloudinaryUrl) {
+                throw new Error("cloudinaryUrl is not defined");
+            }
+
             const response = await fetch(cloudinaryUrl, {
                 method: "POST",
                 body: form,
@@ -121,9 +125,9 @@ function PreviewPage() {
             }
 
             const data = await responseData.json();
-            console.log("OpenAI replied...", data.messages?.content);
-            setContent(data.messages?.content);
-            setUpdateContent(data.messages?.content);
+            console.log("OpenAI replied...", data.chat?.content);
+            setContent(data.chat?.content);
+            setUpdateContent(data.chat?.content);
 
             if(topic.includes("Mua sắm")){
                 const uploadedImgUrl = await uploadToCloudinary(data.imageUrl);

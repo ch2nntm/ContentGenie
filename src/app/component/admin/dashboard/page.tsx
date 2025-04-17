@@ -1,9 +1,9 @@
 "use client";
 
 import useSWR from "swr";
-import styles from "../../../styles/dashboard.module.css";
+import styles from "../dashboard/dashboard.module.css";
 import Link from "next/link";
-import NavbarUser from "@/single_file/navbar_user";
+import NavbarUser from "@/components/navbar_user";
 import SearchIcon from "@mui/icons-material/Search";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";

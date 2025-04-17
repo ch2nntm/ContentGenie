@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect, useRef } from "react";
 import html2pdf from "html2pdf.js";
-import styles from "../../../styles/list_post_user.module.css";
+import styles from "../list_post_user/list_post_user.module.css";
 import { useTranslations } from 'next-intl';
 import Cookies from 'js-cookie';
 import dynamic from "next/dynamic";
@@ -20,7 +20,7 @@ import Form from "react-bootstrap/esm/Form";
 import CloseIcon from '@mui/icons-material/Close';
 import { toast, ToastContainer } from "react-toastify";
 
-const NavbarComponent = dynamic(() => import("@/single_file/navbar_user"));
+const NavbarComponent = dynamic(() => import("@/components/navbar_user"));
 
 interface Post {
     id: number;
@@ -115,7 +115,7 @@ function ListPostUser() {
         //     return file;
         // }
     
-        const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
+        const cloudinaryUrl = process.env.CLOUDINARY_URL;
         const uploadPreset = "demo-upload";
         const form = new FormData();
         form.append("upload_preset", uploadPreset);
@@ -131,6 +131,10 @@ function ListPostUser() {
         }
     
         try {
+            if (!cloudinaryUrl) {
+                throw new Error("cloudinaryUrl is not defined");
+            }
+
             const response = await fetch(cloudinaryUrl, {
                 method: "POST",
                 body: form,

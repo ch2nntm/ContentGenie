@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import styles from "../../../../../styles/detail_user.module.css";
+import styles from "../[id]/detail_user.module.css";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -11,7 +11,7 @@ type PageProps = Promise<{
 
 const getUserDetail = async (id: string) => {
   try {
-    const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+    const BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXTAUTH_URL;
     const res = await fetch(`${BASE_URL}/api/manage_account/user/${id}`, {
       method: "GET",
       headers: { "Accept": "application/json" },
@@ -21,8 +21,7 @@ const getUserDetail = async (id: string) => {
       window.location.href = "/component/account_user/login_user";
 
     const dataResponse = await res.json();
-
-    const data = dataResponse[0];
+    const data = dataResponse.data[0];
     return data;
   } catch (error) {
     console.error("Error fetching user:", error);
@@ -34,7 +33,7 @@ export default async function ViewUserDetail(props: { params: PageProps}) {
   const detailUser = await getUserDetail((await props.params).id);
   console.log("User detail: ",detailUser);
 
-  const NavbarComponent = dynamic(() => import("@/single_file/navbar_user"));
+  const NavbarComponent = dynamic(() => import("@/components/navbar_user"));
   const t = getTranslations("detail_user");
 
   if (!detailUser) return notFound();

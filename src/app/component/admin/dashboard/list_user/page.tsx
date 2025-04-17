@@ -1,6 +1,6 @@
 "use client"
-import NavbarUser from "@/single_file/navbar_user";
-import styles from "../../../../styles/list_user_dashboard.module.css"
+import NavbarUser from "@/components/navbar_user";
+import styles from "../list_user/list_user_dashboard.module.css"
 import Link from "next/link";
 import SearchIcon from "@mui/icons-material/Search";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";

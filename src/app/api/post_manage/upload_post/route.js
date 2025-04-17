@@ -1,5 +1,6 @@
 import mysql from "mysql2/promise";
 import fs from "fs";
+import { NextResponse } from "next/server";
 
 const dbConfig = {
     host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
@@ -17,7 +18,7 @@ export async function POST(req) {
   const token = authHeader?.split(" ")[1];
 
   if (!token) {
-      return NextResponse.json({ message: "No tokens" }, { status: 401 });
+      return NextResponse.json({ status: "error", message: "No tokens", error }, { status: 401 });
   }
   
   try {
@@ -41,16 +42,10 @@ export async function POST(req) {
 
     await connection.end(); 
 
-    return new Response(
-      JSON.stringify({ message: "Post created successfully" }),
-      { status: 201, headers: { "Content-Type": "application/json" } }
-    );
+    return NextResponse.json({ status: "success", message: "Post created successfully" }, { status: 200 });
 
   } catch (error) {
     console.error("Database error:", error);
-    return new Response(
-      JSON.stringify({ error: "Database connection failed" }),
-      { status: 500 }
-    );
+    return NextResponse.json({ status: "error", message: "Database connection failed", error }, { status: 500 });
   }
 }

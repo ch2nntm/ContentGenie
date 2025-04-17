@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import styles from "../../../styles/forgot_password.module.css"
+import styles from "../forgot_password/forgot_password.module.css";
 import { toast, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
 import VisibilityIcon from '@mui/icons-material/Visibility';

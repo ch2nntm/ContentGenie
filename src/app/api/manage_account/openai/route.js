@@ -29,7 +29,7 @@ export async function POST(req) {
         const token = authHeader?.split(" ")[1];
 
         if (!token) {
-            return NextResponse.json({ message: "No tokens" }, { status: 401 });
+            return NextResponse.json({ status: "error", message: "No tokens", error }, { status: 401 });
         }
     
         const chat = await openai.chat.completions.create({
@@ -44,11 +44,11 @@ export async function POST(req) {
         );
 
         if(resultUser.length===0){
-          return NextResponse.json({error: "Missing user"},{status: 400});
+          return NextResponse.json({ status: "error", message: "Missing user", error }, { status: 400 });
         }
 
         if((resultUser[0][0].credits===0 && !resultUser[0][0].expiration_date) || (resultUser[0][0].credits===0 && resultUser[0][0].expiration_date < Date.now())){
-          return NextResponse.json({error: "Missing empty credits"},{status: 402});
+          return NextResponse.json({ status: "error", message: "Missing empty credits", error }, { status: 402 });
         }
         else {
           if((!resultUser[0][0].expiration_date && resultUser[0][0].credits>0) || (resultUser[0][0].expiration_date < Date.now() && resultUser[0][0].credits>0)){
@@ -76,11 +76,9 @@ export async function POST(req) {
           }
           await connection.end();
         }
-        
-
-
+      
         if(/Truyện/i.test(body.messages[body.messages.length-2].content))
-          return NextResponse.json({messages:  chat.choices[0].message}, { status: 200 });
+          return NextResponse.json({ statuse: "success", messages: "Generate content success", chat: chat.choices[0].message}, { status: 200 });
         
         else if (/Âm nhạc/i.test(body.messages[body.messages.length-2].content)){
           const query = body.messages[body.messages.length-1].content;
@@ -89,7 +87,7 @@ export async function POST(req) {
           const response = await fetch(url);
           const data = await response.json();
           const videoId = data.items[0]?.id?.videoId;
-          return NextResponse.json({music: videoId, messages:  chat.choices[0].message}, { status: 200 });
+          return NextResponse.json({ status: "success", message: "Generate content success", music: videoId, chat: chat.choices[0].message}, { status: 200 });
         }
           
         else{
@@ -99,10 +97,10 @@ export async function POST(req) {
             n: 1,
             size: "1024x1024",
           });
-          return NextResponse.json({imageUrl: completion.data[0].url, messages:  chat.choices[0].message}, { status: 200 });
+          return NextResponse.json({ status: "success", message: "Generate content success", imageUrl: completion.data[0].url, chat: chat.choices[0].message}, { status: 200 });
         }
       } catch (error) {
         console.error("Error:", error);
-        return NextResponse.json({ message: "Internal server error", error: error.message }, { status: 500 });
+        return NextResponse.json({ status: "error", message: "Internal server error", error}, { status: 500 });
       }
   }

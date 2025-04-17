@@ -23,19 +23,13 @@ export async function POST(req) {
         );
       
         if (rows.length > 0) {
-            return NextResponse.json({ message: "Email is correct!" }, { status: 200 });
+            return NextResponse.json({ status: "success", message: "Email is correct!" }, { status: 200 });
         } else {
-            return new Response(
-                JSON.stringify({ error: "Wrong email!" }),
-                { status: 400, headers: { "Content-Type": "application/json" } }
-            );
+            return NextResponse.json({ status: "error", message: "Wrong email!", error },{ status: 400 });
         }
     } catch (error) {
         console.error(error);
-        return new Response(
-            JSON.stringify({ error: "Database connection error!" }),
-            { status: 500, headers: { "Content-Type": "application/json" } }
-        );
+        return NextResponse.json({ status: "error", message: "Database connection error!", error },{ status: 500 });
     }
 }
 
@@ -44,7 +38,7 @@ export async function PUT(req) {
         const { password, email } = await req.json();
 
         if (!password) {
-            return NextResponse.json({ error: "Thiếu password" }, { status: 400 });
+            return NextResponse.json({ status: "error", message: "Missing password", error }, { status: 400 });
         }
 
         const connection = await mysql.createConnection(dbConfig);
@@ -57,7 +51,7 @@ export async function PUT(req) {
 
         if(resultExist.affectedRows !== 0 && resultExist[0].password === password){
             console.log("resultExist:",resultExist);
-            return NextResponse.json({ error: "Mat khau cu trung voi mat khau moi", status: 202 }, { status: 202 });;
+            return NextResponse.json({ status: "error", message: "Old password matches new password", error }, { status: 202 });;
         }
 
         const [result] = await connection.execute(
@@ -68,16 +62,13 @@ export async function PUT(req) {
         await connection.end();
 
         if (result.affectedRows === 0) {
-            return NextResponse.json({ error: "Sai email hoặc không tìm thấy tài khoản" }, { status: 400 });
+            return NextResponse.json({ status: "error", message: "Wrong email or account not found", error }, { status: 400 });
         }
 
-        return NextResponse.json({ message: "Cập nhật mật khẩu thành công"}, { status: 200 });
+        return NextResponse.json({ status: "success", message: "Password updated successfully" }, { status: 200 });
 
     } catch (error) {
         console.error(error);
-        return new Response(
-            JSON.stringify({ error: "Database connection error!" }),
-            { status: 500, headers: { "Content-Type": "application/json" } }
-        );
+        return NextResponse.json({ status: "error", message: "Database connection error!", error }, { status: 500 });
     }
 }

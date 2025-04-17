@@ -1,6 +1,7 @@
 import mysql from "mysql2/promise";
 import fs from "fs";
 import { jwtVerify } from "jose";
+import { NextResponse } from "next/server";
 
 const dbConfig = {
     host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
@@ -27,7 +28,7 @@ export async function GET(req) {
         console.log("Token: ",token);
         console.log("SecretKey: ",secretKey);
         if (!token) {
-            return new Response(JSON.stringify({ message: "Missing token" }), { status: 401 });
+            return NextResponse.json({ status: "error", message: "Missing token", error }, { status: 401 });
         }
 
         try {
@@ -38,62 +39,16 @@ export async function GET(req) {
                 const [rows] = await connection.execute("SELECT ac.*, count(*) as count_post FROM account ac LEFT JOIN post ps ON ac.id = ps.user_id WHERE role <> 1 AND name LIKE ? GROUP BY ac.id;", [`%${searchQuery}%`]);
                 await connection.end();
 
-                return new Response(
-                    JSON.stringify({ message: "Get list user successfully", users: rows }),
-                    { status: 200, headers: { "Content-Type": "application/json" } }
-                );
+                return NextResponse.json({ status: "success", message: "Get list user successfully", users: rows }, { status: 200 });
             } else {
-                return new Response(JSON.stringify({ message: "Forbidden" }), { status: 403 });
+                return NextResponse.json({ status: "error", message: "Forbidden", error }, { status: 403 });
             }
         } catch (error) {
             console.error("JWT Verification Error: ", error);
-            return new Response(JSON.stringify({ message: "Invalid token" }), { status: 401 });
+            return NextResponse.json({ status: "error", message: "Invalid token", error }, { status: 401 });
         }
     } catch (error) {
         console.error("Database error:", error);
-        return new Response(
-            JSON.stringify({ error: "Database connection failed" }),
-            { status: 500 }
-        );
+        return NextResponse.json({ status: "error", message: "Database connection failed", error }, { status: 500 });
     }
 }
-
-// export async function POST(req) {
-//     try {
-//         const authHeader = req.headers.get("authorization"); 
-//         const token = authHeader?.split(" ")[1];
-//         const {searchQuery} = await req.json();
-
-//         console.log("Token: ",token);
-//         console.log("SecretKey: ",secretKey);
-//         if (!token) {
-//             return new Response(JSON.stringify({ message: "Missing token" }), { status: 401 });
-//         }
-
-//         try {
-//             const { payload } = await jwtVerify(token, secretKey);
-
-//             if (payload.role === 1) {
-//                 const connection = await mysql.createConnection(dbConfig);
-//                 const [rows] = await connection.execute("SELECT * FROM account WHERE role <> 1 AND name LIKE ?", [`%${searchQuery}%`]);
-//                 await connection.end();
-
-//                 return new Response(
-//                     JSON.stringify({ message: "Get list user successfully", users: rows }),
-//                     { status: 200, headers: { "Content-Type": "application/json" } }
-//                 );
-//             } else {
-//                 return new Response(JSON.stringify({ message: "Forbidden" }), { status: 403 });
-//             }
-//         } catch (error) {
-//             console.error("JWT Verification Error: ", error);
-//             return new Response(JSON.stringify({ message: "Invalid token" }), { status: 401 });
-//         }
-//     } catch (error) {
-//         console.error("Database error:", error);
-//         return new Response(
-//             JSON.stringify({ error: "Database connection failed" }),
-//             { status: 500 }
-//         );
-//     }
-// }

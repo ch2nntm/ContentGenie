@@ -1,7 +1,7 @@
 
 import {NextIntlClientProvider} from 'next-intl';
 import {getLocale, getMessages} from 'next-intl/server';
-import Topbar from '../single_file/Topbar';
+import Topbar from '../components/Topbar';
 import Script from 'next/script';
 
 export const metadata = {

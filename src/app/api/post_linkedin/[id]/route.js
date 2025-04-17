@@ -12,7 +12,9 @@ const dbConfig = {
     ssl: {
         ca: fs.readFileSync("/etc/ssl/cert.pem"), 
     },
-  };
+};
+
+const LINKEDIN_URL_API = process.env.LINKEDIN_URL_API;
 
 export async function DELETE(req, { params }) {
     try {
@@ -23,7 +25,7 @@ export async function DELETE(req, { params }) {
         console.log("Token từ cookies: ", token_linkedin);
     
         if (!token_linkedin) {
-            return NextResponse.json({ message: "No token provided" }, { status: 401 });
+            return NextResponse.json({ status: "error", message: "No token provided", error }, { status: 401 });
         }
 
         const connection = await mysql.createConnection(dbConfig);
@@ -34,7 +36,7 @@ export async function DELETE(req, { params }) {
         );
 
         if(result[0].status === 1){
-            const response = await fetch(`https://api.linkedin.com/v2/ugcPosts/${encodeURIComponent(postId)}`, {
+            const response = await fetch(`${LINKEDIN_URL_API}/v2/ugcPosts/${encodeURIComponent(postId)}`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${token_linkedin}`,
@@ -54,9 +56,9 @@ export async function DELETE(req, { params }) {
 
         await connection.end();
 
-        return NextResponse.json({message: "Delete post success"}, { status: 200 });
+        return NextResponse.json({ status: "success", message: "Delete post success" }, { status: 200 });
     } catch (error) {
       console.error("Token Decode Error:", error);
-      return NextResponse.json({ error: "Failed to decode ID Token" }, { status: 500 });
+      return NextResponse.json({ status: "error", message: "Failed to decode ID Token", error }, { status: 500 });
     }
   }

@@ -29,7 +29,7 @@ async function generateToken(payload) {
     const token = authHeader?.split(" ")[1];
 
     if (!token) {
-        return NextResponse.json({ message: "No tokens" }, { status: 401 });
+        return NextResponse.json({ status: "error", message: "No tokens", error }, { status: 401 });
     }
 
     try {
@@ -43,7 +43,7 @@ async function generateToken(payload) {
 
         if (result.affectedRows === 0) {
             await connection.end();
-            return NextResponse.json({ error: "Sai tên đăng nhập hoặc mật khẩu" }, { status: 400 });
+            return NextResponse.json({ status: "error", message: "Incorrect username or password", error }, { status: 400 });
         }
 
         const [updatedUser] = await connection.execute(
@@ -53,7 +53,7 @@ async function generateToken(payload) {
         await connection.end();
 
         if (updatedUser.length === 0) {
-            return NextResponse.json({ error: "Không tìm thấy user" }, { status: 404 });
+            return NextResponse.json({ status: "error", message: "User not found", error }, { status: 404 });
         }
 
         const user = updatedUser[0];
@@ -62,13 +62,14 @@ async function generateToken(payload) {
         const newToken = await generateToken(user);
 
         return NextResponse.json({
+            status: "success",
             message: "Mật khẩu đã được thay đổi thành công",
-            accessToken: newToken, // Trả về token mới
-            user, // Trả về thông tin user mới
+            accessToken: newToken, 
+            data: user, 
         }, { status: 200 });
 
     } catch (error) {
         console.error("Error: ", error);
-        return NextResponse.json({ error: "Lỗi hệ thống" }, { status: 500 });
+        return NextResponse.json({ status: "error", message: "System error", error }, { status: 500 });
     }
 }

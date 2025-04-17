@@ -21,7 +21,7 @@ export async function GET(req) {
     const token = authHeader?.split(" ")[1];
 
     if (!token) {
-        return NextResponse.json({ message: "No token provided" }, { status: 401 });
+        return NextResponse.json({ status: "error", message: "No token provided", error }, { status: 401 });
     }
 
     try {
@@ -43,9 +43,9 @@ export async function GET(req) {
 
         await connection.end(); 
 
-        return NextResponse.json({ message: "Get list post of user successfully", posts_mastodon: rows_mastodon, posts_linkedin: rows_linkedin}, { status: 200 });
+        return NextResponse.json({ status: "success", message: "Get list post of user successfully", posts_mastodon: rows_mastodon, posts_linkedin: rows_linkedin}, { status: 200 });
     } catch (error) {
         console.error("Error:", error);
-        return NextResponse.json({ message: "Invalid token or server error" }, { status: 401 });
+        return NextResponse.json({ status: "error", message: "Invalid token or server error", error }, { status: 401 });
     }
 }

@@ -22,11 +22,11 @@ export async function POST(req) {
         const token = authHeader?.split(" ")[1];
 
         if (!token) {
-            return new Response(JSON.stringify({ message: "Missing token" }), { status: 401 });
+            return NextResponse.json({ status: "error", message: "Missing token", error }, { status: 401 });
         }
 
         if(!id){
-            return NextResponse.json({error: "Missing field"}, {status: 402})
+            return NextResponse.json({ status: "error", message: "Missing field", error}, {status: 402})
         }
         const [result] = await connect.execute(
             "SELECT credits, expiration_date FROM account WHERE id = ?",[id]
@@ -37,10 +37,10 @@ export async function POST(req) {
         if(result.length === 0){
             throw new NextResponse.json({error}, {status: 400});
         }
-        return NextResponse.json({data: result}, {status: 200});
+        return NextResponse.json({ status: "success", message: "Check credits success", data: result}, {status: 200});
 
     }catch(error){
-        return NextResponse.json({error: error}, {status: 500});
+        return NextResponse.json({ status: "error", message: "Something went wrong", error}, {status: 500});
     }
 }
 
@@ -115,10 +115,10 @@ export async function PUT(req) {
 
         await connect.end();
 
-        return NextResponse.json({message: "Update success"}, {status: 200});
+        return NextResponse.json({ status: "success", message: "Update success" }, {status: 200});
 
     }catch(error){
         console.log("error: ",error);
-        return NextResponse.json({error: error}, {status: 500});
+        return NextResponse.json({ status: "error", message: "Something went wrong", error}, {status: 500});
     }
 }

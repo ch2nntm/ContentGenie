@@ -55,13 +55,3 @@ model dashboard{
   total_posts_posted Int
   total_credits Int
 }
-
-/*
-model package {
-  user_id    Int                                    
-  user      User     @relation(fields: [user_id], references: [id]) 
-  date_buy   DateTime @default(now())               
-  type      String        
-  @@id ([user_id, date_buy])                          
-}
-*/

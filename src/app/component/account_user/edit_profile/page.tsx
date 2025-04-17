@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "../../../styles/edit_profile.module.css";
+import styles from "../edit_profile/edit_profile.module.css";
 import Link from "next/link";
 import { useRef, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
@@ -45,11 +45,16 @@ function EditProfilePage() {
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
-            const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dtxm8ymr6/image/upload";
+            const cloudinaryUrl = process.env.CLOUDINARY_URL;
             const uploadPreset = "demo-upload";
             const form = new FormData();
             form.append("file", file);
             form.append("upload_preset", uploadPreset);
+
+            if (!cloudinaryUrl) {
+                toast.error(t("error_upload_img"));
+                return;
+            }
 
             const response = await fetch(cloudinaryUrl, {
                 method: "POST",
@@ -208,7 +213,7 @@ function EditProfilePage() {
         setAvatar("");
     }
 
-    const NavbarComponent = dynamic(() => import("@/single_file/navbar_user"), {ssr: false});
+    const NavbarComponent = dynamic(() => import("@/components/navbar_user"), {ssr: false});
     return (
         <div className={styles.container}>
             <NavbarComponent />

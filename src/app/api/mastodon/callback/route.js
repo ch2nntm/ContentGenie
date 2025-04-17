@@ -1,5 +1,6 @@
 import  {cookies} from "next/headers";
 import { Redis } from "@upstash/redis";
+import { NextResponse } from "next/server";
 
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL,
@@ -12,7 +13,7 @@ export async function GET(req) {
     const cookieStore = await cookies();
   
     if (!code) {
-      return new Response(JSON.stringify({ error: "Missing authorization code" }), { status: 400 });
+      return NextResponse.json({ status: "error", message: "Missing authorization code", error }, { status: 400 });
     }
   
     const MASTODON_INSTANCE = process.env.MASTODON_INSTANCE;
@@ -59,7 +60,7 @@ export async function GET(req) {
     
     } catch (error) {
       console.error("Error exchanging token:", error);
-      return new Response(JSON.stringify({ error: "Internal Server Error" }), { status: 500 });
+      return NextResponse.json({ status: "error", message: "Internal Server Error", error }, { status: 500 });
     }
   }
   

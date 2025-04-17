@@ -1,6 +1,6 @@
 "use client"
-import styles from "../../styles/upgrade_package.module.css"
-import NavbarUser from "@/single_file/navbar_user";
+import styles from "../upgrade_package/upgrade_package.module.css";
+import NavbarUser from "@/components/navbar_user";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useSearchParams } from "next/navigation";
@@ -18,12 +18,11 @@ export default function UpgradePackagePage(){
     const status = searchParams.get("status") || "";
     const orderCode = searchParams.get("orderCode") || "";
     const t = useTranslations("upgrade_package");
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(()=>{
         const fetchData = async() => {
             try{
-                setLoading(true);
                 const token = Cookies.get("token");
                 if(!token){
                     window.location.href = "/component/account_user/login_user";
@@ -90,8 +89,10 @@ export default function UpgradePackagePage(){
                             .then((data) => {
                                 console.log("dataResponse: ",data.data[0].credits);
                                 setCredits(data.data[0].credits);
-                                const date = new Date(data.data[0].expiration_date).getDate() + "/" + (new Date(data.data[0].expiration_date).getMonth()+1) + "/" + new Date(data.data[0].expiration_date).getFullYear();;
-                                setExpirationDate(date);
+                                if(data.data[0].expiration_date){
+                                    const date = new Date(data.data[0].expiration_date).getDate() + "/" + (new Date(data.data[0].expiration_date).getMonth()+1) + "/" + new Date(data.data[0].expiration_date).getFullYear();;
+                                    setExpirationDate(date);
+                                }
                             })
                         }
                     })
@@ -107,7 +108,7 @@ export default function UpgradePackagePage(){
         
     },[]);
 
-    const hanldeUpgradeCredits = async () => {
+    const handleUpgradeCredits = async () => {
         if(userId){
             const response = await fetch("/api/payos", {
                 method: "POST",
@@ -134,7 +135,7 @@ export default function UpgradePackagePage(){
         }
     }
 
-    const hanldeUpgradeMonth = async () => {
+    const handleUpgradeMonth = async () => {
         if(userId){
             const response = await fetch("/api/payos", {
                 method: "POST",
@@ -161,7 +162,7 @@ export default function UpgradePackagePage(){
         }
     }
 
-    const hanldeUpgradeYear = async () => {
+    const handleUpgradeYear = async () => {
         if(userId){
             const response = await fetch("/api/payos", {
                 method: "POST",
@@ -192,18 +193,18 @@ export default function UpgradePackagePage(){
         <div className={styles.container}>
             <NavbarUser/>
             <div className={styles.container_content}>
-            {loading ? (
-                <div className={styles.loading}>
-                    <div className={styles.spinner}></div>
-                    Loading...
-                </div>
-                ) : (
-                    <>
-                        <p className={styles.text_credits}>{t("text_credits")}<span style={{fontWeight: "bolder"}}>{credits}</span></p>
-                        {expirationDate && <p className={styles.text_expiration_date}>{t("text_expiration_date")}<span style={{fontWeight: "bolder"}}>{expirationDate}</span></p>}
-                    </>
-                )
-            }
+                {loading ? (
+                    <div className={styles.loading}>
+                        <div className={styles.spinner}></div>
+                        Loading...
+                    </div>
+                    ) : (
+                        <>
+                            <p className={styles.text_credits}>{t("text_credits")}<span style={{fontWeight: "bolder"}}>{credits}</span></p>
+                            {expirationDate && <p className={styles.text_expiration_date}>{t("text_expiration_date")}<span style={{fontWeight: "bolder"}}>{expirationDate}</span></p>}
+                        </>
+                    )
+                }
                 <div className={styles.package}>
                     <h2 className={styles.title}>{t("title_page")}</h2>
                     <p className={styles.subtitle}>{t("subtitle_page")}</p>
@@ -229,7 +230,7 @@ export default function UpgradePackagePage(){
                                     <span className={styles.span}>{t("package_credits_check4")}</span>
                                 </div>
                             </div>
-                            <button onClick={hanldeUpgradeCredits} className={styles.btn_package_credits} type="button">{t("package_credits_button")}</button>
+                            <button onClick={handleUpgradeCredits} className={styles.btn_package_credits} type="button">{t("package_credits_button")}</button>
                         </div>
                         <div className={styles.package_month}>
                             <h2>{t("package_month_title")}</h2>
@@ -252,7 +253,7 @@ export default function UpgradePackagePage(){
                                     <span className={styles.span}>{t("package_month_check4")}</span>
                                 </div>
                             </div>
-                            <button onClick={hanldeUpgradeMonth} className={styles.btn_package_month} type="button">{t("package_month_button")}</button>
+                            <button onClick={handleUpgradeMonth} className={styles.btn_package_month} type="button">{t("package_month_button")}</button>
                         </div>
                         <div className={styles.package_year}>
                             <h2>{t("package_year_title")}</h2>
@@ -275,7 +276,7 @@ export default function UpgradePackagePage(){
                                     <span className={styles.span}>{t("package_year_check4")}</span>
                                 </div>
                             </div>
-                            <button onClick={hanldeUpgradeYear} className={styles.btn_package_year} type="button">{t("package_month_button")}</button>
+                            <button onClick={handleUpgradeYear} className={styles.btn_package_year} type="button">{t("package_month_button")}</button>
                         </div>
                     </div>
                 </div>

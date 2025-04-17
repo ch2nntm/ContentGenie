@@ -30,7 +30,7 @@ export async function GET(request) {
     const token = authHeader?.split(" ")[1];
 
     if (!token) {
-        return NextResponse.json({ message: "No tokens" }, { status: 401 });
+        return NextResponse.json({ status: "error", message: "No tokens", error }, { status: 401 });
     }
     console.log("Authorization Header:", token);
     console.log("SecretKey: ",secretKey);
@@ -38,10 +38,10 @@ export async function GET(request) {
     try {
         const { payload } = await jwtVerify(token, secretKey);
         console.log("Payload: ",payload);
-        return NextResponse.json({ user: payload });    
+        return NextResponse.json({ status: "success", message: "Get info user success", user: payload }, {status: 200});    
     }catch (error) {
             console.error("JWT Verification Error: ", error); 
-            return NextResponse.json({ message: "Invalid token" }, { status: 401 });
+            return NextResponse.json({ status: "error", message: "Invalid token", error }, { status: 401 });
     }  
 }
 
@@ -57,10 +57,7 @@ export async function POST(req) {
         );
 
         if(rowsCheckEmail.length === 0) {
-            return new Response(
-                JSON.stringify({ error: "Email not found!" }),
-                { status: 402, headers: { "Content-Type": "application/json" } }
-            );
+            return NextResponse.json({ status: "error", message: "Email not found!", error }, { status: 402 });
         }
 
         const [rows] = await connection.execute(
@@ -74,19 +71,13 @@ export async function POST(req) {
             const token = await generateToken(user);
             console.log("Authorization Header:", token);
             
-            return NextResponse.json({ message: "Log in successfully!", user, token }, { status: 200 });
+            return NextResponse.json({ status: "success", message: "Log in successfully!", user, token }, { status: 200 });
         } else {
-            return new Response(
-                JSON.stringify({ error: "Wrong password!" }),
-                { status: 402, headers: { "Content-Type": "application/json" } }
-            );
+            return NextResponse.json({ status: "error", message: "Wrong password!", error }, { status: 402 });
         }
     } catch (error) {
         console.error(error);
-        return new Response(
-            JSON.stringify({ error: "Database connection error!" }),
-            { status: 500, headers: { "Content-Type": "application/json" } }
-        );
+        return NextResponse.json({ status: "error", message: "Database connection error!", error }, { status: 500 });
     }
 }
 

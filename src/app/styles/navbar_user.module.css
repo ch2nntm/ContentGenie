@@ -194,6 +194,7 @@
 }
 
 .btn_signout{
+    cursor: pointer;
     display: flex;
     align-items: center;
     gap: 10px;

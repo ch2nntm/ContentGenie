@@ -18,14 +18,14 @@ export async function PUT(req) {
     const token = authHeader?.split(" ")[1];
 
     if (!token) {
-        return NextResponse.json({ message: "No tokens" }, { status: 401 });
+        return NextResponse.json({ status: "error", message: "No tokens", error }, { status: 401 });
     }
 
     try {
         const { content, image, id } = await req.json();
         const connection = await mysql.createConnection(dbConfig);
         if (!content) {
-            return NextResponse.json({ error: "Thiếu dữ liệu đầu vào" }, { status: 400 });
+            return NextResponse.json({ status: "error", message: "Missing input data", error }, { status: 400 });
         }
         const [result] = await connection.execute(
             "UPDATE post SET content = ?, image = ? WHERE id = ?",
@@ -34,15 +34,13 @@ export async function PUT(req) {
 
         if (result.affectedRows === 0) {
             await connection.end();
-            return NextResponse.json({ error: "Không thể cập nhật thông tin" }, { status: 400 });
+            return NextResponse.json({ status: "error", message: "Unable to update post", error }, { status: 400 });
         }
 
-        return NextResponse.json({
-            message: "Cập nhật bài đăng thành công",
-        }, { status: 200 });
+        return NextResponse.json({ status: "success", message: "Post updated successfully" }, { status: 200 });
 
     } catch (error) {
         console.error("Error: ", error);
-        return NextResponse.json({ error: "Lỗi hệ thống" }, { status: 500 });
+        return NextResponse.json({ status: "error", message: "System error", error }, { status: 500 });
     }
 }

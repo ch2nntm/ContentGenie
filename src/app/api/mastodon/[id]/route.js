@@ -24,7 +24,7 @@ export async function GET(req, {params}) {
     console.log("Token từ cookies: ", token_mastodon);
 
     if (!token_mastodon) {
-        return NextResponse.json({ message: "No token provided" }, { status: 401 });
+        return NextResponse.json({ status: "error", message: "No token provided", error }, { status: 401 });
     }
 
     try{
@@ -42,9 +42,9 @@ export async function GET(req, {params}) {
             const errorData = await response.json();
             throw new Error(errorData.error || "Failed to post data");
         }
-        return NextResponse.json({success: true, data: data}, {status:200});
+        return NextResponse.json({ status: "success", message: "Get post on mastodon success", data: data}, {status:200});
     }catch(error){
-        return NextResponse.json({error: "Internal Server Error: ",error},{status: 500});
+        return NextResponse.json({ status: "error", message: "Internal Server Error: ", error}, { status: 500 });
     }
 }
 
@@ -56,11 +56,11 @@ export async function DELETE(req, { params }) {
     console.log("Token từ cookies: ", token_mastodon);
 
     if (!token_mastodon) {
-        return NextResponse.json({ message: "No token provided" }, { status: 401 });
+        return NextResponse.json({ status: "error", message: "No token provided", error }, { status: 401 });
     }
     
     if (!statusId) {
-        return NextResponse.json({ error: "Missing post ID" }, { status: 400 });
+        return NextResponse.json({ status: "error", message: "Missing post ID", error }, { status: 400 });
     }
 
     try {
@@ -93,11 +93,11 @@ export async function DELETE(req, { params }) {
 
         await connection.end();
 
-        return NextResponse.json({ success: true, message: "Post deleted successfully" }, { status: 200 });
+        return NextResponse.json({ status: "success", message: "Post deleted successfully" }, { status: 200 });
 
     } catch (error) {
         console.error("Error deleting post:", error);
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+        return NextResponse.json({ status: "error", message: "Internal Server Error", error }, { status: 500 });
     }
 }
 
@@ -109,7 +109,7 @@ export async function PUT(req, {params}) {
         console.log("Token từ cookies: ", token_mastodon);
 
         if (!token_mastodon) {
-            return NextResponse.json({ message: "No token provided" }, { status: 401 });
+            return NextResponse.json({ status: "error", message: "No token provided", error }, { status: 401 });
         }
     
         const formData = await req.formData();
@@ -125,7 +125,7 @@ export async function PUT(req, {params}) {
         const statusFormData = new URLSearchParams();
 
         if(!content){
-            return NextResponse.json({error: "Missing the field"}, {status: 400});
+            return NextResponse.json({ status: "error", message: "Missing the field", error }, { status: 400 });
         }
         statusFormData.append("status",content);
 
@@ -191,14 +191,12 @@ export async function PUT(req, {params}) {
 
         if (result.affectedRows === 0) {
             await connection.end();
-            return NextResponse.json({ error: "Không thể cập nhật thông tin" }, { status: 400 });
+            return NextResponse.json({ status: "error", message: "Unable to update information", error }, { status: 400 });
         }
 
-        return NextResponse.json({
-            message: "Cập nhật bài đăng thành công",
-        }, { status: 200 });
+        return NextResponse.json({ status: "success", message: "Post updated successfully" }, { status: 200 });
     }catch(error){
       console.error("Error: ",error);
-      return NextResponse.json({error: error.message}, {status: 500});
+      return NextResponse.json({ status:  "error", message: "Missing wrong", error}, {status: 500});
     }
 }

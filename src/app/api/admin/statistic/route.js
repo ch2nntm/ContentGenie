@@ -2,6 +2,7 @@ import mysql from "mysql2/promise";
 import { NextResponse } from "next/server";
 import fs from "fs";
 import { jwtVerify } from "jose";
+import { error } from "console";
 
 const dbConfig = {
     host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
@@ -23,7 +24,7 @@ export async function POST(req) {
         const {year} = await req.json();
 
         if (!token) {
-            return new Response(JSON.stringify({ message: "Missing token" }), { status: 401 });
+            return NextResponse.json({ status: "error", message: "Missing token", error }, { status: 401 });
         }
 
         try {
@@ -94,19 +95,17 @@ export async function POST(req) {
                 }
                 await connection.end();
 
-                return new Response(
-                    JSON.stringify({posts: rows }),
-                    { status: 200, headers: { "Content-Type": "application/json" } }
-                );
+                return NextResponse.json({ status: "success", message: "Get statistic success", posts: rows }, {status: 200 });
+
             } else {
-                return new Response(JSON.stringify({ message: "Forbidden" }), { status: 403 });
+                return NextResponse.json({ status: "error", message: "Forbidden", error }, { status: 403 });
             }
         } catch (error) {
             console.error("JWT Verification Error: ", error);
-            return new Response(JSON.stringify({ message: "Invalid token" }), { status: 401 });
+            return NextResponse.json({ status: "error", message: "Invalid token", error }, { status: 401 });
         }
     }catch(error){
-        return NextResponse.json({error},{status:500});
+        return NextResponse.json({ status: "error", message: "Error", error}, { status: 500 });
     }
 }
 
@@ -116,14 +115,14 @@ export async function GET(req) {
         const token = authHeader?.split(" ")[1];
 
         if (!token) {
-            return new Response(JSON.stringify({ message: "Missing token" }), { status: 401 });
+            return NextResponse.json({ status: "error", message: "Missing token", error }, { status: 401 });
         }
 
         const connection = await mysql.createConnection(dbConfig);
         const [rows] = await connection.execute(`SELECT * FROM dashboard`);
         await connection.end();
         console.log("LIST POST: ",rows);
-        return NextResponse.json({rows},{status:200})
+        return NextResponse.json({ status: "success", message: "Get dashboard success", data: rows }, { status: 200 });
     }catch(error){
         console.log(error);
         return NextResponse.json({error});

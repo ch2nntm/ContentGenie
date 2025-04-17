@@ -1,50 +1,38 @@
 import { error } from "console";
 import { NextResponse } from "next/server";
-  
-// Trả về đường link khi đăng nhập
-// export async function GET(req) {
-//   const CLIENT_ID = "8660xy4jt5qye8";
-//   const REDIRECT_URI = "https://dev.example.com/auth/linkedin/callback";
 
-//   const linkedInAuthURL = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=openid%20profile%20email`;
+const LINKEDIN_URL_API = process.env.LINKEDIN_URL_API;
+  
+export async function GET(req) {
+  try {
+    const authHeader = req.headers.get("authorization"); 
+    const token = authHeader?.split(" ")[1];
 
-//   return new Response(JSON.stringify({ url: linkedInAuthURL }), {
-//     headers: { "Content-Type": "application/json" },
-//     status: 200,
-//   });
-// }
-  
-  
-  export async function GET(req) {
-      try {
-        const authHeader = req.headers.get("authorization"); 
-        const token = authHeader?.split(" ")[1];
-    
-        if (!token) {
-          return NextResponse.json({ error: "Missing ID Token" }, { status: 400 });
-        }
-  
-        const response = await fetch("https://api.linkedin.com/v2/userinfo", {
-          method: "GET",
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        
-        const data = await response.json();
-        console.log("LinkedIn Profile Data:", data.sub);
-    
-        return NextResponse.json(data, { status: 200 });
-      } catch (error) {
-        console.error("Token Decode Error:", error);
-        return NextResponse.json({ error: "Failed to decode ID Token" }, { status: 500 });
-      }
+    if (!token) {
+      return NextResponse.json({ status: "error", message: "Missing ID Token", error }, { status: 400 });
     }
+
+    const response = await fetch(`${LINKEDIN_URL_API}/v2/userinfo`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    
+    const data = await response.json();
+    console.log("LinkedIn Profile Data:", data.sub);
+
+    return NextResponse.json({ status: "success", message: "Get info account linkedin success", data: data }, { status: 200 });
+  } catch (error) {
+    console.error("Token Decode Error:", error);
+    return NextResponse.json({ status: "error", message: "Failed to decode ID Token", error }, { status: 500 });
+  }
+}
 
 export async function POST(req) {
   try{
     const { userId, content, audience, image} = await req.json();
   
     if (!userId || !content || !audience) {
-      return NextResponse.json({ error: "Missing data" }, { status: 400 });
+      return NextResponse.json({ status: "error", message: "Missing data", error }, { status: 400 });
     }
     const authHeader = req.headers.get("authorization"); 
     const token = authHeader?.split(" ")[1];
@@ -63,7 +51,7 @@ export async function POST(req) {
         visibility: { "com.linkedin.ugc.MemberNetworkVisibility": audience }, 
       };
     
-      const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {
+      const response = await fetch(`${LINKEDIN_URL_API}/v2/ugcPosts`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -76,9 +64,9 @@ export async function POST(req) {
       const data = await response.json();
     
       if (response.ok) {
-        return NextResponse.json({ success: true, postId: data });
+        return NextResponse.json({ status: "success", message: "Post linkedin success", data: data });
       } else {
-        return NextResponse.json({ error: "Failed to post", details: data }, { status: 400 });
+        return NextResponse.json({ status: "error", message: "Failed to post", error }, { status: 400 });
       }
     }
     else{
@@ -99,7 +87,7 @@ export async function POST(req) {
       };
 
       try {
-        const response = await fetch('https://api.linkedin.com/v2/assets?action=registerUpload', {
+        const response = await fetch(`${LINKEDIN_URL_API}/v2/assets?action=registerUpload`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,  
@@ -156,7 +144,7 @@ export async function POST(req) {
             visibility: { "com.linkedin.ugc.MemberNetworkVisibility": audience }, 
           };
         
-          const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {
+          const response = await fetch(`${LINKEDIN_URL_API}/v2/ugcPosts`, {
             method: "POST",
             headers: {
               "Authorization": `Bearer ${token}`,
@@ -168,69 +156,21 @@ export async function POST(req) {
 
           const dataResult = await response.json();
           if (response.ok) {
-            return NextResponse.json({ success: true, postId: dataResult });
+            return NextResponse.json({ status: "success", message: "Post linkedin success", data: dataResult });
           } else {
-            return NextResponse.json({ error: "Failed to post", details: data }, { status: 400 });
+            return NextResponse.json({ status: "error", message: "Failed to post", error }, { status: 400 });
           }
         }
         
-        return NextResponse.json({error},{status: 400});
+        return NextResponse.json({ status: "error", message: "Missing wrong", error }, { status: 400 });
       } catch (error) {
         console.error('Error during the upload process:', error);
       }
-    return NextResponse.json({message: "Error"}, {status: 400});
+    return NextResponse.json({ status: "error", message: "Missing wrong", error}, { status: 400 });
     }
-    return NextResponse.json({error},{status:409});
   }catch(error){
     console.log("error: ",error);
-    return NextResponse.json({error}, {status: 500});
+    return NextResponse.json({ status: "error", message: "Missing wrong", error}, {status: 500});
   }
 }
 
-
-
-// export async function GET(req) {
-//   try {
-//     const authHeader = req.headers.get("authorization");
-//     const token = authHeader?.split(" ")[1];
-
-//     if (!token) {
-//       return NextResponse.json({ error: "Missing Token" }, { status: 400 });
-//     }
-
-//     const profileRes = await fetch("https://api.linkedin.com/v2/userinfo", {
-//       method: "GET",
-//       headers: { Authorization: `Bearer ${token}` },
-//     });
-
-//     if (!profileRes.ok) {
-//       return NextResponse.json({ error: "Failed to fetch profile" }, { status: profileRes.status });
-//     }
-
-//     const profileData = await profileRes.json();
-//     const userUrn = profileData.sub ? `urn:li:person:${profileData.sub}` : null;
-//     console.log("User URN:", userUrn);
-
-//     if (!userUrn) {
-//       return NextResponse.json({ error: "User URN not found" }, { status: 400 });
-//     }
-
-//     const response = await fetch(
-//       `https://api.linkedin.com/v2/ugcPosts?q=author&author=${encodeURIComponent(userUrn)}`,
-//       {
-//         method: "GET",
-//         headers: { Authorization: `Bearer ${token}` },
-//       }
-//     );
-
-//     const data = await response.json();
-
-//     if (!response.ok) {
-//       return NextResponse.json({ error: "Failed to fetch posts", details: data }, { status: response.status });
-//     }
-
-//     return NextResponse.json({ posts: data.elements }, { status: 200 });
-//   } catch (error) {
-//     return NextResponse.json({ error: "Server Error", details: error.message }, { status: 500 });
-//   }
-// }

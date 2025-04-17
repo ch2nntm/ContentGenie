@@ -1,6 +1,6 @@
 "use client"; 
 import { useTranslations } from "next-intl";
-import styles from "../app/styles/dashboard.module.css";
+import styles from "../app/component/admin/dashboard/dashboard.module.css";
 
 import { toast } from "react-toastify";
 
