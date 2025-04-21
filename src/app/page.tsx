@@ -11,7 +11,7 @@ import { useTranslations } from "next-intl";
 export default function Home() {
   const router = useRouter();
   const [user, setUser] = useState<string | null>(null);
-  const t = useTranslations("homepage");  
+  const t = useTranslations("homepage");
 
   useEffect(() => {
     const token = Cookies.get("token");

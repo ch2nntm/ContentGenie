@@ -41,7 +41,7 @@
 }
 
 .search_hide{
-    display: none;
+    visibility: hidden;
 }
 
 .search{
@@ -138,26 +138,96 @@
 .manage_user_show{
     display: block;
     position: absolute;
-    top: -330%; /* Đặt dropdown ngay dưới user */
-    left: 82%; /* Căn giữa theo tên user */
+    top: -330%; 
+    left: 82%;
     transform: translateX(-50%);
     box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
     background-color: #ffffff;
     border-radius: 5px;
     width: 200px;
-    height: 220px;
+    height: 170px;
     margin-top: 270px;
     margin-left: 10px;
     padding-top: 10px;
 }
 
 .link{
-    height: 120px;
+    height: 60px;
+}
+
+.link_nav{
+    display: flex;
+    gap: 30px;
+}
+
+.post_management,
+.post_management_current,
+.dashboard,
+.dashboard_current,
+.upgrade_package,
+.upgrade_package_current,
+.content_generator,
+.content_generator_current{
+    margin-top: 20px;
+}
+
+.edit_profile_hide,
+.dashboard_hide{
+    display: none;
+}
+
+.post_management,
+.post_management_current,
+.dashboard,
+.dashboard_current,
+.upgrade_package,
+.upgrade_package_current,
+.content_generator,
+.content_generator_current{
+    position: relative;
+    display: inline-block;
+    top: -10px;
+    text-decoration: none;
+    color: #030303;
+    height: 30px;
+}
+
+.upgrade_package_current::after,
+.content_generator_current::after,
+.post_management_current::after,
+.dashboard_current::after{
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background-color: rgb(0, 191, 255);
+}
+
+.post_management::after,
+.dashboard::after,
+.upgrade_package::after,
+.content_generator::after{
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    height: 2px;
+    width: 0;
+    background-color: rgb(0, 191, 255);
+    transition: width 0.4s ease-out;
+}
+
+.post_management:hover::after,
+.dashboard:hover::after,
+.upgrade_package:hover::after,
+.content_generator:hover::after{
+    width: 100%;
 }
 
 .edit_profile,
-.dashboard,
-.post_management{
+.change_password{
     display: flex;
     align-items: center;
     gap: 10px;
@@ -169,20 +239,8 @@
     transition: all 0.3s ease;
 }
 
-.post_management,
-.dashboard{
+.change_password{
     margin-top: 10px;
-}
-
-.edit_profile_hide,
-.dashboard_hide{
-    display: none;
-}
-
-.edit_profile:hover,
-.post_management:hover,
-.dashboard:hover{
-    color: #816161;
 }
 
 .icon_edit_profile,

@@ -139,6 +139,10 @@
     text-align: center;
 }
 
+.require{
+    color: red;
+}
+
 .social_media,
 .post_time,
 .number_of_week,
@@ -190,12 +194,22 @@
 
 .platform_social_media{
     display: flex;
+    align-items: center;
     gap: 43px;
+}
+
+.warn_platform{
+    width: 5px;
+    color: red;
 }
 
 .btn_platform_social_media{
     cursor: pointer;
     border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
     width: 100px;
     height: 30px;
     border-radius: 5px;
@@ -208,11 +222,19 @@
     color: #ffffff;
 }
 
-.platform_facebook,
+.icon_mastodon{
+    margin-top: 5px;
+}
+
+.platform_mastodon,
 .platform_tiktok,
 .platform_linkedin{
     cursor: pointer;
     border: none;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
     width: 100px;
     height: 30px;
     border-radius: 5px;
@@ -221,7 +243,9 @@
 }
 
 .input_date,
-.input_time{
+.input_time,
+.warn_input_date,
+.warn_input_time{
     top: 290px;
     left: 960px;
     width: 160px;
@@ -243,8 +267,17 @@
     margin-left: 350px;
 }
 
-.input_time{
+.warn_input_date{
+    border: 1px solid red;
+}
+
+.input_time,
+.warn_input_time{
     width: 85px;
+}
+
+.warn_input_time{
+    border: 1px solid red;
 }
 
 .input_number{
@@ -277,7 +310,8 @@
     height: 35px;
 }
 
-.input_topic{
+.input_topic,
+.input_topic_miss{
     top: 416px;
     left: 931px;
     width: 189px;
@@ -292,6 +326,10 @@
     font-family: "Open Sans";
     line-height: 38px;
     outline: none;
+}
+
+.input_topic_miss{
+    border: 1px solid red;
 }
 
 .toggle {
@@ -330,8 +368,8 @@
 }
 
 
-.btn_generate_content{
-    cursor: pointer;
+.btn_generate_content,
+.btn_generate_content_disable{
     width: 174px;
     height: 44px;
     padding: 0px 8px;
@@ -345,4 +383,12 @@
     font-weight: 700;
     line-height: 20px;
     outline: none;
+}
+
+.btn_generate_content{
+    cursor: pointer;
+}
+
+.btn_generate_content_disable{
+    background-color: #f39393;
 }

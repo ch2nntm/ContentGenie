@@ -12,6 +12,7 @@ import { toast, ToastContainer } from "react-toastify";
 import PersonIcon from '@mui/icons-material/Person';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import { useAuth } from "../../authProvider";
+import Image from "next/image";
 
 interface User {
     id: string;
@@ -23,10 +24,11 @@ interface User {
 function ContentGeneratorPage() {
     const t = useTranslations("content_generator");
     const [selectedPlatform, setSelectedPlatform] = useState("");
-    const [selectTopic, setSelectTopic] = useState("Âm nhạc");
+    const [selectTopic, setSelectTopic] = useState("Spotify");
     const [enterKeyword, setEnterKeyword] = useState("");
     const [selectedAudience, setSelectedAudience] = useState("public");
     const [isOnDaily, setIsOnDaily] = useState(false);
+    const [isFullField, setIsFullField] = useState(false);
     const router = useRouter();
     const auth = useAuth() as { user: User };
 
@@ -87,6 +89,7 @@ function ContentGeneratorPage() {
             toast.error(t("noti_error"));
             return;
         }else{
+            setIsFullField(true);
             const token = Cookies.get("token");
             if(!token)
                 return;
@@ -184,12 +187,30 @@ function ContentGeneratorPage() {
                     </div>
                     <p className={styles.text_social_media}>
                         {t("social_media")}
+                        <span className={styles.require}>*</span>
                     </p>
                 </div>
                 <div className={styles.platform_social_media}>
-                    <button className={selectedPlatform === "Mastodon" ? styles.platform_facebook : styles.btn_platform_social_media} onClick={() => setSelectedPlatform("Mastodon")}>Mastodon</button>
-                    <button className={selectedPlatform === "TikTok" ? styles.platform_tiktok : styles.btn_platform_social_media} onClick={() => setSelectedPlatform("TikTok")}>TikTok</button>
-                    <button className={selectedPlatform === "LinkedIn" ? styles.platform_linkedin : styles.btn_platform_social_media} onClick={() => setSelectedPlatform("LinkedIn")}>LinkedIn</button>
+                    <button className={selectedPlatform === "Mastodon" ? styles.platform_mastodon : styles.btn_platform_social_media} onClick={() => setSelectedPlatform("Mastodon")}>
+                        <div className={styles.icon_mastodon}>
+                            <Image src="/icon_mastodon.png" alt="Mastodon" width={20} height={20} />
+                        </div>
+                        <p>Mastodon</p>
+                    </button>
+                    <button className={selectedPlatform === "LinkedIn" ? styles.platform_linkedin : styles.btn_platform_social_media} onClick={() => setSelectedPlatform("LinkedIn")}>
+                        <div className={styles.icon_mastodon}>
+                            <Image src="/icon_linkedin.webp" alt="Mastodon" width={20} height={20} />
+                        </div>
+                        <p>LinkedIn</p>
+                    </button>
+                    <button className={selectedPlatform === "TikTok" ? styles.platform_tiktok : styles.btn_platform_social_media} onClick={() => setSelectedPlatform("TikTok")}>
+                        <div className={styles.icon_mastodon}>
+                            <Image src="/icon_tiktok.webp" alt="Mastodon" width={25} height={25} />
+                        </div>
+                        <p>TikTok</p>
+                    </button>
+                    {!selectedPlatform && <span className={styles.warn_platform}>!</span>}
+                    {selectedPlatform && <span className={styles.warn_platform}></span>}
                 </div>
             </div>
             <div className={styles.post_time}>
@@ -199,44 +220,40 @@ function ContentGeneratorPage() {
                     </div>
                     <p className={styles.text_post_time}>
                         {t("post_time")}
+                        <span className={styles.require}>*</span>
                     </p>
                 </label>
-                <input  className={styles.input_date} id="post_time"
+                <input className={selectedDate ? styles.input_date : styles.warn_input_date} id="post_time"
                     type="date"
                     min={formattedDate}
                     value={selectedDate}
                     onChange={handleDateChange}
                 />
-                <input  className={styles.input_time}
+                <input className={selectedTime ? styles.input_time : styles.warn_input_time}
                     type="time"
                     value={selectedTime}
                     onChange={handleTimeChange}
                     min={selectedDate === formattedDate ? formattedTime : "00:00"}
                 />
             </div>
-            {/* <div className={styles.number_of_week}>
-                <label className={styles.title_number_of_week} htmlFor="number_of_week">
-                    <div className={styles.icon_number_of_week}>
-                        <CalendarMonthIcon></CalendarMonthIcon>
-                    </div>
-                    <p className={styles.text_number_of_week}>{t("number_of_week")}</p>
-                </label>
-                <input type="number" id="number_of_week" min="0" className={styles.input_number} value={selectedNumber} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSelectedNumber(Number(e.target.value))}/>
-            </div> */}
             <div className={styles.topic}>
                 <label className={styles.title_topic} htmlFor="topic">
                     <div className={styles.icon_topic}>
                         <KeyIcon></KeyIcon>
                     </div>
-                    <p className={styles.text_topic}>{t("topic")}</p>
+                    <p className={styles.text_topic}>
+                        {t("topic")}
+                        <span className={styles.require}>*</span>
+                    </p>
                 </label>
                 <div className={styles.content_topic}>
                     <select className={styles.select_topic} onChange={(e) => setSelectTopic(e.target.value)} value={selectTopic}>
-                        <option value="Âm nhạc">{t("option_music")}</option>
-                        <option value="Mua sắm">{t("option_shopping")}</option>
-                        <option value="Truyện">{t("option_story")}</option>
+                        <option value="Spotify">{t("option_spotify")}</option>
+                        <option value="Youtube">{t("option_youtube")}</option>
+                        <option value="Image">{t("option_image")}</option>
+                        <option value="Tale">{t("option_tale")}</option>
                     </select>
-                    <input disabled={selectTopic ? false : true} type="text"  id="topic" className={styles.input_topic} placeholder={t("enter_topic")}
+                    <input disabled={selectTopic ? false : true} type="text"  id="topic" className={(!isFullField && !enterKeyword) ? styles.input_topic_miss : styles.input_topic} placeholder={t("enter_topic")}
                     value={enterKeyword} onChange={(e) => setEnterKeyword(e.target.value)}/>
                 </div>
             </div>
@@ -245,7 +262,10 @@ function ContentGeneratorPage() {
                     <div className={styles.icon_audience}>
                         <PersonIcon></PersonIcon>
                     </div>
-                    <p className={styles.text_audience}>{t("audience")}</p>
+                    <p className={styles.text_audience}>
+                        {t("audience")}
+                        <span className={styles.require}>*</span>
+                    </p>
                 </label>
                 <div className={styles.content_audience}>
                     <select className={styles.select_audience} onChange={(e) => setSelectedAudience(e.target.value)} value={selectedAudience}>
@@ -259,7 +279,10 @@ function ContentGeneratorPage() {
                     <div className={styles.icon_enable_trend}>
                         <LocalFireDepartmentIcon></LocalFireDepartmentIcon>
                     </div>
-                    <p className={styles.text_enable_trend}>{t("post_daily")}</p>
+                    <p className={styles.text_enable_trend}>
+                        {t("post_daily")}
+                        <span className={styles.require}>*</span>
+                    </p>
                 </div>
                 <div 
                     className={`${styles.toggle} ${isOnDaily ? styles.on : ""}`} 
@@ -269,7 +292,10 @@ function ContentGeneratorPage() {
                 </div>
             </div>
             <div className={styles.generate_content}>
-                <button onClick={hanldeCreateContent} className={styles.btn_generate_content}>{t("btn_generate_content")}</button>
+            <button onClick={hanldeCreateContent} disabled={!selectTopic || !selectedDate || !selectedTime || !enterKeyword || !selectedAudience} className={ (!selectTopic || !selectedDate || !selectedTime || !enterKeyword || !selectedAudience) ? styles.btn_generate_content_disable : styles.btn_generate_content}>
+                {t("btn_generate_content")}
+            </button>
+
             </div>
         </div>
         <ToastContainer></ToastContainer>

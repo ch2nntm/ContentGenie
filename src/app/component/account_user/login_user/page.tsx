@@ -3,11 +3,11 @@ import Image from "next/image";
 import styles from "../login_user/login.module.css";
 import Link from "next/link";
 import { toast, ToastContainer } from "react-toastify";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { signIn, useSession} from "next-auth/react";
+import { signIn} from "next-auth/react";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import GoogleIcon from '@mui/icons-material/Google';
@@ -15,7 +15,7 @@ import NavbarUser from "@/components/navbar_user";
 
 function Login() {
     const router = useRouter();
-    const {data: session, status} = useSession();
+    // const {data: session, status} = useSession();
 
     const t = useTranslations("login");  
     const noti_toast = useTranslations("toast"); 
@@ -23,16 +23,14 @@ function Login() {
     const [password, setPassword] = useState<string>("");
     const [showPassword, setShowPassword] = useState(false);
 
-    useEffect(()=>{
-        if(session?.accessToken){
-            Cookies.set("token", session.accessToken, {expires: 1, sameSite: "Lax"});
-            // router.push("/");
-        }
-        document.title = t("title_page");
-    },[session, status]);
+    // useEffect(()=>{
+    //     if(session?.accessToken){
+    //         Cookies.set("token", session.accessToken, {expires: 1, sameSite: "Lax"});
+    //     }
+    // },[session, status]);
 
     const handleGoogleSignIn = async () => {
-        signIn("google");
+        signIn("google", { callbackUrl: "/" });
     }
     
 

@@ -77,10 +77,18 @@ export default async function ViewUserDetail(props : { params: PageProps }) {
       <Link href="/component/admin/dashboard"><ArrowBackIosNewIcon className={styles.arrowback}/></Link>
       <div className={styles.inf_post_container}>
         <div className={styles.title}>
-          {detailPost.platform === "Mastodon" && <img className={styles.icon_platform} src="/icon_mastodon.png"/>}
-          {detailPost.platform === "LinkedIn" && <img className={styles.icon_platform} src="/icon_linkedin.webp"/>}
-          {detailPost.platform === "Mastodon" && <h1 className={styles.title_text}>{(await t)("social_mastodon")}</h1>}
-          {detailPost.platform === "LinkedIn" && <h1 className={styles.title_text}>{(await t)("social_linkedin")}</h1>}
+          { detailPost.platform === "Mastodon" && 
+            <>
+              <img className={styles.icon_platform} src="/icon_mastodon.png"/> 
+              <h1 className={styles.title_text}>{(await t)("social_mastodon")}</h1>
+            </>
+          }
+          { detailPost.platform === "LinkedIn" && 
+            <>
+              <img className={styles.icon_platform} src="/icon_linkedin.webp"/> 
+              <h1 className={styles.title_text}>{(await t)("social_linkedin")}</h1>
+            </>
+          }
         </div>
         <div className={styles.navbar_post}>
           <div className={styles.inf_user}>

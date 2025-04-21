@@ -2,6 +2,7 @@ import NextAuth, { NextAuthOptions, Profile } from 'next-auth';
 import prisma from '../../../../../lib/prisma';
 import GoogleProvider from 'next-auth/providers/google';
 import { JWTPayload, SignJWT } from 'jose';
+import  {cookies} from "next/headers";
 
 declare module "next-auth" {
   interface Profile {
@@ -14,7 +15,6 @@ declare module "next-auth" {
   interface Session {
     accessToken?: string;
   }
-
 }
 
 const secretKey = new TextEncoder().encode("your-secret-key");
@@ -46,8 +46,6 @@ const authOptions: NextAuthOptions = {
             email: profile.email, 
             name: profile.name, 
             avatar: profile.picture || '',
-            password: "", 
-            role: 0
           },
           update: { 
             name: profile.name, 
@@ -55,11 +53,6 @@ const authOptions: NextAuthOptions = {
           },
         });        
         return true;
-      },
-      async session({ session, token }) {
-        session.accessToken = typeof token.accessToken === 'string' ? token.accessToken : undefined;
-        console.log("Session data: ", session);
-        return session;
       },
       async jwt({ token, profile }) {
         if (profile) {
@@ -79,12 +72,15 @@ const authOptions: NextAuthOptions = {
          
           token.accessToken = await generateToken(payload);
         }
+        if (token.accessToken) {
+          const cookieStore = await cookies();
+          console.log("Session accessToken: ", String(token.accessToken));
+          cookieStore.set("token", String(token.accessToken), { path: "/", sameSite: "lax" });
+        }
+
         console.log("Token JWT Backend: ", token);
         return token;
-      },
-      async redirect({ baseUrl }) {
-        return baseUrl + '/component/account_user/login_user';
-      },
+      }
     },
 };
 

@@ -21,6 +21,10 @@ model account {
   posts    post[]   @relation("AccountPosts")
 
   creditUsages credits[] @relation("AccountCredits")
+
+  packageUser user_upgrade[] @relation("PackageUser")
+
+  historyUser conversation_history[] @relation("HistoryUser")
 }
 
 model post {
@@ -33,7 +37,7 @@ model post {
   platform String
   status   Boolean
   audience String
-  set_daily String @default("false")
+  set_daily Boolean @default(false)
 
   author    account   @relation("AccountPosts", fields: [user_id], references: [id])
 }
@@ -48,10 +52,33 @@ model credits{
 }
 
 model dashboard{
-  id Int @id @default(autoincrement())
+  id Int @id @default(autoincrement()) 
   year Int?
   month Int?
   total_posts_paiding Int
   total_posts_posted Int
   total_credits Int
 }
+
+model user_upgrade{
+  id Int @id @default(autoincrement()) 
+  user_id Int
+  package_buy String
+  price Int
+  purchase_date DateTime @default(now())
+
+  package    account   @relation("PackageUser", fields: [user_id], references: [id]) 
+}
+
+model conversation_history{
+  id Int @id @default(autoincrement())
+  user_id Int
+  topic_name String
+  role String
+  message String @db.Text
+  timestamp DateTime @default(now())
+
+  history    account   @relation("HistoryUser", fields: [user_id], references: [id]) 
+}
+
+

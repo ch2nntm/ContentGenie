@@ -48,9 +48,8 @@ async function postToMastodon(post, token_mastodon) {
         const connection = await mysql.createConnection(dbConfig);
 
         let fullContent = post.content;
-        const isYouTube = post.image?.includes("youtube.com") || post.image?.includes("youtu.be");
+        const isYouTube = post.image?.includes("youtube.com") || post.image?.includes("youtu.be") || post.image?.includes("spotify");
 
-        
         if (post.image && !isYouTube) {
             const imageResponse = await fetch(post.image);
             if (!imageResponse.ok) throw new Error("Không tải được ảnh từ Cloudinary");
@@ -78,7 +77,7 @@ async function postToMastodon(post, token_mastodon) {
             console.log("Ảnh đã tải lên Mastodon: ", mediaData);
             statusFormData.append("media_ids[]", mediaData.id);
         }else if (isYouTube) {
-          fullContent += `\n\nVideo: ${post.image}`;
+          fullContent += post.image;
         }
 
         statusFormData.append("status", fullContent);
@@ -127,7 +126,7 @@ async function postMastondonDaily(post, token_mastodon) {
     const connection = await mysql.createConnection(dbConfig);
 
     let fullContent = post.content;
-    const isYouTube = post.image?.includes("youtube.com") || post.image?.includes("youtu.be");
+    const isYouTube = post.image?.includes("youtube.com") || post.image?.includes("youtu.be") || post.image?.includes("spotify");
 
     
     if (post.image && !isYouTube) {
@@ -181,7 +180,7 @@ async function postMastondonDaily(post, token_mastodon) {
     console.log("Bài đăng: ", postData);
     await connection.execute(
         "INSERT INTO post(id, title, content, image, posttime, user_id, platform, status, audience, set_daily) VALUES(?,?,?,?,?,?,?,?,?,?)",
-        [postData.id, post.title, post.content, post.image, new Date(), post.user_id, post.platform, 1, post.audience, "false"]
+        [postData.id, post.title, post.content, post.image, new Date(), post.user_id, post.platform, 1, post.audience, 0]
     );
 
     const email = await connection.execute(
@@ -496,7 +495,7 @@ async function postLinkedinDaily(post, token_linkedin, sub_ID) {
           if (response.ok) {
             await connection.execute(
               "INSERT INTO post(id, title, content, image, posttime, user_id, platform, status, audience, set_daily) VALUES(?,?,?,?,?,?,?,?,?,?)",
-                [dataResult.id, post.title, post.content, post.image, new Date(), post.user_id, post.platform, 1, post.audience, "false"]
+                [dataResult.id, post.title, post.content, post.image, new Date(), post.user_id, post.platform, 1, post.audience, 0]
             );
         
             const email = await connection.execute(
@@ -524,17 +523,10 @@ cron.schedule('* * * * *', async () => {
     console.log("Running cron!");
     let token_linkedin = await redis.get(`linkedin_token:`);
     let token_mastodon = await redis.get(`mastodon_token:`);
+    console.log("token_mastodon: ", token_mastodon);
+    console.log("token_linkedin: ", token_linkedin);
     
-    const response = await fetch("https:/api.linkedin.com/v2/userinfo", {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token_linkedin}` },
-    });
-    
-    const dataResponse = await response.json();
-
-    const sub_ID = dataResponse.sub;
     const connect = await mysql.createConnection(dbConfig);
-
     const currentTime = new Date(
       new Date().toLocaleString("en-CA", {
         timeZone: "Asia/Ho_Chi_Minh",
@@ -542,37 +534,21 @@ cron.schedule('* * * * *', async () => {
       })
     );
 
-    const [resultPostDaily] = await connect.execute(
-      "SELECT * FROM post"
-    );
-  
-    if (resultPostDaily.length > 0) {
-      for (let post of resultPostDaily) {
-        const onlyPostDate = new Date(post.posttime).toISOString().split('T')[0]; 
-        const onlyCurrentDate = new Date(new Date(now)).toISOString().split('T')[0];
-        if(post.set_daily === "true" && onlyCurrentDate > onlyPostDate){
-          const datetime = new Date(post.posttime);
-          const time_hour = datetime.getHours();
-          const time_minute = datetime.getMinutes();
-          if(currentTime.getHours() === time_hour && currentTime.getMinutes() === time_minute){
-            console.log(`Running cron daily ${post.id}!`);
-            if(post.platform==="Mastodon"){
-              postMastondonDaily(post, token_mastodon);
-            }else if(post.platform==="LinkedIn"){
-              postLinkedinDaily(post, token_linkedin, sub_ID);
-            }
-          }
-        }
-      }
-    }
+    const response = await fetch("https:/api.linkedin.com/v2/userinfo", {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token_linkedin}` },
+    });
+    const dataResponse = await response.json();
+    const sub_ID = dataResponse.sub;
 
     const [resultPost] = await connect.execute(
-        "SELECT * FROM post WHERE post.posttime <= ? AND post.status = 0 AND post.set_daily = ?", [currentTime,"false"]
+      "SELECT * FROM post WHERE post.posttime <= ? AND post.status = 0 AND post.set_daily = ?", [currentTime, 0]
     );
 
     if(resultPost.length === 0)
         console.log("No posts have been posted yet!");
 
+    console.log("resultPost: ",resultPost);
     if (resultPost.length > 0) {
         for (let post of resultPost) {
             if (post.platform === "Mastodon") {
@@ -582,7 +558,7 @@ cron.schedule('* * * * *', async () => {
               }
               await postToMastodon(post, token_mastodon);
             }
-            else if(post.platform === "LinkedIn"){
+            else{
               if(!token_linkedin){
                   console.log("Not logged in Linkedin");
                   return;
@@ -590,6 +566,30 @@ cron.schedule('* * * * *', async () => {
               await postToLinkedin(post, token_linkedin, sub_ID);
             }
         }
+    }
+
+    const [resultPostDaily] = await connect.execute(
+      "SELECT * FROM post WHERE set_daily = 1 AND status = 0"
+    );
+  
+    if (resultPostDaily.length > 0) {
+      for (let post of resultPostDaily) {
+        const onlyPostDate = new Date(post.posttime).toISOString().split('T')[0]; 
+        const onlyCurrentDate = new Date(new Date(now)).toISOString().split('T')[0];
+        if(onlyCurrentDate > onlyPostDate){
+          const datetime = new Date(post.posttime);
+          const time_hour = datetime.getHours();
+          const time_minute = datetime.getMinutes();
+          if(currentTime.getHours() === time_hour && currentTime.getMinutes() === time_minute){
+            console.log(`Running cron daily ${post.id}!`);
+            if(post.platform==="Mastodon"){
+              await postMastondonDaily(post, token_mastodon);
+            }else if(post.platform==="LinkedIn"){
+              await postLinkedinDaily(post, token_linkedin, sub_ID);
+            }
+          }
+        }
+      }
     }
 
     await connect.end();

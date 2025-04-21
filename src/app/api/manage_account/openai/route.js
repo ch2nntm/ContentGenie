@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import mysql from "mysql2/promise";
 import fs from "fs";
+import { cookies } from "next/headers";
 
 const dbConfig = {
     host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
@@ -18,10 +19,14 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+const url_api = process.env.SPOTIFY_API_URL;
+const url_base = process.env.SPOTIFY_BASE_URL;
+const apiKeyYoutube = process.env.API_KEY_YOUTUBE;
+
 export async function POST(req) {
     try {
+        const cookieStore = await cookies();
         const body = await req.json();
-        const apiKeyYoutube = process.env.API_KEY_YOUTUBE;
 
         console.log("body.user_Id: ",body.user_Id);
 
@@ -31,13 +36,25 @@ export async function POST(req) {
         if (!token) {
             return NextResponse.json({ status: "error", message: "No tokens", error }, { status: 401 });
         }
+
+        const listmessages = await fetchRecentConversation(body.messages[body.messages.length-1].content, body.topicName, body.user_Id);
+        console.log("listmessages: ",listmessages);
+        console.log("body.messages: ",body.messages);
+        console.log("body.topic: ",body.topicName);
     
         const chat = await openai.chat.completions.create({
           model: "gpt-3.5-turbo",
-          messages: body.messages,
+          messages: listmessages,
         });
 
         const connection = await mysql.createConnection(dbConfig);
+        console.log("chat.choices[0].message: ",chat.choices[0].message);
+
+        await connection.execute(
+          "INSERT INTO conversation_history (user_id, topic_name, role, message) VALUES (?, ?, ?, ?)",
+          [body.user_Id, body.topicName, "user", chat.choices[0].message.content]
+        );
+
         const resultUser = await connection.execute(
           "SELECT credits, expiration_date FROM account WHERE id = ?",
           [body.user_Id]
@@ -76,12 +93,12 @@ export async function POST(req) {
           }
           await connection.end();
         }
-      
-        if(/Truyện/i.test(body.messages[body.messages.length-2].content))
+        
+        if(/Tale/i.test(body.messages[body.messages.length-1].content))
           return NextResponse.json({ statuse: "success", messages: "Generate content success", chat: chat.choices[0].message}, { status: 200 });
         
-        else if (/Âm nhạc/i.test(body.messages[body.messages.length-2].content)){
-          const query = body.messages[body.messages.length-1].content;
+        else if (/Youtube/i.test(body.messages[body.messages.length-1].content)){
+          const query = body.messages[body.messages.length-2].content;
           const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&key=${apiKeyYoutube}`;
           
           const response = await fetch(url);
@@ -89,8 +106,7 @@ export async function POST(req) {
           const videoId = data.items[0]?.id?.videoId;
           return NextResponse.json({ status: "success", message: "Generate content success", music: videoId, chat: chat.choices[0].message}, { status: 200 });
         }
-          
-        else{
+        else if (/Image/i.test(body.messages[body.messages.length-1].content)){
           const completion = await openai.images.generate({
             model: "dall-e-2",
             prompt: body.messages[body.messages.length-1].content, 
@@ -99,8 +115,92 @@ export async function POST(req) {
           });
           return NextResponse.json({ status: "success", message: "Generate content success", imageUrl: completion.data[0].url, chat: chat.choices[0].message}, { status: 200 });
         }
+        else{
+          const query = body.messages[body.messages.length-1].content;
+          const tokenResponse = await fetch(url_api, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                Authorization: `Basic ${Buffer.from(
+                    `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`
+                ).toString("base64")}`,
+            },
+            body: new URLSearchParams({
+                grant_type: "client_credentials", // Không cho dùng tài khoản cá nhân
+            }),
+          });
+
+          if (!tokenResponse.ok) {
+              throw new Error("Failed to fetch access token");
+          }
+
+          const tokenData = await tokenResponse.json();
+          cookieStore.set("token_spotify", tokenData.access_token, {path: "/", sameSite: "Lax"})
+
+          //Get playlist
+          const result = await fetch(`${url_base}/v1/search?q=${encodeURIComponent(query)}&type=playlist`, {
+              method: "GET",
+              headers: {
+                  Authorization: `Bearer ${tokenData.access_token}`
+              }
+          });
+          
+          const data = await result.json();
+          
+          let test;
+          //If the first element is null, find a non-null element to assign a value to.
+          for(let i=0; i<data.playlists.items.length; i++){
+              if(data.playlists.items[i] !== null){
+                  test = data.playlists.items[i].href;
+                  break;
+              }
+          };
+          const id_playlist = test.replace(`${url_base}/v1/playlists/`,"");
+          
+          //Get each play
+          const resultPlay = await fetch(`${url_base}/v1/playlists/${id_playlist}/tracks?limit=1`, {
+              method: "GET",
+              headers: {
+                  Authorization: `Bearer ${tokenData.access_token}`
+              }
+          });
+          
+          const dataPlay = await resultPlay.json();
+
+          return NextResponse.json({ status: "success", message: "Get success", spotify: dataPlay.items[0].track.href, chat: chat.choices[0].message}, { status: 200 });
+        }
       } catch (error) {
         console.error("Error:", error);
         return NextResponse.json({ status: "error", message: "Internal server error", error}, { status: 500 });
       }
   }
+
+const fetchRecentConversation = async (content, topicName, user_id) => {
+  const connection = await mysql.createConnection(dbConfig);
+  const history = await connection.query(
+      'SELECT role, message FROM conversation_history WHERE topic_name = ? AND (user_id = ? OR user_id = (SELECT id FROM account WHERE role=1)) ORDER BY timestamp DESC LIMIT 5', 
+      [topicName, user_id]
+  );
+  const messages = [];
+  messages.push({
+    role: "user",
+    content: content
+  });
+
+  console.log("topicName: ",topicName);
+  
+  history[0].forEach(record => {
+    if (record.role && record.message) {
+      messages.push({
+        role: record.role,
+        content: record.message
+      });
+    }
+  });
+
+  console.log("history: ",history);
+
+  await connection.end();
+
+  return messages.reverse();
+};

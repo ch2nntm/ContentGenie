@@ -40,6 +40,7 @@ function PreviewPage() {
     const [openModal, setOpenModal] = useState(false);
     const [isVideo, setIsVideo] = useState(false);
     const [isVideoTest, setIsVideoTest] = useState(true);
+    const [isSpotify, setIsSpotify] = useState(false);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const hasFetched = useRef(false);
@@ -117,7 +118,7 @@ function PreviewPage() {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json" 
                 },
-                body: JSON.stringify({ user_Id: user_Id, messages: messages }),
+                body: JSON.stringify({ user_Id: user_Id, topicName: topic, messages: messages }),
             });
 
             if (!responseData.ok) {
@@ -129,14 +130,27 @@ function PreviewPage() {
             setContent(data.chat?.content);
             setUpdateContent(data.chat?.content);
 
-            if(topic.includes("Mua sắm")){
+            if(topic.includes("Image")){
                 const uploadedImgUrl = await uploadToCloudinary(data.imageUrl);
                 if (uploadedImgUrl) {
                     setImgUrl(uploadedImgUrl);
                 }
             }
-            else if(topic.includes("Âm nhạc")){
+            else if(topic.includes("Youtube")){
                 setImgUrl(`https://www.youtube.com/embed/`+data.music);
+                setIsVideo(true);
+            }
+            else if(topic.includes("Spotify")){
+                const token_spotify = Cookies.get("token_spotify");
+                const response = await fetch(data.spotify, {
+                    headers: {
+                        Authorization: `Bearer ${token_spotify}`
+                    }
+                });
+                const dataSpotify = await response.json();
+                setImgUrl(dataSpotify?.external_urls?.spotify);
+                console.log("Spotify data: ",dataSpotify);
+                setIsSpotify(true);
                 setIsVideo(true);
             }
         } catch (error) {
@@ -302,13 +316,14 @@ function PreviewPage() {
                                 <p className={styles.content_post}>
                                     {content}
                                 </p>
-                                {!isVideo && imgUrl && <img className={styles.img_main_post} src={imgUrl}/>}
-                                {isVideo && imgUrl && <iframe style={{ display: imgUrl ? "block" : "none" }} className={styles.img_main_post} width="560" height="315" 
+                                {!isSpotify && !isVideo && imgUrl && <img className={styles.img_main_post} src={imgUrl}/>}
+                                {!isSpotify && isVideo && imgUrl && <iframe style={{ display: imgUrl ? "block" : "none" }} className={styles.img_main_post} width="560" height="315" 
                                     src={imgUrl}
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                     >
                                 </iframe>
                                 }
+                                {isSpotify && <a href={imgUrl}>{imgUrl}</a>}
                             </div>
                             <div className={styles.interact_post}>
                                 <div className={styles.back}>
@@ -366,7 +381,7 @@ function PreviewPage() {
                             <Form.Label className={styles.label_title}>{t("content")}</Form.Label>
                             <Form.Control className={styles.control_title}  as="textarea" placeholder="..." value={updateContent} onChange={(e) => setUpdateContent(e.target.value)} rows={5}/>
                         </Form.Group>
-                        <Form.Group className={styles.form_group}>
+                        { !isSpotify && <Form.Group className={styles.form_group}>
                             <Form.Label className={styles.label_img}>{t("img")}</Form.Label>
                             <div onClick={handleImageClick}>
                                 {!imgUrl && !isVideo && <img src={imgUrlTest ? imgUrlTest : "/upload_avt.png"} className={imgUrlTest ? styles.img_edit_main_post : styles.img_edit_main_post_upload} alt="avt"/>}
@@ -393,6 +408,7 @@ function PreviewPage() {
                                 <CloseIcon className={styles.icon_close_img}></CloseIcon>
                             </Button>
                         </Form.Group>
+                        }
                     </Form>
                 </Modal.Body>
                 <Modal.Footer className={styles.modal_footer}>

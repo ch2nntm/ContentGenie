@@ -29,6 +29,7 @@ export async function POST(req) {
       hour12: false 
     }).replace(",", ""));
 
+    const statusSetDaily = set_daily ? 1 : 0;
     const safeTitle = keyword || "Untitled"; 
     const safeStatus = status === true || status === "true";
     const safeImage = imgUrl || null; 
@@ -37,7 +38,7 @@ export async function POST(req) {
 
     await connection.execute(
       "INSERT INTO post (id, title, content, image, posttime, user_id, platform, status, audience, set_daily) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      [id, safeTitle, content, safeImage, posttime, user_id, platform, safeStatus, audience, set_daily]
+      [id, safeTitle, content, safeImage, posttime, user_id, platform, safeStatus, audience, statusSetDaily]
     );
 
     await connection.end(); 

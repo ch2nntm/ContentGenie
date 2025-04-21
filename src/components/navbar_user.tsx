@@ -12,10 +12,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import SearchIcon from '@mui/icons-material/Search';
-import MarkAsUnreadIcon from '@mui/icons-material/MarkAsUnread';
-import EditNoteIcon from '@mui/icons-material/EditNote';
-import PaymentIcon from '@mui/icons-material/Payment';
-
+import PasswordIcon from '@mui/icons-material/Password';
 
 function NavbarUser(){
     const [inputSearch, setInputSearch] = useState("");
@@ -30,7 +27,7 @@ function NavbarUser(){
 
     useEffect(() => {
         const token = Cookies.get("token");
-        console.log("token: ",token);
+        console.log("pathname: ",pathname);
         if (token) {
             fetch("/api/manage_account/login", {
                 method: "GET",
@@ -41,6 +38,7 @@ function NavbarUser(){
             .then(async (res) => {
                 if (!res.ok) {
                     window.location.href = "/component/account_user/login_user";
+                    Cookies.remove("token");
                     throw new Error(`t("error_http") ${res}`);
                 }
                 return res.json();
@@ -92,21 +90,36 @@ function NavbarUser(){
         }
     };
     
-    
     return(
         <div className={styles.navbar}>
-            <Link href="/" className={styles.title_logo}>
+            <Link href="/component/post_manage/content_generator" className={styles.title_logo}>
                 <div className={styles.icon_logo}>
                     <Image src="/wand_magic_sparkles.png" alt="logo" fill ></Image>
                 </div>
                 <h1 className={styles.title_navbar}>ContentGenie</h1>
             </Link>
+            { user && <div className={styles.link_nav}>
+                <Link href="/component/post_manage/list_post_user" className={ roleUser===0 ? (pathname==="/component/post_manage/list_post_user" ? styles.post_management_current :  styles.post_management) : styles.edit_profile_hide}>
+                    <p>{t("post_management")}</p>
+                </Link>
+                <Link href="/component/post_manage/content_generator" className={ pathname==="/component/post_manage/content_generator" ? styles.content_generator_current : styles.content_generator}>
+                    <p>{t("create_content")}</p>
+                </Link>
+                <Link href="/component/admin/dashboard" className={ roleUser===1 ? (pathname==="/component/admin/dashboard" ? styles.dashboard_current : styles.dashboard) : styles.dashboard_hide}>
+                    <p>{t("dashboard")}</p>
+                </Link>
+                <Link href="/component/upgrade_package" className={ pathname==="/component/upgrade_package" ? styles.upgrade_package_current : styles.upgrade_package}>
+                    <p>{t("credits")}</p>
+                </Link>
+            </div>
+            }
             <div className={isDashboard ? styles.search : styles.search_hide}>
                 <input className={roleUser===0 ? styles.input_search_hide : styles.input_search} type="text" placeholder={t("input_search")} value={inputSearch} onChange={(e) => setInputSearch(e.target.value)}/>
                 <button onClick={handleSearch} className={roleUser===0 ? styles.btn_search_hide : styles.btn_search}>
                     <SearchIcon/>
                 </button>
             </div>
+            
             <div className={styles.icon_navbar}>
                     <div className={styles.icon_bell}>
                         <NotificationsIcon></NotificationsIcon>
@@ -120,36 +133,17 @@ function NavbarUser(){
                     </button>
                     {user && <div className={showDropdownUser ? styles.manage_user_show : styles.manage_user_hide}>
                         <div className={styles.link}>
-                        {/* className={ roleUser===0 ? styles.edit_profile : styles.edit_profile_hide} */}
                             <Link href="/component/account_user/edit_profile" className={styles.edit_profile}> 
                                 <div className={styles.icon_edit_profile}>
                                     <BorderColorIcon/>
                                 </div>
-                                <p>{t("account_management")}</p>
+                                <p>{t("edit_profile")}</p>
                             </Link>
-                            <Link href="/component/post_manage/list_post_user" className={ roleUser===0 ? styles.post_management : styles.edit_profile_hide}>
+                            <Link href="/component/account_user/change_password" className={styles.change_password}> 
                                 <div className={styles.icon_edit_profile}>
-                                    <MarkAsUnreadIcon/>
+                                    <PasswordIcon/>
                                 </div>
-                                <p>{t("post_management")}</p>
-                            </Link>
-                            <Link href="/component/post_manage/content_generator" className={styles.post_management}>
-                                <div className={styles.icon_edit_profile}>
-                                    <EditNoteIcon/>
-                                </div>
-                                <p>{t("create_content")}</p>
-                            </Link>
-                            <Link href="/component/admin/dashboard" className={ roleUser===1 ? styles.dashboard : styles.dashboard_hide}>
-                                <div className={styles.icon_dashboard}>
-                                <SearchIcon/>
-                                </div>
-                                <p>{t("dashboard")}</p>
-                            </Link>
-                            <Link href="/component/upgrade_package" className={styles.dashboard}>
-                                <div className={styles.icon_dashboard}>
-                                    <PaymentIcon/>
-                                </div>
-                                <p>{t("credits")}</p>
+                                <p>{t("change_password")}</p>
                             </Link>
                         </div>
                         <button className={styles.btn_signout} onClick={handleSubmitSignout}>
