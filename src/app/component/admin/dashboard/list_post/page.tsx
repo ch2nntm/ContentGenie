@@ -148,8 +148,8 @@ function ListPostDashboard() {
                             </TableHead>
                             <TableBody>
                                 <TableRow className={styles.scrollable_container}>
-                                    {Object.keys(groupedPosts).map((key,index) => (
-                                        <TableCell key={index} align="center">
+                                    {Object.keys(groupedPosts).map((key) => (
+                                        <TableCell key={key} align="center">
                                             <div className={styles.scrollable_container}>
                                                 {groupedPosts[parseInt(key)].map((post) => (
                                                     <>

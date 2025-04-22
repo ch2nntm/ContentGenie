@@ -115,7 +115,8 @@ function Statistic() {
             return;
         }
         const data = await response.json();
-        setList(data.posts);
+        console.log("data.posts: ",data.data);
+        setList(data.data);
     }
     
     return(
@@ -221,23 +222,33 @@ function Statistic() {
                             <div ref={slidesRef} className={styles.list_statistics}>
                                 <p className={styles.title_list_statistics}>{t("title_list_statistics")}</p>
                                 <table className={styles.table_list}>
-                                    <tr className={styles.tablerow}>
+                                    <thead>
+                                        <tr className={styles.tablerow}>
                                         <td className={styles.title_tablecell}>{t("lable_time")}</td>
                                         <td className={styles.title_tablecell}>{t("label_post_paiding")}</td>
                                         <td className={styles.title_tablecell}>{t("label_post_posted")}</td>
                                         <td className={styles.title_tablecell}>{t("label_credit")}</td>
-                                    </tr>
-                                    {list.map((item: statistic, index: number) => (
-                                        <tr key={index} className={styles.tablerow}>
-                                            <td className={styles.tablecell}>{item.month} - {item.year}</td>
-                                            <td className={styles.tablecell}>{item.total_posts_paiding}</td>
-                                            <td className={styles.tablecell}>{item.total_posts_posted}</td>
-                                            <td className={styles.tablecell}>{item.total_credits}</td>
                                         </tr>
-                                    ))}
+                                    </thead>
+                                    <tbody>
+                                        {[...list]
+                                            .sort((a, b) => {
+                                            if (a.year !== b.year) return b.year - a.year;
+                                            return b.month - a.month; 
+                                            })
+                                            .map((item: statistic, index: number) => (
+                                            <tr key={index} className={styles.tablerow}>
+                                                <td className={styles.tablecell}>{item.month} - {item.year}</td>
+                                                <td className={styles.tablecell}>{item.total_posts_paiding}</td>
+                                                <td className={styles.tablecell}>{item.total_posts_posted}</td>
+                                                <td className={styles.tablecell}>{item.total_credits}</td>
+                                            </tr>
+                                            ))
+                                        }
+                                    </tbody>
                                 </table>
                             </div>
-                            }</>
+                        }</>
                     )}
                 </div>
             </div>
