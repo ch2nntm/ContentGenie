@@ -66,7 +66,7 @@ const authOptions: NextAuthOptions = {
           }
           token.id = account.id;
           profile.id = token.id as number;
-          profile.role = 0;
+          profile.role = account.role;
           profile.avatar = profile.picture || '';
           const payload = profile;
          

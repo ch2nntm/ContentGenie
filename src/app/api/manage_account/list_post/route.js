@@ -70,7 +70,7 @@ export async function POST(req) {
                 const connection = await mysql.createConnection(dbConfig);
                 const [rows] = await connection.execute("SELECT CAST(post.id AS CHAR) as post_id, post.title, post.content, post.image, post.posttime, post.audience, account.name, account.avatar, post.platform "
                     + "FROM post left join account on post.user_id = account.id "
-                    + "WHERE YEAR(post.posttime) = ? AND MONTH(post.posttime) = ? AND FLOOR((DAY(post.posttime) - 1) / 7) + 1 = ?",
+                    + "WHERE YEAR(post.posttime) = ? AND MONTH(post.posttime) = ? AND FLOOR((DAY(post.posttime)) / 7) + 1 = ?",
                 [year, month, week]);
                 
                     await connection.end();

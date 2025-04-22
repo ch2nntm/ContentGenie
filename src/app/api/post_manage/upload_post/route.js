@@ -22,12 +22,16 @@ export async function POST(req) {
   }
   
   try {
-    const { id, keyword, content, imgUrl, posttime, user_id, platform, status, audience, set_daily } = await req.json();
+    let { id, keyword, content, imgUrl, posttime, user_id, platform, status, audience, set_daily,  nameSpotify, nameArtist, resultImage } = await req.json();
 
     console.log("Posttime:", posttime.toLocaleString("en-CA", { 
       timeZone: "Asia/Ho_Chi_Minh", 
       hour12: false 
     }).replace(",", ""));
+
+    if(nameSpotify && nameArtist && resultImage){
+      imgUrl = imgUrl+","+nameSpotify+","+nameArtist+","+resultImage;
+    }
 
     const statusSetDaily = set_daily ? 1 : 0;
     const safeTitle = keyword || "Untitled"; 

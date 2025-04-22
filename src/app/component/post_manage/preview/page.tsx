@@ -45,6 +45,9 @@ function PreviewPage() {
     const [isVideo, setIsVideo] = useState(false);
     const [isVideoTest, setIsVideoTest] = useState(true);
     const [isSpotify, setIsSpotify] = useState(false);
+    const [nameSpotify, setNameSpotify] = useState("");
+    const [nameArtist, setNameArtist] = useState("");
+    const [resultImage, setResultImage] = useState("");
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const hasFetched = useRef(false);
@@ -155,7 +158,19 @@ function PreviewPage() {
                 setImgUrl(dataSpotify?.external_urls?.spotify);
                 console.log("Spotify data: ",dataSpotify);
                 setIsSpotify(true);
+                setNameSpotify(dataSpotify?.name);
+                // setIdArtist(dataSpotify?.artists[0]?.id);
                 setIsVideo(true);
+                console.log("idArtist: ", dataSpotify?.artists[0].id);
+                await fetch("/api/spotify", {
+                    method: "POST",
+                    body: JSON.stringify({ id: dataSpotify?.artists[0].id })
+                }).then(async (response) => {
+                    const data = await response.json();
+                    setNameArtist(data.data.name);
+                    setResultImage(data.data.images[0].url);
+                    console.log("Result: ",resultImage);
+                });
             }
         } catch (error) {
             console.error("Error fetching AI response:", error);
@@ -245,7 +260,10 @@ function PreviewPage() {
                     platform,
                     status: 0,
                     audience,
-                    set_daily
+                    set_daily,
+                    nameSpotify,
+                    nameArtist,
+                    resultImage
                 }),
             })
             .then((res) => res.json())
@@ -310,7 +328,18 @@ function PreviewPage() {
                                     >
                                 </iframe>
                                 }
-                                {isSpotify && <a href={imgUrl}>{imgUrl}</a>}
+                                {isSpotify && 
+                                    <a className={styles.is_spotify} href={imgUrl}>
+                                        <div className={styles.img_spotify}>
+                                            <Image className={styles.img_spotify} src={resultImage} alt="Spotify artist image" width={150} height={150}/>
+                                        </div>
+                                        <div className={styles.sing_spotify}>
+                                            <p>Spotify</p>
+                                            <p className={styles.name_spotify}>{nameSpotify}</p>
+                                            <p className={styles.name_artist}>{nameArtist}</p>
+                                        </div>
+                                    </a>
+                            }
                             </div>
                             <div className={styles.interact_post}>
                                 <div className={styles.back}>

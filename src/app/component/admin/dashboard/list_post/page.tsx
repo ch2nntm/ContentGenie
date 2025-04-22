@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PanToolAltOutlinedIcon from '@mui/icons-material/PanToolAltOutlined';
 import Link from "next/link";
+import Image from "next/image";
 
 interface post{
     post_id: string;
@@ -155,10 +156,28 @@ function ListPostDashboard() {
                                                         <div key={post.post_id} className={styles.item_post}>
                                                             <div className={styles.item_time}>
                                                                 <AccessTimeIcon/>
-                                                                <p key={post.post_id}>{new Date(post.posttime).getHours()}: {new Date(post.posttime).getMinutes()}</p>
+                                                                <p key={post.post_id}>{new Date(post.posttime).getHours()}: {new Date(post.posttime).getMinutes() < 10 ? "0" + new Date(post.posttime).getMinutes() : new Date(post.posttime).getMinutes()}</p>
                                                             </div>
-                                                            {post.image && !post.image.startsWith(process.env.YOUTUBE_URL ?? "") && <img src={post.image} className={styles.item_image}/>}
-                                                            {post.image && post.image.startsWith(process.env.YOUTUBE_URL ?? "") && <iframe className={styles.item_image} src={post.image} ></iframe>}
+                                                            {post.image && 
+                                                            !post.image.includes("youtube") && 
+                                                            !post.image.includes("spotify") && (
+                                                                <Image src={post.image} className={styles.item_image} width={50} height={50} alt="Post image" />
+                                                            )}
+
+                                                            {post.image && 
+                                                            post.image.includes("youtube") && (
+                                                                <iframe className={styles.item_image} src={post.image} title="YouTube video"></iframe>
+                                                            )}
+
+                                                            {post.image && 
+                                                            post.image.includes("spotify") && (
+                                                                // <p>{post.image.split(',')[1]}</p>
+                                                                <div className={styles.inf_spotify}>
+                                                                    <Image src="/icon_spotify.png" width={20} height={20} alt="Icon Spotify" />
+                                                                    <p>Spotify</p>
+                                                                </div>
+                                                            )}
+
                                                             <p className={post.image ? styles.item_content_img : styles.item_content}>{post.content}</p>
                                                             <div className={styles.footer}>
                                                                 <Link href={`/component/admin/dashboard/post/${post.post_id}`} className={styles.btn_detail}>

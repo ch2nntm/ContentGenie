@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import styles from "../[id]/detail_post.module.css";
+import Image from "next/image";
 import PublicIcon from '@mui/icons-material/Public';
 import HttpsIcon from '@mui/icons-material/Https';
 import { getTranslations } from "next-intl/server";
@@ -113,7 +114,21 @@ export default async function ViewUserDetail(props : { params: PageProps }) {
           {/* {detailPost.image && <img src={detailPost.image} className={styles.img}/>} */}
           {detailPost.image && !detailPost.image.startsWith(process.env.YOUTUBE_URL ?? "") && <img src={detailPost.image} className={styles.img}/>}
           {detailPost.image && detailPost.image.startsWith(process.env.YOUTUBE_URL ?? "") && <iframe className={styles.img} src={detailPost.image} ></iframe>}
-                                                            
+          {detailPost.image && detailPost.image.startsWith(process.env.SPOTIFY_URL ?? "") && 
+          <>
+            <a className={styles.is_spotify} href={detailPost.image.split(",")[0]}>
+                <div className={styles.img_spotify}>
+                  <Image className={styles.img_spotify} src={detailPost.image.split(",")[3]} alt="Spotify artist image" width={150} height={150}/>
+                </div>
+                <div className={styles.sing_spotify}>
+                    <p>Spotify</p>
+                    <p className={styles.name_spotify}>{detailPost.image.split(",")[1]}</p>
+                    <p className={styles.name_artist}>{detailPost.image.split(",")[2]}</p>
+                </div>
+            </a>
+          </>
+          }
+                                                           
         </div>
         <div className={styles.interact_post}>
           <div className={styles.back}>
