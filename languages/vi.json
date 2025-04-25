@@ -29,11 +29,12 @@
         "have_account": "Không có tài khoản?",
         "signinGG": "Đăng nhập với Google",
         "title_page": "Trang Đăng Nhập",
-        "forgot_password": "Quên mật khẩu",
+        "forgot_password": "Quên mật khẩu?",
         "signinLinkedIn": "Đăng nhập với LinkedIn",
         "invalid_email": "Email không hợp lệ!",
         "exist_account":"Tài khoản đã tồn tại!",
-        "invalid_password": "Mật khẩu không hợp lệ!"
+        "invalid_password": "Mật khẩu không hợp lệ!",
+        "or_submitgoogle": "hoặc"
     },
     "navbar_user":{
         "signout": "Đăng xuất",
@@ -42,7 +43,7 @@
         "dashboard": "Trang Tổng Quan",
         "post_management": "Quản lý bài đăng",
         "create_content": "Tạo Nội Dung",
-        "credits": "Kiểm tra số thẻ",
+        "credits": "Số thẻ",
         "edit_profile": "Chỉnh sửa hồ sơ",
         "change_password": "Thay đổi mật khẩu",
         "error_http": "Lỗi HTTP",
@@ -176,7 +177,9 @@
         "message": "Cập nhật email thành công!",
         "code":"Mã",
         "btn_update": "Cập nhật",
-        "btn_cancel":"Hủy bỏ"
+        "btn_cancel":"Hủy bỏ",
+        "error_internet":"Lỗi kết nối mạng!",
+        "exist_email":"Email đã tồn tại!"
     },
     "forgot_password":{
         "enter_full": "Vui lòng điền đầy đủ các trường!",
@@ -184,24 +187,32 @@
         "error_register": "Lỗi trong quá trình đăng ký!",
         "password_not_match": "Mật khẩu không khớp!",
         "password_not_format" : "Mật khẩu phải dài ít nhất 8 ký tự, bao gồm chữ cái, số và ký tự đặc biệt!",
-        "title": "Quên mật khẩu",
-        "email": "Email",
-        "btn_cancel": "Hủy bỏ",
-        "reset_password": "Đặt lại mật khẩu",
+        "title": "Quên mật khẩu?",
+        "send_reset_link": "Gửi liên kết đặt lại",
+        "input_email": "Địa chỉ Email",
+        "btn_cancel_verify": "Quay lại",
+        "back_siginin": "Quay lại Đăng nhập",
+        "btn_reset_password": "Đặt lại mật khẩu",
+        "title_reset_password": "Đặt lại mật khẩu",
+        "subtitle_reset_password": "Nhập mật khẩu mới của bạn để đặt lại mật khẩu.",
         "password": "Mật khẩu",
         "confirm_password": "Xác nhận mật khẩu",
         "change_success": "Thay đổi mật khẩu thành công!",
         "message1": "Thay đổi mật khẩu thành công với email: ",
         "message2": " và mật khẩu mới: ",
-        "title_code": "Mã",
-        "code": "Mã",
+        "title_code": "Xác minh OTP",
+        "subtitle_code": "Vui lòng nhập OTP được gửi đến địa chỉ email đã đăng ký của bạn để đặt lại mật khẩu.",
+        "code": "Nhập OTP vào đây",
         "send_code": "Gửi mã",
         "code_not_full": "Vui lòng nhập trường mã!",
         "error_code": "Mã không đúng!",
         "resend_code": "Gửi lại mã",
         "resend_code_again": "Đã gửi lại mã",
         "password_match": "Mật khẩu mới trùng với mật khẩu cũ!",
-        "email_wrong": "Email không tồn tại!"
+        "email_wrong": "Email không tồn tại!",
+        "subtitle_forgot": "Nhập email đã đăng ký của bạn để nhận liên kết đặt lại mật khẩu",
+        "code_success": "Mã đã được gửi thành công!",
+        "error_internet": "Lỗi kết nối mạng!"
     },
     "list_post_user":{
         "title_page": "Danh sách bài đăng",
@@ -274,7 +285,14 @@
         "name": "Họ tên: ",
         "email":"Email: ",
         "quantity_credits": "Số thẻ còn lại: ",
-        "quantity_post": "Tổng số bài đăng: "
+        "quantity_post": "Tổng số bài đăng: ",
+        "package_purchase": "Gói đã mua: ",
+        "no_package": "Chưa mua gói nào cả",
+        "package_month": "Gói tháng",
+        "package_year": "Gói năm",
+        "package_name": "Tên gói",
+        "package_price": "Giá gói",
+        "date_purchase": "Ngày mua"
     },
     "list_post_dashboard": {
         "sidebar_dashboard": "Trang Tổng Quan",
@@ -301,7 +319,9 @@
         "sidebar_posts": "Bài Viết",
         "sidebar_analytics": "Thống Kê",
         "sidebar_settings": "Cài Đặt",
-        "section_no_user":"Không có người dùng nào được tìm thấy"
+        "section_no_user":"Không có người dùng nào được tìm thấy",
+        "quantity_credits": "Số thẻ còn lại: ",
+        "quantity_post": "Tổng số bài đăng: "
     },
     "statistics": {
         "sidebar_dashboard": "Trang Tổng Quan",
@@ -359,6 +379,7 @@
         "package_year_check2": "Thời hạn sử dụng: 365 ngày",
         "package_year_check3": "Tiết kiệm chi phí hơn so với gói tháng nếu dùng lâu dài",
         "package_year_check4": "Lựa chọn tốt nhất cho người cần dùng thường xuyên trong thời gian dài",
-        "package_year_button": "Nâng cấp"
+        "package_year_button": "Nâng cấp",
+        "not_purchase": "Bạn chưa mua bất kỳ gói nào"
     }
 }

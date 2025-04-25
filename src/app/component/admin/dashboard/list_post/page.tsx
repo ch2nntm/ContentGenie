@@ -117,17 +117,17 @@ function ListPostDashboard() {
                 </div>
                 <div className={styles.section}>
                     <div className={styles.btn_time_group}>
-                        <select onChange={(e) => setSelectedYear(Number(e.target.value))}>
+                        <select className={styles.select_year} onChange={(e) => setSelectedYear(Number(e.target.value))}>
                             {Array.from({ length: 10 }, (_, i) => 2020 + i).map((year) => (
                                 <option key={year} value={year}>{t("year")} {year}</option>
                             ))}
                         </select>
-                        <select onChange={(e) => setSelectedMonth(Number(e.target.value))}>
+                        <select className={styles.select_month} onChange={(e) => setSelectedMonth(Number(e.target.value))}>
                             {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
                                 <option key={month} value={month}>{t("month")} {month}</option>
                             ))}
                         </select>
-                        <select onChange={(e) => setSelectedWeek(Number(e.target.value))}>
+                        <select className={styles.select_week} onChange={(e) => setSelectedWeek(Number(e.target.value))}>
                             {Array.from({ length: 5 }, (_, i) => i + 1).map((week) => (
                                 <option key={week} value={week}>{t("week")} {week}</option>
                             ))}
@@ -159,18 +159,18 @@ function ListPostDashboard() {
                                                                 <p key={post.post_id}>{new Date(post.posttime).getHours()}: {new Date(post.posttime).getMinutes() < 10 ? "0" + new Date(post.posttime).getMinutes() : new Date(post.posttime).getMinutes()}</p>
                                                             </div>
                                                             {post.image && 
-                                                            !post.image.includes("youtube") && 
-                                                            !post.image.includes("spotify") && (
+                                                            !post.image.includes(process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "") && 
+                                                            !post.image.includes(process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "") && (
                                                                 <Image src={post.image} className={styles.item_image} width={50} height={50} alt="Post image" />
                                                             )}
 
                                                             {post.image && 
-                                                            post.image.includes("youtube") && (
+                                                            post.image.includes(process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "") && (
                                                                 <iframe className={styles.item_image} src={post.image} title="YouTube video"></iframe>
                                                             )}
 
                                                             {post.image && 
-                                                            post.image.includes("spotify") && (
+                                                            post.image.includes(process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "") && (
                                                                 // <p>{post.image.split(',')[1]}</p>
                                                                 <div className={styles.inf_spotify}>
                                                                     <Image src="/icon_spotify.png" width={20} height={20} alt="Icon Spotify" />

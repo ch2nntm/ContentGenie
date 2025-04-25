@@ -100,6 +100,34 @@
 }
 
 
+.is_spotify{
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-left: 40px;
+    margin-right: 60px;
+    border: 0.3px solid grey;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #000;
+    transition: all 0.5s ease;
+}
+
+.is_spotify:hover{
+    color: rgb(0, 128, 255);
+}
+
+.img_spotify{
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    height: 153px;
+}
+
+.name_spotify{
+    font-size: 18px;
+    font-weight: 600;
+}
+
 .button_user{
     cursor: pointer;
     border: none;

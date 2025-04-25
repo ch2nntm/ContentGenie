@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import styles from "../preview_linkedin/preview_linkedin.module.css";
 import NavbarUser from "@/components/navbar_user";
@@ -35,15 +35,20 @@ function PreviewPage() {
     const [postTime, setPostTime] = useState(new Date(searchParams.get("date") || ""));
     const platform = searchParams.get("platform") || "";
     const user_Id = searchParams.get("user_Id") || 0;
+    const set_daily = searchParams.get("set_daily");
     const [content, setContent] = useState("");
     const [updateContent, setUpdateContent] = useState("");
     const [openModal, setOpenModal] = useState(false);
     const [isVideo, setIsVideo] = useState(false);
     const [isVideoTest, setIsVideoTest] = useState(true);
     const [isSpotify, setIsSpotify] = useState(false);
+    const [nameSpotify, setNameSpotify] = useState("");
+    const [nameArtist, setNameArtist] = useState("");
+    const [resultImage, setResultImage] = useState("");
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const hasFetched = useRef(false);
+    const router = useRouter();
 
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
@@ -152,6 +157,18 @@ function PreviewPage() {
                 console.log("Spotify data: ",dataSpotify);
                 setIsSpotify(true);
                 setIsVideo(true);
+                setNameSpotify(dataSpotify?.name);
+                setIsVideo(true);
+                console.log("idArtist: ", dataSpotify?.artists[0].id);
+                await fetch("/api/spotify", {
+                    method: "POST",
+                    body: JSON.stringify({ id: dataSpotify?.artists[0].id })
+                }).then(async (response) => {
+                    const data = await response.json();
+                    setNameArtist(data.data.name);
+                    setResultImage(data.data.images[0].url);
+                    console.log("Result: ",resultImage);
+                });
             }
         } catch (error) {
             console.error("Error fetching AI response:", error);
@@ -258,7 +275,11 @@ function PreviewPage() {
                     user_id: userId,
                     platform,
                     status: 0,
-                    audience
+                    audience,
+                    set_daily,
+                    nameSpotify,
+                    nameArtist,
+                    resultImage
                 }),
             })
             .then((res) => res.json())
@@ -266,7 +287,7 @@ function PreviewPage() {
                 if (res.message) {
                     setOpenModal(false);
                     toast.success("Successful");
-                    // router.push("/component/post_manage/list_post_user");
+                    router.push("/component/post_manage/list_post_user");
                 } else if (res.error) {
                     console.log("Res: ", res);
                 }
@@ -323,7 +344,18 @@ function PreviewPage() {
                                     >
                                 </iframe>
                                 }
-                                {isSpotify && <a href={imgUrl}>{imgUrl}</a>}
+                                {isSpotify && 
+                                    <a className={styles.is_spotify} href={imgUrl}>
+                                        <div className={styles.img_spotify}>
+                                            <Image className={styles.img_spotify} src={resultImage} alt="Spotify artist image" width={150} height={150}/>
+                                        </div>
+                                        <div className={styles.sing_spotify}>
+                                            <p>Spotify</p>
+                                            <p className={styles.name_spotify}>{nameSpotify}</p>
+                                            <p className={styles.name_artist}>{nameArtist}</p>
+                                        </div>
+                                    </a>
+                                }
                             </div>
                             <div className={styles.interact_post}>
                                 <div className={styles.back}>

@@ -176,10 +176,10 @@ function ContentGeneratorPage() {
   return (
     <div className={styles.container}>
         <NavbarUser></NavbarUser>
+        <p className={styles.title}>
+            {t("btn_generate_content")}
+        </p>
         <div className={styles.post}>
-            <p className={styles.title}>
-                {t("btn_generate_content")}
-            </p>
             <div className={styles.social_media}>
                 <div className={styles.title_social_media}>
                     <div className={styles.icon_social_media}>
@@ -208,9 +208,9 @@ function ContentGeneratorPage() {
                             <Image src="/icon_tiktok.webp" alt="Mastodon" width={25} height={25} />
                         </div>
                         <p>TikTok</p>
-                    </button>
+                    </button> 
                     {!selectedPlatform && <span className={styles.warn_platform}>!</span>}
-                    {selectedPlatform && <span className={styles.warn_platform}></span>}
+                    {selectedPlatform && <span className={styles.warn_platform}></span>} 
                 </div>
             </div>
             <div className={styles.post_time}>
@@ -223,18 +223,20 @@ function ContentGeneratorPage() {
                         <span className={styles.require}>*</span>
                     </p>
                 </label>
-                <input className={selectedDate ? styles.input_date : styles.warn_input_date} id="post_time"
-                    type="date"
-                    min={formattedDate}
-                    value={selectedDate}
-                    onChange={handleDateChange}
-                />
-                <input className={selectedTime ? styles.input_time : styles.warn_input_time}
-                    type="time"
-                    value={selectedTime}
-                    onChange={handleTimeChange}
-                    min={selectedDate === formattedDate ? formattedTime : "00:00"}
-                />
+                <div className={styles.input_datetime}>
+                    <input className={selectedDate ? styles.input_date : styles.warn_input_date} id="post_time"
+                        type="date"
+                        min={formattedDate}
+                        value={selectedDate}
+                        onChange={handleDateChange}
+                    />
+                    <input className={selectedTime ? styles.input_time : styles.warn_input_time}
+                        type="time"
+                        value={selectedTime}
+                        onChange={handleTimeChange}
+                        min={selectedDate === formattedDate ? formattedTime : "00:00"}
+                    />
+                </div>
             </div>
             <div className={styles.topic}>
                 <label className={styles.title_topic} htmlFor="topic">
@@ -268,10 +270,12 @@ function ContentGeneratorPage() {
                     </p>
                 </label>
                 <div className={styles.content_audience}>
-                    <select className={styles.select_audience} onChange={(e) => setSelectedAudience(e.target.value)} value={selectedAudience}>
-                        <option value="public">{t("public")}</option>
-                        <option value="private">{t("private")}</option>
-                    </select>
+                    <div className={styles.radio_public}>
+                        <input type="radio" value="public" name="selectedAudience" onChange={(e) => setSelectedAudience(e.target.value)} /> {t("public")}
+                    </div>
+                    <div className={styles.radio_private}>
+                        <input type="radio" value="private" name="selectedAudience" onChange={(e) => setSelectedAudience(e.target.value)} /> {t("private")}
+                    </div>
                 </div>
             </div>
             <div className={styles.enable_trend}>
@@ -291,12 +295,11 @@ function ContentGeneratorPage() {
                     <div className={styles.circle}></div>
                 </div>
             </div>
-            <div className={styles.generate_content}>
+        </div>
+        <div className={styles.generate_content}>
             <button onClick={hanldeCreateContent} disabled={!selectTopic || !selectedDate || !selectedTime || !enterKeyword || !selectedAudience} className={ (!selectTopic || !selectedDate || !selectedTime || !enterKeyword || !selectedAudience) ? styles.btn_generate_content_disable : styles.btn_generate_content}>
                 {t("btn_generate_content")}
             </button>
-
-            </div>
         </div>
         <ToastContainer></ToastContainer>
     </div>

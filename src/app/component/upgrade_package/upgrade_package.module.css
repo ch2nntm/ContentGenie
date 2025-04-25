@@ -7,7 +7,6 @@
     margin-top: 0px;
 }
 
-
 .loading {
     display: flex;
     align-items: center;
@@ -33,19 +32,86 @@
     100% { transform: rotate(360deg); }
   }
   
+.section{
+    position: fixed;
+    box-shadow: 4px 4px 4px 4px rgb(214, 213, 213);
+    padding: 20px;
+    top: 75px;
+    width: 80vw;
+    height: 80vh;
+    border-radius: 10px;
+}  
+
+.section_link{
+    display: flex;
+}
+
+.check_credits,
+.upgrade,
+.check_credits_not_choose,
+.upgrade_not_choose{
+    cursor: pointer;
+    width: 80%;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--primary-color);
+    color: #fff;
+    transition: all 0.5s ease;
+    font-size: 16px;
+}
+
+.check_credits_not_choose,
+.upgrade_not_choose{
+    background-color: var(--second-color);
+    color: #000;
+}
+
+.upgrade_not_choose:hover,
+.check_credits_not_choose:hover{
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+
+.form_check_credit,
+.form_check_expiration_date {
+    background: linear-gradient(135deg, #f0f8ff, #e6f0ff);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #d3e0f0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    text-align: center;
+    color: #2a2a2a;
+    font-size: 17px;
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    gap: 15px;
+  }
+
+  .form_check_credit .highlight,
+  .form_check_expiration_date .highlight {
+    font-weight: bold;
+    color: #1a8cff;
+  }
+
+.form_check_credit{
+    margin: auto;
+    margin-top: 50px;
+}
+
+.form_check_expiration_date{
+    margin: auto;
+    margin-top: 20px;
+}
+
 .text_credits,
 .text_expiration_date{
     font-size: 20px;
     align-self: flex-start;
-    margin-left: 250px;
-}
-
-.text_expiration_date{
-    margin-top: -10px;
-}
-
-.package{
-    margin-top: -20px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
 }
 
 .title{
@@ -56,17 +122,19 @@
 .subtitle{
     text-align: center;
     font-size: 20px;
+    margin-top: -10px;
 }
 
 .package_container{
     display: flex;
-    gap: 20px
+    gap: 50px;
+    justify-content: center;
 }
 
 .package_credits,
 .package_month,
 .package_year{
-    width: 300px;
+    width: 27%;
     height: 400px;
     border: 1px solid grey;
     border-radius: 10px;
@@ -80,7 +148,7 @@
     display: block;
     background-color: rgb(62, 162, 129);
     height: 10px;
-    width: 300px;
+    width: 100%;
     border-top-left-radius: 9px;
     border-top-right-radius: 9px;
 }
@@ -94,7 +162,7 @@
 }
 .checkcircle{
     display: block;
-    margin-left: 20px;
+    margin: 0 20px;
     margin-top: 30px;
 }
 

@@ -29,14 +29,18 @@ export async function POST(req) {
       hour12: false 
     }).replace(",", ""));
 
+    console.log("set_daily: ",set_daily);
+
     if(nameSpotify && nameArtist && resultImage){
       imgUrl = imgUrl+","+nameSpotify+","+nameArtist+","+resultImage;
     }
 
-    const statusSetDaily = set_daily ? 1 : 0;
+    const statusSetDaily = set_daily===true ? 1 : 0;
     const safeTitle = keyword || "Untitled"; 
     const safeStatus = status === true || status === "true";
     const safeImage = imgUrl || null; 
+
+    console.log("statusSetDaily: ", statusSetDaily);  
 
     const connection = await mysql.createConnection(dbConfig);
 

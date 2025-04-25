@@ -16,7 +16,7 @@ const dbConfig = {
 export async function POST(req) {
     try{
         const {id} = await req.json();
-        const connect = await mysql.createConnection(dbConfig);
+        const connection = await mysql.createConnection(dbConfig);
         console.log("Id: ",id);
         const authHeader = req.headers.get("authorization"); 
         const token = authHeader?.split(" ")[1];
@@ -28,11 +28,11 @@ export async function POST(req) {
         if(!id){
             return NextResponse.json({ status: "error", message: "Missing field", error}, {status: 402})
         }
-        const [result] = await connect.execute(
+        const [result] = await connection.execute(
             "SELECT credits, expiration_date FROM account WHERE id = ?",[id]
         );
 
-        await connect.end();
+        await connection.end();
 
         if(result.length === 0){
             throw new NextResponse.json({error}, {status: 400});
@@ -46,9 +46,9 @@ export async function POST(req) {
 
 export async function PUT(req) {
     try{
-        const {id, amount} = await req.json();
-        const connect = await mysql.createConnection(dbConfig);
-        console.log("Id: ",id);
+        const {user_id, amount} = await req.json();
+        const connection = await mysql.createConnection(dbConfig);
+        console.log("user_id: ",user_id);
         console.log("Amount: ",amount);
 
         const authHeader = req.headers.get("authorization"); 
@@ -58,62 +58,46 @@ export async function PUT(req) {
             return new Response(JSON.stringify({ message: "Missing token" }), { status: 401 });
         }
 
-        if(!id){
+        if(!user_id){
             return NextResponse.json({error: "Missing field"}, {status: 402})
         }
-        const [resultCheck] = await connect.execute(
-            "SELECT credits, purchase_date, expiration_date FROM account WHERE id = ?", [id]
+        const [resultCheck] = await connection.execute(
+            "SELECT credits, expiration_date FROM account WHERE id = ?", [user_id]
         );
 
         if(amount === 1){
             const data = resultCheck[0].credits;
             const number_update = data + 20;
-            await connect.execute(
-                "UPDATE account set credits = ? WHERE id = ?",[number_update, id]
+            await connection.execute(
+                "UPDATE account set credits = ? WHERE id = ?",[number_update, user_id]
             );
+            await connection.execute("INSERT INTO user_upgrade(user_id, package_buy, price, purchase_date) VALUES"
+                 +" (?, 'Goi The', ?, ?)", [user_id, amount, new Date()]);
         }
         else{
-            const purchase_date = resultCheck[0].purchase_date;
             const expiration_date = resultCheck[0].expiration_date;
-            console.log("purchase_date: ",purchase_date," - expiration_date: ",expiration_date);
             if(amount === 3){
-                if(!purchase_date){
-                    const now = new Date();
-                    const oneMonthLater = new Date(now);
-                    oneMonthLater.setMonth(now.getMonth() + 1);
-                    await connect.execute(
-                        "UPDATE account set purchase_date = ?, expiration_date =? WHERE id = ?",[now, oneMonthLater, id]
-                    );
-                }
-                else{
-                    const oneMonthLater = expiration_date;
-                    oneMonthLater.setMonth(expiration_date.getMonth() + 1);
-                    await connect.execute(
-                        "UPDATE account set expiration_date = ? WHERE id = ?",[oneMonthLater, id]
-                    );
-                }
+                const oneMonthLater = expiration_date;
+                oneMonthLater.setMonth(expiration_date.getMonth() + 1);
+                await connection.execute(
+                    "UPDATE account set expiration_date = ? WHERE id = ?",[oneMonthLater, user_id]
+                );
+                await connection.execute("INSERT INTO user_upgrade(user_id, package_buy, price, purchase_date) VALUES"
+                 +" (?, 'Goi Thang', ?, ?)", [user_id, amount, new Date()]);
             }
             else if(amount === 20){
-                if(!purchase_date){
-                    const now = new Date();
-                    const oneYearLater = new Date(now);
-                    oneYearLater.setFullYear(now.getFullYear() + 1);
-                    await connect.execute(
-                        "UPDATE account set purchase_date = ?, expiration_date =? WHERE id = ?",[now, oneYearLater, id]
-                    );
-                }
-                else{
-                    const oneYearLater = expiration_date;
-                    oneYearLater.setFullYear(expiration_date.getFullYear() + 1);
-                    await connect.execute(
-                        "UPDATE account set expiration_date = ? WHERE id = ?",[oneYearLater, id]
-                    );
-                }
+                const oneYearLater = expiration_date;
+                oneYearLater.setFullYear(expiration_date.getFullYear() + 1);
+                await connection.execute(
+                    "UPDATE account set expiration_date = ? WHERE id = ?",[oneYearLater, user_id]
+                );
+                await connection.execute("INSERT INTO user_upgrade(user_id, package_buy, price, purchase_date) VALUES"
+                 +" (?, 'Goi Nam', ?, ?)", [user_id, amount, new Date()]);
             }
         }
         
 
-        await connect.end();
+        await connection.end();
 
         return NextResponse.json({ status: "success", message: "Update success" }, {status: 200});
 

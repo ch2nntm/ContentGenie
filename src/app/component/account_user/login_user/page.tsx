@@ -11,11 +11,9 @@ import { signIn} from "next-auth/react";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import GoogleIcon from '@mui/icons-material/Google';
-import NavbarUser from "@/components/navbar_user";
 
 function Login() {
     const router = useRouter();
-    // const {data: session, status} = useSession();
 
     const t = useTranslations("login");  
     const noti_toast = useTranslations("toast"); 
@@ -23,17 +21,10 @@ function Login() {
     const [password, setPassword] = useState<string>("");
     const [showPassword, setShowPassword] = useState(false);
 
-    // useEffect(()=>{
-    //     if(session?.accessToken){
-    //         Cookies.set("token", session.accessToken, {expires: 1, sameSite: "Lax"});
-    //     }
-    // },[session, status]);
-
     const handleGoogleSignIn = async () => {
         signIn("google", { callbackUrl: "/" });
     }
     
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault(); 
         if (!email || !password) {
@@ -58,7 +49,7 @@ function Login() {
         })
         .then((res) => res.json())
         .then((data) => {
-            if (data.message) {
+            if (data.status === "success") {
                 Cookies.set("token", data.token, { expires: 1, sameSite: "Lax" });
     
                 fetch("/api/manage_account/login", {
@@ -85,7 +76,6 @@ function Login() {
 
     return(
         <>
-            <NavbarUser/>
             <div className={styles.container}>
                 <div className={styles.img_main}>
                     <Image src="/main_login_register.png" alt="Icon" fill></Image>
@@ -98,7 +88,7 @@ function Login() {
                         <h1 className={styles.text_main}>ContentGenie</h1>
                     </Link>
                     <form onSubmit={handleSubmit} className={styles.form}>
-                        <label className={styles.label} htmlFor="email">{t("label_email")}</label>
+                        {/* <label className={styles.label} htmlFor="email">{t("label_email")}</label> */}
                         <input
                             type="email"
                             id="email"
@@ -107,7 +97,7 @@ function Login() {
                             onChange={(e) => setEmail(e.target.value)}
                             className={styles.input}
                         />
-                        <label className={styles.label} htmlFor="password">{t("label_password")}</label>
+                        {/* <label className={styles.label} htmlFor="password">{t("label_password")}</label> */}
                         <input
                             type={showPassword ? "text" : "password"}
                             id="password"
@@ -132,16 +122,17 @@ function Login() {
                         </button>
                     </form>
                     <ToastContainer />
+                    <div className={styles.or_submitgoogle}>{t("or_submitgoogle")}</div>
+                    <button className={styles.buttonLoginGoogle} onClick={handleGoogleSignIn}>
+                        <div className={styles.google}>
+                            <GoogleIcon className={styles.icon_goggle}/>
+                        </div>
+                        {t("signinGG")}
+                    </button>
                     <div className={styles.register}>
                         <p className={styles.text_register}>{t("have_account")}</p>
                         <Link href="./register_user" className={styles.btn_register}>{t("signup")}</Link>
                     </div>
-                    <button className={styles.buttonLoginGoogle} onClick={handleGoogleSignIn}>
-                        <div className={styles.google}>
-                            <GoogleIcon></GoogleIcon>
-                        </div>
-                        {t("signinGG")}
-                    </button>
                 </div>
             </div>
         </>

@@ -39,7 +39,7 @@ export async function POST(req) {
             await redis.del(`otp:${email}`);
         }
 
-        await redis.set(`otp:${email}`, otp, { ex: 30 });
+        await redis.set(`otp:${email}`, otp, { ex: 300 });
 
         await sendEmail(email, otp);
 

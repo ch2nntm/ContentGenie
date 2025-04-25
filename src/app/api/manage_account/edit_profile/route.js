@@ -37,7 +37,7 @@ export async function PUT(req) {
         console.log("inputEmail: ",inputEmail," - email: ",email);
         const connection = await mysql.createConnection(dbConfig);
         if (!password || !inputName || !inputEmail || !email) {
-            return NextResponse.json({ status: "error", message: "Missing input data", error }, { status: 400 });
+            return NextResponse.json({ status: "error", message: "Missing input data" }, { status: 400 });
         }
 
         if(inputEmail !== email){
@@ -48,7 +48,7 @@ export async function PUT(req) {
           
             if (rows.length = 0) { 
                 await connection.end();
-                return NextResponse.json({ status: "error", message: "Email is not exists", error },{ status: 409});
+                return NextResponse.json({ status: "error", message: "Email is not exists", },{ status: 409});
             }
         }
 
@@ -59,7 +59,7 @@ export async function PUT(req) {
 
         if (result.affectedRows === 0) {
             await connection.end();
-            return NextResponse.json({ status: "error", message: "Unable to update information", error }, { status: 400 });
+            return NextResponse.json({ status: "error", message: "Unable to update information" }, { status: 400 });
         }
 
         const [updatedUser] = await connection.execute(
@@ -69,7 +69,7 @@ export async function PUT(req) {
         await connection.end();
 
         if (updatedUser.length === 0) {
-            return NextResponse.json({ status: "error", message: "User not found", error }, { status: 404 });
+            return NextResponse.json({ status: "error", message: "User not found" }, { status: 404 });
         }
 
         const user = updatedUser[0];
@@ -85,6 +85,6 @@ export async function PUT(req) {
 
     } catch (error) {
         console.error("Error: ", error);
-        return NextResponse.json({ status: "error", message: "System error", error }, { status: 500 });
+        return NextResponse.json({ status: "error", message: "System error" }, { status: 500 });
     }
 }

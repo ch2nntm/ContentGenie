@@ -94,19 +94,20 @@ export async function POST(req) {
           await connection.end();
         }
         
-        if(/Tale/i.test(body.messages[body.messages.length-1].content))
+        if(body.topicName==="Tale")
           return NextResponse.json({ statuse: "success", messages: "Generate content success", chat: chat.choices[0].message}, { status: 200 });
         
-        else if (/Youtube/i.test(body.messages[body.messages.length-1].content)){
-          const query = body.messages[body.messages.length-2].content;
+        else if (body.topicName==="Youtube"){
+          const query = body.messages[body.messages.length-1].content;
           const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&key=${apiKeyYoutube}`;
           
           const response = await fetch(url);
           const data = await response.json();
           const videoId = data.items[0]?.id?.videoId;
+          console.log("videoId: ",videoId);
           return NextResponse.json({ status: "success", message: "Generate content success", music: videoId, chat: chat.choices[0].message}, { status: 200 });
         }
-        else if (/Image/i.test(body.messages[body.messages.length-1].content)){
+        else if (body.topicName==="Image"){
           const completion = await openai.images.generate({
             model: "dall-e-2",
             prompt: body.messages[body.messages.length-1].content, 

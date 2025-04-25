@@ -1,14 +1,16 @@
 .inf_user_container{
-    width: 600px;
-    box-shadow: 1px 1px 3px grey;
+    width: 70vw;
+    height: 75vh;
+    box-shadow: 1px 1px 3px var(--primary-color);
     margin: auto;
     border-radius: 10px;
     padding: 20px;
-    margin-top: 70px;
+    margin-top: 0px;
 }
 
 .title{
-    margin-top: -5px;
+    margin-top: 20px;
+    margin-left: 30px;
 }
 
 .icon_back{
@@ -37,18 +39,76 @@
 
 .avt_user{
     display: flex;
-    width: 150px;
-    height: 150px;
-    /* border-radius: 50%; */
+    width: 350px;
+    height: 350px;
+    margin-top: 50px;
+    margin-left: 30px;
+}
+
+.inf_detail{
+    margin-top: 20px;
 }
 
 .text_inf{
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-top: -20px;
+    margin-top: -10px;
+    margin-left: 50px;
 }
 
 .bold_text{
     font-weight: bold;
+}
+
+.packages{
+    /* margin-top: -10px; */
+    margin-left: 50px;
+}
+
+.no_package{
+    margin-left: 10px;
+}
+
+.table{
+    margin-top: -10px;
+    margin-left: 10px;
+}
+  
+.thead,
+.tbody{
+    display: flex;
+}
+
+.tbody_wrapper{
+    height: 100px;
+    overflow-y: auto;
+}
+
+.tbody{
+    height: 40px;
+    align-items: center;
+}
+
+.item_td,
+.item_td_head{
+    width: 140px;
+    box-shadow: 4px 4px 4px var(--primary-color);
+    text-align: center;
+    padding: 5px;
+}
+
+.item_td{
+    margin-top: -10px;
+}
+
+.item_td_head:first-child,
+.item_td:first-child{
+    width: 50px;
+}
+
+.item_td_head{
+    font-weight: 600;
+    background-color: rgba(0, 183, 255, 0.267);
+    box-shadow: 4px 4px 4px var(--primary-color)
 }

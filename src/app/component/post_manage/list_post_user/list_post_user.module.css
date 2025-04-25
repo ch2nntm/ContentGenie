@@ -1,30 +1,53 @@
 .list_container{
-    margin: 100px 200px;
+    margin: 100px 115px;
 }
 
 .btn_platform{
     display: flex;
-    gap: 50px;
+    gap: 10px;
+    justify-content: center;
+    margin-left: -5px;
 }
 
 .btn_mastodon,
-.btn_linkedin{
+.btn_linkedin,
+.btn_mastodon_not_choose,
+.btn_linkedin_not_choose{
+    justify-content: center;
     cursor: pointer;
-    width: 100px;
-    height: 30px;
-    box-shadow: 0 0 4px grey;
+    width: 590px;
+    height: 40px;
+    box-shadow: 0 0 4px var(--primary-color);
     border: none;
     background-color: rgb(32, 144, 230);
-    border-radius: 10px;
+    border-radius: 5px;
     color: #fff;
     display: flex;
     align-items: center;
     gap: 10px;
     padding-left: 10px;
+    transition: all 0.5s ease;
 }
 
-.btn_mastodon{
+.btn_mastodon,
+.btn_mastodon_not_choose:hover{
     background-color: #9f6aea;
+    color: #fff;
+}
+
+.btn_mastodon_not_choose{
+    background-color: #ddd0ef;
+    color: #000;
+}
+
+.btn_linkedin_not_choose{
+    background-color: rgb(187, 221, 246);
+    color: #000;
+}
+
+.btn_linkedin_not_choose:hover{
+    background-color: rgb(32, 144, 230);
+    color: #fff;
 }
 
 .icon_mastodon,
@@ -62,9 +85,8 @@
   
 
 .item_post{
-    width: 700px;
-    box-shadow: 0px 2px 4px grey;
-    margin: auto;
+    width: 80vw;
+    box-shadow: 0px 2px 4px var(--primary-color);
     margin-top: 30px;
     padding: 0px 20px;
     border-radius: 5px;
@@ -138,10 +160,47 @@
 }
 
 .video_post{
-    width: 600px;
-    height: 300px;
-    margin-left: 50px;
+    width: 80%;
+    height: 400px;
+    margin: auto;
+    display: block;
 }
+
+.is_spotify,
+.is_spotify_edit{
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-left: 40px;
+    margin-right: 60px;
+    box-shadow: 4px 4px 4px 4px var(--second-color);
+    border-radius: 10px;
+    text-decoration: none;
+    color: #000;
+    transition: all 0.5s ease;
+}
+
+.is_spotify_edit{
+    width: 400px;
+    margin-left: 130px;
+}
+
+.is_spotify:hover{
+    color: var(--primary-color);
+}
+
+.img_spotify{
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    height: 153px;
+}
+
+.name_spotify{
+    font-size: 18px;
+    font-weight: 600;
+}
+
 
 .interact_post{
     display: flex;
@@ -197,9 +256,9 @@
     position: absolute;
     background-color: white;
     border-radius: 5px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 4px 6px var(--second-color);
     z-index: 99;
-    left: 65%; 
+    left: 80%; 
     margin-top: -165px;
     padding: 10px 20px;
 }
@@ -213,7 +272,7 @@
     position: fixed;
     z-index: 999;
     background-color: #fbfbfb;
-    box-shadow: 0px 0px 4px grey;
+    box-shadow: 0px 0px 4px var(--primary-color);
     border-radius: 10px;
     width: 60%;
     height: 500px;
@@ -253,20 +312,21 @@
 }
 
 .img_edit_main_post{
-    position: absolute;
-    width: 400px;
-    height: 200px;
-    margin-left: 100px;
+    position: relative;
+    width: 300px;
+    height: 150px;
+    margin-left: 200px;
 }
 
 .choose_avt{
     position: absolute;
 }
 
-.button_close_img{
-    position: relative;
-    left: 400;
-    top: -20;
+.button_close_img,
+.button_close_img_spotify{
+    position: absolute;
+    left: 500;
+    top: -170;
 }
 
 .control_title{
@@ -277,7 +337,7 @@
 }
 
 .modal_footer{
-    margin-top: 180px;
+    margin-top: 0px;
     display: flex;
     gap: 100px;
     margin-left: 300px;
@@ -307,11 +367,10 @@
 
 
 .upload_avt_modal{
-    position: absolute;
+    position: relative;
     width: 150px;
     height: 150px;
     margin-left: 250px;
-    /* margin-top: 20px; */
 }
 
 

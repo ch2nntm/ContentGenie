@@ -10,11 +10,11 @@ import { useTranslations } from "next-intl";
 function ForgotPassword(){
     const t = useTranslations("forgot_password");
     const [email, setEmail] = useState<string>("");
-    // const [code, setCode] = useState<string>("");
+    const [code, setCode] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isClickForgotPassword, setIsClickForgotPassword] = useState(false);
-    // const [isClickSendCode, setIsClickSendCode] = useState(false);
+    const [isClickSendCode, setIsClickSendCode] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -25,38 +25,42 @@ function ForgotPassword(){
     }
 
     const hanldeCancelResetPassword = () => {
-        // setIsClickSendCode(false);
-        setIsClickForgotPassword(false);
+        setIsClickSendCode(false);
+        setIsClickForgotPassword(true);
+        setCode("");
     }
 
-    // const hanldeCancelSendCode = () => {
-    //     setIsClickForgotPassword(false);
-    //     setEmail("");
-    // }
+    const hanldeCancelSendCode = () => {
+        setIsClickSendCode(false);
+        setIsClickForgotPassword(false);
+        setEmail("");
+    }
 
-    // const handleSendCode = async() => {
-    //     if(!code){
-    //         toast.error(t("code_not_full"));
-    //         return;
-    //     }
-    //     const response = await fetch("/api/verify_otp",{
-    //         method: "POST",
-    //         body: JSON.stringify({email, otp: code, password: "check", message1: t("message1"), message2: t("message2"), checkOnly: true})
-    //     })
-    //     if(response.ok)
-    //         setIsClickSendCode(true);
-    //     else{
-    //         toast.error(t("error_code"));
-    //     }
-    // }
+    const handleSendCode = async() => {
+        if(!code){
+            toast.error(t("code_not_full"));
+            return;
+        }
+        const response = await fetch("/api/verify_otp",{
+            method: "POST",
+            body: JSON.stringify({email, otp: code, password: "check", message1: t("message1"), message2: t("message2"), checkOnly: true})
+        })
+        if(response.ok){
+            setIsClickSendCode(true);
+            toast.success(t("code_success"));
+        }
+        else{
+            toast.error(t("error_code"));
+        }
+    }
 
-    // const handleResendCode = () => {
-    //     fetch("/api/send_otp",{
-    //         method: "POST",
-    //         body: JSON.stringify({email})
-    //     });
-    //     toast.success(t("resend_code_again"));
-    // }
+    const handleResendCode = () => {
+        fetch("/api/send_otp",{
+            method: "POST",
+            body: JSON.stringify({email})
+        });
+        toast.success(t("resend_code_again"));
+    }
 
     const handleForgotPassword = () => {
         if(!email){
@@ -74,16 +78,23 @@ function ForgotPassword(){
             })
             .then((res) => res.json())
             .then((res) => {
-                if(res.message){
-                    setIsClickForgotPassword(true);
-                    // setCode("");
-                    // fetch("/api/send_otp",{
-                    //     method: "POST",
-                    //     body: JSON.stringify({email})
-                    // })
-                    // .then(()=>{
-                    //     setIsClickForgotPassword(true);
-                    // });
+                if(res.status === "success"){
+                    fetch("/api/send_otp",{
+                        method: "POST",
+                        body: JSON.stringify({email})
+                    })
+                    .then((res) => res.json())
+                    .then((res) => {
+                        if(res.status === "success"){
+                            setIsClickForgotPassword(true);
+                            setCode("");
+                            toast.success(t("send_code"));
+                        }
+                        else{
+                            toast.error(t("error_internet"));
+                        }
+                    }
+                    );
                 }
                 else if(res.error){
                     toast.error(t("email_wrong"));
@@ -139,49 +150,48 @@ function ForgotPassword(){
     return(
         <>
             <div className={styles.container}>
-                <div className={styles.container_forgot_password} style={{display: isClickForgotPassword ? "none" : "block"}}>
+                <div className={styles.container_forgot_password} style={{display: !isClickForgotPassword ? "block" : "none"}}>
                     <p className={styles.title}>
                         {t("title")}
                     </p>
+                    <p className={styles.subtitle}>{t("subtitle_forgot")}</p>
                     <div className={styles.input_username}>
-                        <label htmlFor="email" className={styles.label}>
-                            {t("email")}
-                            <p className={styles.important}>*</p>
-                        </label>
-                        <input id="email" onChange={(e) => setEmail(e.target.value)} value={email} type="text" className={styles.input} />
+                        <input id="email" placeholder={t("input_email")} onChange={(e) => setEmail(e.target.value)} value={email} type="text" className={styles.input} />
                     </div>
-                    <button onClick={hanldeCancelForgotPassword} type="button" className={styles.btn_cancel}>{t("btn_cancel")}</button>
-                    <button onClick={handleForgotPassword} type="button" className={styles.btn_forgot_password}>{t("title")}</button>
+                    <div className={styles.div_btn}>
+                        <button onClick={handleForgotPassword} type="button" className={styles.btn_forgot_password}>{t("send_reset_link")}</button>
+                        <button onClick={hanldeCancelForgotPassword} type="button" className={styles.btn_cancel}>{t("back_siginin")}</button>
+                    </div>
                 </div>
 
-                {/* <div className={styles.container_code} style={{display: isClickForgotPassword && !isClickSendCode ? "block" : "none"}}>
+                <div className={styles.container_code} style={{display: isClickForgotPassword && !isClickSendCode ? "block" : "none"}}>
                     <p className={styles.title}>
                         {t("title_code")}
                     </p>
-                    <div className={styles.input_code}>
-                        <label htmlFor="code" className={styles.label}>
-                            {t("code")}
-                            <p className={styles.important}>*</p>
-                        </label>
-                        <input id="code" onChange={(e) => setCode(e.target.value)} value={code} type="text" className={styles.input} />
+                    <div className={styles.subtitle_verify}>
+                        <p>{t("subtitle_code")}</p>
                     </div>
-                    <div className={styles.div_resend_code}>
+                    <div className={styles.input_code}>
+                        <input id="code" placeholder={t("code")} onChange={(e) => setCode(e.target.value)} value={code} type="text" className={styles.input} />
+                    </div>
+                    <div className={styles.div_btn}>
+                        <button onClick={handleSendCode} type="button" className={styles.btn_verify}>{t("send_code")}</button>
+                    </div>
+                    <div className={styles.link_verify}>
+                        <button onClick={hanldeCancelSendCode} type="button" className={styles.btn_cancel_verify}>{t("btn_cancel_verify")}</button>
                         <button onClick={handleResendCode} type="button" className={styles.btn_resend_code}>{t("resend_code")}</button>
                     </div>
-                    <button onClick={hanldeCancelSendCode} type="button" className={styles.btn_cancel}>{t("btn_cancel")}</button>
-                    <button onClick={handleSendCode} type="button" className={styles.btn_forgot_password}>{t("send_code")}</button>
-                </div> */}
+                </div>
 
-                <div className={styles.container_reset_password} style={{display: isClickForgotPassword ? "block" : "none"}}>
-                    <p className={styles.title}>
-                            {t("reset_password")}
+                <div className={styles.container_reset_password} style={{display: isClickForgotPassword && isClickSendCode ? "block" : "none"}}>
+                        <p className={styles.title}>
+                            {t("title_reset_password")}
+                        </p>
+                        <p className={styles.subtitle}>
+                            {t("subtitle_reset_password")}
                         </p>
                         <div className={styles.input_password}>
-                            <label htmlFor="password" className={styles.label}>
-                                {t("password")}
-                                <p className={styles.important}>*</p>
-                            </label>
-                            <input id="password" onChange={(e) => setPassword(e.target.value)} value={password}
+                            <input id="password" placeholder={t("password")} onChange={(e) => setPassword(e.target.value)} value={password}
                              type={showPassword ? "text" : "password"}  className={styles.input} />
                             <button
                                 type="button"
@@ -195,11 +205,7 @@ function ForgotPassword(){
                             </button>
                         </div>
                         <div className={styles.input_confirm_password}>
-                            <label htmlFor="confirm_password" className={styles.label}>
-                                {t("confirm_password")}
-                                <p className={styles.important}>*</p>
-                            </label>
-                            <input id="confirm_password" onChange={(e) => setConfirmPassword(e.target.value)} value={confirmPassword} 
+                            <input id="confirm_password" placeholder={t("confirm_password")} onChange={(e) => setConfirmPassword(e.target.value)} value={confirmPassword} 
                                 type={showConfirmPassword ? "text" : "password"}  className={styles.input} />
                             <button
                                 type="button"
@@ -212,8 +218,10 @@ function ForgotPassword(){
                                 </div>
                             </button>
                         </div>
-                        <button onClick={hanldeCancelResetPassword} type="button" className={styles.btn_cancel}>{t("btn_cancel")}</button>
-                        <button onClick={handleResetPassword} type="button" className={styles.btn_reset_password}>{t("reset_password")}</button>
+                        <div className={styles.div_btn}>
+                            <button onClick={handleResetPassword} type="button" className={styles.btn_reset_password}>{t("btn_reset_password")}</button>
+                            <button onClick={hanldeCancelResetPassword} type="button" className={styles.btn_cancel_reset}>{t("btn_cancel_verify")}</button>
+                        </div>
                 </div>
             </div>
             <ToastContainer/>

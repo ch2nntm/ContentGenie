@@ -150,64 +150,65 @@ function ChangePassword(){
                     <Link href="/component/account_user/edit_profile" className={styles.sidebar_edit_profile}>{t("edit_profile")}</Link>
                     <Link href="" className={styles.sidebar_change_password}>{t("change_password")}</Link>
                 </div>
-                <div className={styles.section}>
+                <div className={styles.section_body}>
                     <p className={styles.title_section}>
                         {t("account_manage")}
                     </p>
-                    <div className={styles.section_link}>
-                        <Link href="/component/account_user/edit_profile" className={styles.section_edit_profile}>{t("edit_profile")}</Link>
-                        <Link href="" className={styles.section_change_password}>{t("change_password")}</Link>
-                    </div>
-                    <p className={styles.title_link}>{t("change_password")}</p>
-                    <div className={styles.form}>
-                        <div className={styles.old_password}>
-                            <label htmlFor="old_password" className={styles.label}>{t("old_password")} <p className={styles.icon_start}>*</p></label>
-                            <input id="old_password" type={showOldPassword ? "text" : "password"} className={styles.input}
-                            value={oldPassword} onChange={(e)=>setOldPassword(e.target.value)}/>
-                            <button
-                                type="button"
-                                onClick={() => setShowOldPassword(!showOldPassword)}
-                                className={styles.toggle_button}
-                            >
-                                <div className={styles.eye_password}>
-                                    {showOldPassword && <VisibilityIcon></VisibilityIcon>}
-                                    {!showOldPassword && <VisibilityOffIcon></VisibilityOffIcon>}
-                                </div>
-                            </button>
+                    <div className={styles.section}>
+                        <div className={styles.section_link}>
+                            <Link href="/component/account_user/edit_profile" className={styles.section_edit_profile}>{t("edit_profile")}</Link>
+                            <Link href="" className={styles.section_change_password}>{t("change_password")}</Link>
                         </div>
-                        <div className={styles.new_password}>
-                            <label htmlFor="new_password" className={styles.label}>{t("new_password")} <p className={styles.icon_start}>*</p></label>
-                            <input id="new_password" type={showNewPassword ? "text" : "password"} className={styles.input}
-                            value={newPassword} onChange={(e)=>setNewPassword(e.target.value)}/>
-                            <button
-                                type="button"
-                                onClick={() => setShowNewPassword(!showNewPassword)}
-                                className={styles.toggle_button}
-                            >
-                                <div className={styles.eye_password}>
-                                    {showNewPassword && <VisibilityIcon></VisibilityIcon>}
-                                    {!showNewPassword && <VisibilityOffIcon></VisibilityOffIcon>}
-                                </div>
-                            </button>
-                        </div>
-                        <div className={styles.confirm_password}>
-                            <label htmlFor="confirm_password" className={styles.label}>{t("confirm_password")} <p className={styles.icon_start}>*</p></label>
-                            <input id="confirm_password" type={showConfirmPassword ? "text" : "password"} className={styles.input}
-                            value={confirmPassword} onChange={(e)=>setConfirmPassword(e.target.value)}/>
-                            <button
-                                type="button"
-                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                className={styles.toggle_button}
-                            >
-                                <div className={styles.eye_password}>
-                                    {showConfirmPassword && <VisibilityIcon></VisibilityIcon>}
-                                    {!showConfirmPassword && <VisibilityOffIcon></VisibilityOffIcon>}
-                                </div>
-                            </button>
-                        </div>
-                        <div className={styles.section_btn}>
-                            <button className={styles.btn_refresh} onClick={handleSubmitRefresh}>{t("btn_refresh")}</button>
-                            <button className={styles.btn_save} onClick={handleSubmitSave}>{t("btn_save")}</button>
+                        <div className={styles.form}>
+                            <div className={styles.old_password}>
+                                <label htmlFor="old_password" className={styles.label_oldpassword}>{t("old_password")} <p className={styles.icon_start}>*</p></label>
+                                <input id="old_password" type={showOldPassword ? "text" : "password"} className={styles.input}
+                                value={oldPassword} onChange={(e)=>setOldPassword(e.target.value)}/>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowOldPassword(!showOldPassword)}
+                                    className={styles.toggle_button}
+                                >
+                                    <div className={styles.eye_password}>
+                                        {showOldPassword && <VisibilityIcon></VisibilityIcon>}
+                                        {!showOldPassword && <VisibilityOffIcon></VisibilityOffIcon>}
+                                    </div>
+                                </button>
+                            </div>
+                            <div className={styles.new_password}>
+                                <label htmlFor="new_password" className={styles.label}>{t("new_password")} <p className={styles.icon_start}>*</p></label>
+                                <input id="new_password" type={showNewPassword ? "text" : "password"} className={styles.input}
+                                value={newPassword} onChange={(e)=>setNewPassword(e.target.value)}/>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowNewPassword(!showNewPassword)}
+                                    className={styles.toggle_button}
+                                >
+                                    <div className={styles.eye_password}>
+                                        {showNewPassword && <VisibilityIcon></VisibilityIcon>}
+                                        {!showNewPassword && <VisibilityOffIcon></VisibilityOffIcon>}
+                                    </div>
+                                </button>
+                            </div>
+                            <div className={styles.confirm_password}>
+                                <label htmlFor="confirm_password" className={styles.label}>{t("confirm_password")} <p className={styles.icon_start}>*</p></label>
+                                <input id="confirm_password" type={showConfirmPassword ? "text" : "password"} className={styles.input}
+                                value={confirmPassword} onChange={(e)=>setConfirmPassword(e.target.value)}/>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    className={styles.toggle_button}
+                                >
+                                    <div className={styles.eye_password}>
+                                        {showConfirmPassword && <VisibilityIcon></VisibilityIcon>}
+                                        {!showConfirmPassword && <VisibilityOffIcon></VisibilityOffIcon>}
+                                    </div>
+                                </button>
+                            </div>
+                            <div className={styles.section_btn}>
+                                <button className={styles.btn_refresh} onClick={handleSubmitRefresh}>{t("btn_refresh")}</button>
+                                <button className={styles.btn_save} onClick={handleSubmitSave}>{t("btn_save")}</button>
+                            </div>
                         </div>
                     </div>
                 </div>

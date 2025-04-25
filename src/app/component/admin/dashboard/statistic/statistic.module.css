@@ -3,12 +3,11 @@
 }
 
 .sidebar{
-    margin-top: 80px;
+    margin-top: 65px;
     width: 250px;
     height: 624px;
-    background-color: #f7f7f7;
-    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
-    padding-left: 16px;
+    background-color: var(--second-color);
+    box-shadow: 0px 4px 6px var(--primary-color);
     padding-top: 16px;
 }
 
@@ -20,31 +19,14 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    height: 20px;
-    color: #000;
+    height: 40px;
     text-decoration: none;
-}
+    color: #000;
+    padding: 0 20px;
+    margin: 0 10px;
+    border-radius: 10px;
+} 
 
-.container_text_analytics{
-    position: relative;
-}
-
-.dashboard{
-    margin-top: 10px;
-}
-
-.text_analytics{
-    display: inline-block;
-}
-
-.text_analytics::after{
-    position: absolute;
-    content: "";
-    border: 1px solid rgb(223, 223, 223);
-    width: 100%;
-    top: 50px;
-    left: 0px;
-}
 .users,
 .posts,
 .analytics,
@@ -60,7 +42,6 @@
     position: relative;
     width: 20px;
     height: 20px;
-    color: #000;
 }
 
 .text_dashboard,
@@ -72,7 +53,37 @@
     font-size: 16px;
     font-family: "Open Sans";
     line-height: 19px;
-    margin-top: 30px;
+    margin-top: 20px;
+}
+
+.container_text_dashboard{
+    position: relative;
+}
+
+.dashboard{
+    margin-top: 10px;
+}
+
+.analytics{
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.dashboard:hover,
+.dashboard:hover .text_dashboard,
+.posts:hover,
+.posts:hover .text_posts,
+.users:hover,
+.users:hover .text_users,
+.settings:hover,
+.settings:hover .text_settings{
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.text_analytics{
+    display: inline-block;
+    color: #fff;
 }
 
 .section{
@@ -86,9 +97,13 @@
 }
 
 .select_time{
-    width: 80px;
-    height: 30px;
+    width: 200px;
+    height: 40px;
     margin-left: 10px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 4px 4px 4px 4px var(--primary-color);
+    padding-left: 15px;
 }
 
 .statistic{
@@ -102,16 +117,18 @@
     float: right;
     border: none;
     padding: 5px 10px;
-    background-color: #43adea;
+    background-color: #33d554;
     color: #fff;
     border-radius: 5px;
-    box-shadow: 2px 4px 4px 0 #69b6e2ba;
+    box-shadow: 2px 4px 4px 0 #69e26fba;
+    width: 150px;
+    height: 35px;
 }
 
 .btn_export_list{
     margin-right: 30px;
-    background-color: #33d554;
-    box-shadow: 2px 4px 4px 0 #69e26fba;
+    background-color: var(--primary-color);
+    box-shadow: 2px 4px 4px 0 var(--second-color);
 }
 
 
@@ -158,11 +175,11 @@
 .tablecell{
     width: 244px;
     height: 30px;
-    box-shadow: 0px 4px 4px rgb(79, 142, 79);
+    box-shadow: 0px 4px 4px var(--primary-color);
 }
 
 .title_tablecell{
     font-weight: bold;
-    background-color: #edf7ef;
+    background-color: var(--second-color);
     border: none;
 }

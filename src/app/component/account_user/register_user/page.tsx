@@ -8,12 +8,11 @@ import { toast, ToastContainer } from "react-toastify";
 import { useTranslations } from "next-intl";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import NavbarUser from "@/components/navbar_user";
+// import NavbarUser from "@/components/navbar_user";
 
 function Register() {
     const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
-    // const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState<string>("");
     const [showPassword, setShowPassword] = useState(false);
@@ -111,7 +110,7 @@ function Register() {
     
     return(
         <>
-            <NavbarUser/>
+            {/* <NavbarUser/> */}
             <div className={styles.container}>
                 <div className={styles.img_main}>
                     <Image src="/main_login_register.png" alt="Icon" fill></Image>
@@ -126,7 +125,7 @@ function Register() {
                     {!isEnterCode && 
                     <div>
                         <form className={styles.form}>
-                            <label className={styles.label} htmlFor="name">{t("label_name")}</label>
+                            {/* <label className={styles.label} htmlFor="name">{t("label_name")}</label> */}
                             <input
                                 type="text"
                                 id="name"
@@ -135,7 +134,7 @@ function Register() {
                                 className={styles.input}
                                 onChange={(e) => setName(e.target.value)}
                             />
-                            <label className={styles.label} htmlFor="email">{t("input_email")}</label>
+                            {/* <label className={styles.label} htmlFor="email">{t("input_email")}</label> */}
                             <input
                                 type="email"
                                 id="email"
@@ -144,16 +143,7 @@ function Register() {
                                 className={styles.input}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
-                            {/* <label className={styles.label} htmlFor="username">{t("label_username")}</label>
-                            <input
-                                type="text"
-                                id="username"
-                                placeholder={t("input_username")}
-                                value={username}
-                                className={styles.input}
-                                onChange={(e) => setUsername(e.target.value)}
-                            /> */}
-                            <label className={styles.label} htmlFor="password">{t("label_password")}</label>
+                            {/* <label className={styles.label} htmlFor="password">{t("label_password")}</label> */}
                             <input
                                 type={showPassword ? "text" : "password"}
                                 id="password"
@@ -172,13 +162,13 @@ function Register() {
                                     {!showPassword && <VisibilityOffIcon></VisibilityOffIcon>}
                                 </div>
                             </button>
-                            <label className={styles.label_confirm_password} htmlFor="confirmpassword">{t("label_confirm_password")}</label>
+                            {/* <label className={styles.label_confirm_password} htmlFor="confirmpassword">{t("label_confirm_password")}</label> */}
                             <input
                                 type={showConfirmPassword ? "text" : "password"}
                                 id="confirmpassword"
                                 placeholder={t("input_confirm_password")}
                                 value={confirmPassword}
-                                className={styles.input}
+                                className={styles.input_confirm}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                             />
                             <button
@@ -207,7 +197,7 @@ function Register() {
                         <div className={styles.container_enter_code}>
                             <div>
                                 <div className={styles.form_group}>
-                                    <label className={styles.label} htmlFor='code'>{t("code")}:</label>
+                                    {/* <label className={styles.label} htmlFor='code'>{t("code")}:</label> */}
                                     <input className={styles.input} placeholder={t("placeholder_code")}
                                         type='text'
                                         id='code'

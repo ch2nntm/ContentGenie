@@ -18,8 +18,8 @@ const dbConfig = {
     const id = body.id;
     console.log("Id:", id); 
     
-    if (isNaN(id)) {
-        return NextResponse.json({ status: "error", message: "Invalid post ID", error }, { status: 400 });
+    if (!id) {
+        return NextResponse.json({ status: "error", message: "Invalid post ID" }, { status: 400 });
     }
 
     try {
@@ -27,19 +27,19 @@ const dbConfig = {
     
         const [rows] = await connection.execute(
           "SELECT post.id as post_id, post.*, account.* FROM post left join account on post.user_id = account.id WHERE post.id = ?",
-          [id]
+          [decodeURIComponent(id)]
         );
         
         await connection.end();
     
         if (rows.length === 0) {
-          return NextResponse.json({ status: "error", message: "Post not found", error }, { status: 404 });
+          return NextResponse.json({ status: "error", message: "Post not found" }, { status: 404 });
         }
     
         return NextResponse.json({ status: "success", message: "Get detail post success", data: rows[0]}, { status: 200 });
       } catch (error) {
         console.error(error);
-        return NextResponse.json({ status: "error", message: "Database connection failed", error }, { status: 500 });
+        return NextResponse.json({ status: "error", message: "Database connection failed" }, { status: 500 });
       }
 }
 
@@ -47,7 +47,7 @@ export async function DELETE(req, { params }) {
   const id = params?.id;
   
   if (!id) {
-      return NextResponse.json({ status: "error", message: "Missing post ID", error }, { status: 400 });
+      return NextResponse.json({ status: "error", message: "Missing post ID" }, { status: 400 });
   }
 
   try {
@@ -60,12 +60,12 @@ export async function DELETE(req, { params }) {
     await connection.end();
 
     if(result.affectedRows === 0) {
-        return NextResponse.json({ status: "error", message: "Post not found", error }, { status: 400 });
+        return NextResponse.json({ status: "error", message: "Post not found" }, { status: 400 });
     }
 
     return NextResponse({ status: "success", message: "Delete successful" }, { status: 200 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ status: "error", message: "Database connection failed", error }, { status: 500 });
+    return NextResponse.json({ status: "error", message: "Database connection failed" }, { status: 500 });
   }
 }

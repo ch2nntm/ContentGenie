@@ -41,7 +41,7 @@
     white-space: none;
     overflow: visible;
     margin-left: 200px;
-    margin-top: 5%;
+    margin-top: 10%;
     gap: 20px;
     align-items: center;
     text-decoration: none;
@@ -78,7 +78,8 @@
 }
 
 .input,
-.input_password {
+.input_password,
+.input_confirm {
     margin-left: 140px;
     width: 400px;
     padding: 0px 8px;
@@ -91,11 +92,20 @@
     font-family: "Roboto";
     line-height: 46px;
     outline: none;
+    margin-top: 40px;
+}
+
+.input:first-child{
+    margin-top: 10px;
 }
 
 .input_password{
     position: relative;
     /* margin-top: 140px; */
+}
+
+.input_confirm{
+    margin-top: 20px;
 }
 
 .toggle_button_password,
@@ -126,7 +136,7 @@
     border: 0;
     box-sizing: border-box;
     border-radius: 6px;
-    background-color: #ff0001;
+    background-color: var(--primary-color);
     color: #ffffff;
     font-size: 16px;
     font-family: "Roboto";
@@ -151,7 +161,7 @@
   }
   
   .btn_login {
-    color: #ff0001;
+    color: var(--primary-color);
     font-size: 14px;
     font-family: "Roboto";
     font-weight: 600;

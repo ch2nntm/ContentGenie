@@ -23,7 +23,7 @@ export async function POST(req) {
         );
       
         if (rows.length > 0) {
-            return NextResponse.json({ status: "success", message: "Email is correct!" }, { status: 200 });
+            return NextResponse.json({ status: "success", message: "Email is exist!" }, { status: 200 });
         } else {
             return NextResponse.json({ status: "error", message: "Wrong email!", error },{ status: 400 });
         }

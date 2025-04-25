@@ -15,7 +15,6 @@ model account {
   password String?
   role     Int     @default(0)
   credits  Int     @default(0)
-  purchase_date DateTime?
   expiration_date DateTime?
 
   posts    post[]   @relation("AccountPosts")

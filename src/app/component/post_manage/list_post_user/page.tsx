@@ -97,7 +97,6 @@ function ListPostUser() {
     const handleClickBtnCloseImg = () => {
         console.log("Click close img");
         setImage("/upload_avt.png");
-        // setIsVideoTest(true);
     }
 
     useEffect(() => {
@@ -110,12 +109,7 @@ function ListPostUser() {
     }, []);
 
     const uploadToCloudinary = async (file: string | Blob) => {
-        // if (typeof file === "string" && file.startsWith("http")) {
-        //     console.log("Skipping upload for already uploaded URL:", file);
-        //     return file;
-        // }
-    
-        const cloudinaryUrl = process.env.CLOUDINARY_URL;
+        const cloudinaryUrl = process.env.NEXT_PUBLIC_CLOUDINARY_URL;
         const uploadPreset = "demo-upload";
         const form = new FormData();
         form.append("upload_preset", uploadPreset);
@@ -314,7 +308,7 @@ function ListPostUser() {
             uploadedImageUrl = img;
         }
         else if(image === "/upload_avt.png"){
-            uploadedImageUrl = null;
+            uploadedImageUrl = '';
         }
         else{
             const imgUrlTest = await uploadToCloudinary(image);
@@ -376,17 +370,14 @@ function ListPostUser() {
         <>
             <NavbarComponent />
             <div className={styles.list_container}>
-                <div className="title_page">
-                    <h1>{t("title_page")}</h1>
-                </div>
                 <div className={styles.btn_platform}>
-                    <button className={styles.btn_mastodon} type="button" onClick={handlePostMastodon}>
+                    <button className={ isClickMastodon ? styles.btn_mastodon : styles.btn_mastodon_not_choose} type="button" onClick={handlePostMastodon}>
                         Mastodon
                         <div className={styles.icon_mastodon}>
                             <Image  src="/icon_mastodon.png" fill alt={""}/>
                         </div>
                     </button>
-                    <button className={styles.btn_linkedin} type="button" onClick={handlePostLinkedin}>
+                    <button className={ !isClickMastodon ? styles.btn_linkedin : styles.btn_linkedin_not_choose} type="button" onClick={handlePostLinkedin}>
                         Linkedin
                         <div className={styles.icon_linkedin}>
                             <Image  src="/icon_linkedin.webp" fill alt={""}/>
@@ -402,8 +393,8 @@ function ListPostUser() {
                     ) : ( 
                         <> {posts.length > 0 ? (
                         posts.map((item) => (
-                            <div key={item.id}   className={styles.item_post}>
-                                {item.platform === "Mastodon" &&<div className={styles.mastodon_platform}>
+                            <div key={item.id} className={styles.item_post}>
+                                <div className={styles.mastodon_platform}>
                                     <div ref={(el) => { slidesRef.current[item.id] = el; }}>
                                         <div className={styles.navbar_user}>
                                             <div className={styles.inf_user}>
@@ -433,8 +424,21 @@ function ListPostUser() {
                                         </div>
                                         <div className={styles.content_post}>
                                             <p className={styles.item_content}>{item.content}</p>
-                                            {item.image && !item.image.startsWith("https://www.youtube.com") && <img src={item.image} className={styles.img_post}/>}
-                                            {item.image && item.image.startsWith("https://www.youtube.com") && <iframe src={item.image} className={styles.video_post} ></iframe>}
+                                            {item.image && !item.image.startsWith(process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "") && !item.image.startsWith(process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "") && <img src={item.image} className={styles.img_post}/>}
+                                            {item.image && item.image.startsWith(process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "") && <iframe src={item.image} className={styles.video_post} ></iframe>}
+                                            {item.image && item.image.startsWith(process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "") && 
+                                                <a className={styles.is_spotify} href={item.image.split(",")[0]}>
+                                                    <div className={styles.img_spotify}>
+                                                    <Image className={styles.img_spotify} src={item.image.split(",")[3]} alt="Spotify artist image" width={150} height={150}/>
+                                                    </div>
+                                                    <div className={styles.sing_spotify}>
+                                                        <p>Spotify</p>
+                                                        <p className={styles.name_spotify}>{item.image.split(",")[1]}</p>
+                                                        <p className={styles.name_artist}>{item.image.split(",")[2]}</p>
+                                                    </div>
+                                                </a>
+                                            }
+                                            
                                         </div>
                                         <div className={styles.interact_post}>
                                             <div className={styles.back}>
@@ -458,7 +462,7 @@ function ListPostUser() {
                                     </div>
                                     {activeDots === item.id && (
                                         <div className={styles.dots_menu}>
-                                            <button className={styles.dots_edit} type="button" onClick={() => handleEdit(item.id, item.content)}>{t("edit")}</button>
+                                            {item.platform === "Mastodon" && <button className={styles.dots_edit} type="button" onClick={() => handleEdit(item.id, item.content)}>{t("edit")}</button>}
                                             <button className={styles.dots_delete} type="button" onClick={() => handleDelete(item.id)}>{t("delete")}</button>
                                             <button className={styles.dots_export} type="button" onClick={() => handleGeneratePdf(item.id)}>{t("export_pdf")}</button>
                                         </div>
@@ -473,30 +477,36 @@ function ListPostUser() {
                                         <Modal.Body>
                                             <Form className={styles.form_container}>
                                                 <Form.Group>
-                                                    <Form.Label className={styles.label_title}>{t("content")}</Form.Label>
+                                                    <Form.Label className={styles.label_title}>{t("content")}<span className={styles.icon_start}>*</span></Form.Label>
                                                     <Form.Control className={styles.control_title}  as="textarea" placeholder="..." value={updateContent} onChange={(e) => setUpdateContent(e.target.value)} rows={5}/>
                                                 </Form.Group>
                                                 <Form.Group className={styles.form_group}>
-                                                    <Form.Label htmlFor="avt" className={styles.label_title}>{t("image")} <span className={styles.icon_start}>*</span></Form.Label>
+                                                    <Form.Label htmlFor="avt" className={styles.label_title}>{t("image")}</Form.Label>
                                                     <div onClick={handleImageClick}>
-                                                        {!image && item.image && (!item.image.startsWith("https://www.youtube.com") 
-                                                        ? <img className={styles.upload_avt_modal} src={item.image ? item.image : "/upload_avt.png"} alt="avt"/> 
-                                                        : <iframe className={styles.img_edit_main_post} width="560" height="315" 
-                                                            src={item.image}
-                                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                                            >
-                                                        </iframe>)}
+                                                        {!image && item.image && !item.image.startsWith(process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "") && !item.image.startsWith(process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "") &&
+                                                            <img className={styles.upload_avt_modal} src={item.image ? item.image : "/upload_avt.png"}  width="560" height="315"  alt="avt"/> 
+                                                        }
+                                                        {!image && item.image && item.image.startsWith(process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "") &&
+                                                            <iframe className={styles.img_edit_main_post} width="560" height="315" 
+                                                                src={item.image}
+                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                                                >
+                                                            </iframe>
+                                                        }
+                                                        {!image && item.image && item.image.startsWith(process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "") && 
+                                                            <a className={styles.is_spotify_edit} href={item.image.split(",")[0]}>
+                                                                <div className={styles.img_spotify}>
+                                                                <Image className={styles.img_spotify} src={item.image.split(",")[3]} alt="Spotify artist image" width={150} height={150}/>
+                                                                </div>
+                                                                <div className={styles.sing_spotify}>
+                                                                    <p>Spotify</p>
+                                                                    <p className={styles.name_spotify}>{item.image.split(",")[1]}</p>
+                                                                    <p className={styles.name_artist}>{item.image.split(",")[2]}</p>
+                                                                </div>
+                                                            </a>
+                                                        }
                                                         {!image && !item.image && <img className={styles.upload_avt_modal} src="/upload_avt.png" alt="avt"/>}
-                                                        {image && <img className={styles.upload_avt_modal} src={image} alt="avt"/>}
-                                                        {/* {image && !item.image.startsWith("https://www.youtube.com") && <img src={image} className={styles.upload_avt_modal} />} */}
-                                                        {/* {!image && item.image && item.image.startsWith("https://www.youtube.com") && <iframe className={styles.img_edit_main_post} width="560" height="315" 
-                                                            src={item.image}
-                                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                                            >
-                                                        </iframe> */}
-                                                        {/* } */}
-                                                        {/* {!isVideoTest && <img className={styles.img_edit_main_post} src={!item.image.startsWith("https://www.youtube.com") ? item.image : "/upload_avt.png"} alt="avt"/>} */}
-                                                        
+                                                        {image && <img className={styles.upload_avt_modal} src={image}  alt="avt"/>}
                                                     </div>
                                                     <Form.Control
                                                         ref={fileInputRef} 
@@ -507,7 +517,7 @@ function ListPostUser() {
                                                         accept="image/*"
                                                         onChange={handleFileChange} 
                                                     />
-                                                     <Button className={styles.button_close_img} onClick={handleClickBtnCloseImg}>
+                                                     <Button className={ item.image && item.image.startsWith(process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "") ? styles.button_close_img_spotify : styles.button_close_img} onClick={handleClickBtnCloseImg}>
                                                         <CloseIcon className={styles.icon_close_img}></CloseIcon>
                                                     </Button>
                                                 </Form.Group>
@@ -523,111 +533,6 @@ function ListPostUser() {
                                         </Modal.Footer>
                                     </Modal>}
                                     </div>
-                                }
-                                {item.platform === "LinkedIn" &&<div className={styles.mastodon_platform}>
-                                    <div ref={(el) => { slidesRef.current[item.id] = el; }}>
-                                        <div className={styles.navbar_user}>
-                                            <div className={styles.inf_user}>
-                                                {auth?.user?.avatar ? (
-                                                    <img className={styles.inf_user_avt} src={auth.user.avatar} alt="Avatar" />
-                                                ) : (
-                                                    <div className={styles.inf_user_avt}>
-                                                        <Image src="/icon_circle_user.png" alt="Avatar" fill />
-                                                    </div>
-                                                )}
-                                                <div className={styles.inf_user_more}>
-                                                    <p className={styles.name_user}>{auth?.user?.name}</p>
-                                                    <p className={styles.user_name}>@{item.platform}</p>
-                                                </div>
-                                            </div>
-                                            <div className={styles.time_post}>
-                                                <div className={styles.time_user}>
-                                                    {item.audience==="public" && <PublicIcon />}
-                                                    {item.audience==="private" && <HttpsIcon/> }
-                                                    <p className={styles.time}>{convertDay(item.posttime)}</p>
-                                                </div>
-                                                <div className={styles.status_post}>
-                                                    <p>{item.status===1 ? t("posted") : t("pending")}</p>
-                                                </div>
-                                            </div>
-                                            
-                                        </div>
-                                        <div className={styles.content_post}>
-                                            <p className={styles.item_content}>{item.content}</p>
-                                            {item.image && <img src={item.image} className={styles.img_post}/>}
-                                        </div>
-                                        <div className={styles.interact_post}>
-                                            <div className={styles.back}>
-                                                <KeyboardReturnIcon></KeyboardReturnIcon>
-                                                <p className={styles.text_like_post}>0</p>
-                                            </div>
-                                            <div className={styles.repeat}>
-                                                <RepeatIcon></RepeatIcon>
-                                            </div>
-                                            <div className={styles.star}>
-                                                <StarBorderIcon></StarBorderIcon>
-                                                {item.status === 1 && <p className={styles.text_like_post}>{likes[item.id]}</p>}
-                                            </div>
-                                            <div className={styles.favorite}>
-                                                <TurnedInNotIcon></TurnedInNotIcon>
-                                            </div>
-                                            <div onClick={() => handleDots(item.id)} className={styles.dots}>
-                                                <MoreHorizIcon></MoreHorizIcon>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {activeDots === item.id && (
-                                        <div className={styles.dots_menu}>
-                                            {/* <button className={styles.dots_edit} type="button" onClick={() => handleEdit(item.id, item.content)}>{t("edit")}</button> */}
-                                            <button className={styles.dots_delete} type="button" onClick={() => handleDelete(item.id)}>{t("delete")}</button>
-                                            <button className={styles.dots_export} type="button" onClick={() => handleGeneratePdf(item.id)}>{t("export_pdf")}</button>
-                                        </div>
-                                    )}
-                                    {/* {activeEdit === item.id && <Modal className={styles.modal_container} show={isClickBtnEdit}>
-                                        <Modal.Header className={styles.modal_header}>
-                                            <Button className={styles.button_close} onClick={()=>setIsClickBtnEdit(false)}>
-                                                <CloseIcon className={styles.icon_close}></CloseIcon>
-                                            </Button>
-                                            <Modal.Title className={styles.modal_title}>{t("btn_edit")}</Modal.Title>
-                                        </Modal.Header>
-                                        <Modal.Body>
-                                            <Form className={styles.form_container}>
-                                                <Form.Group>
-                                                    <Form.Label className={styles.label_title}>{t("content")}</Form.Label>
-                                                    <Form.Control className={styles.control_title}  as="textarea" placeholder="..." value={updateContent} onChange={(e) => setUpdateContent(e.target.value)} rows={5}/>
-                                                </Form.Group>
-                                                <Form.Group className={styles.form_group}>
-                                                    <Form.Label htmlFor="avt" className={styles.label_title}>{t("image")} <span className={styles.icon_start}>*</span></Form.Label>
-                                                    <div onClick={handleImageClick}>
-                                                        {!image && <img className={styles.upload_avt_modal} src={item.image ? item.image : "/upload_avt.png"} alt="avt"/>}
-                                                        {image && <img src={image} className={styles.upload_avt_modal} />}
-                                                    </div>
-                                                    <Form.Control
-                                                        ref={fileInputRef} 
-                                                        id="avt"
-                                                        type="file"
-                                                        className={styles.choose_avt}
-                                                        style={{ display: "none" }} 
-                                                        accept="image/*"
-                                                        onChange={handleFileChange} 
-                                                    />
-                                                     <Button className={styles.button_close_img} onClick={handleClickBtnCloseImg}>
-                                                        <CloseIcon className={styles.icon_close_img}></CloseIcon>
-                                                    </Button>
-                                                </Form.Group>
-                                            </Form>
-                                        </Modal.Body>
-                                        <Modal.Footer className={styles.modal_footer}>
-                                            <Button className={styles.btn_close} onClick={handleCancel}>
-                                                <span className={styles.text_close}>{t("btn_close")}</span>
-                                            </Button>
-                                            <Button className={styles.btn_save} onClick={() => handleSave(item.id, item.image, item.status)}>
-                                                <span className={styles.text_save}>{t("btn_save")}</span>
-                                            </Button>
-                                        </Modal.Footer>
-                                    </Modal>} */}
-                                    </div>
-                                }
                             </div>
                             
                         )

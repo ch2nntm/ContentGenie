@@ -9,11 +9,10 @@ declare module "next-auth" {
     picture?: string;
     id?: number;
     role?: number;
-    avatar?: string
-  }
-
-  interface Session {
-    accessToken?: string;
+    avatar?: string;
+    name?: string;
+    credits?: number;
+    expiration_date?: Date;
   }
 }
 
@@ -29,7 +28,6 @@ async function generateToken(payload: JWTPayload | Profile | undefined) {
 }
 
 const authOptions: NextAuthOptions = {
-    session: { strategy: 'jwt' },
     providers: [
       GoogleProvider({
         clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -38,6 +36,7 @@ const authOptions: NextAuthOptions = {
     ],
     callbacks: {
       async signIn({ profile }) {
+        console.log("SignIn Profile: ", profile);
         if (!profile?.email) throw new Error('No profile');
 
         await prisma.account.upsert({
@@ -64,10 +63,11 @@ const authOptions: NextAuthOptions = {
           if (!account) {
             throw new Error('No user found');
           }
-          token.id = account.id;
-          profile.id = token.id as number;
+          profile.id = account.id as number;
           profile.role = account.role;
           profile.avatar = profile.picture || '';
+          profile.credits = account.credits;
+          profile.expiration_date = account.expiration_date || undefined;
           const payload = profile;
          
           token.accessToken = await generateToken(payload);

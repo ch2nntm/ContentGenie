@@ -7,12 +7,15 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast, ToastContainer } from "react-toastify";
 import { CheckCircle } from "@mui/icons-material";
+import AddCardIcon from '@mui/icons-material/AddCard';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 
 export default function UpgradePackagePage(){
     const [userId, setUserId] = useState(0);
     const [credits, setCredits] = useState(0);
     const [expirationDate, setExpirationDate] = useState("");
+    const [linkCurrent, setLinkCurrent] = useState("check");
     const searchParams = useSearchParams();
     const code = searchParams.get("code") || "";
     const status = searchParams.get("status") || "";
@@ -47,13 +50,16 @@ export default function UpgradePackagePage(){
                     .then(async (data) => {
                         if (data.user) {
                             setUserId(data.user.id);
+                            console.log("userId: ",data.user.id);
                             if(code==="00" && status==="PAID"){
                                 const getCode = await fetch(`/api/payos?id=${orderCode}`,{
                                     method: "GET"
                                 })
                                 const resCode = await getCode.json();
-                                const statusCode = resCode.dataResponse.data.status;
-                                const amount = resCode.dataResponse.data.amount;
+                                const statusCode = resCode.data.data.status;
+                                const amount = resCode.data.data.amount;
+                                console.log("statusCode: ",statusCode);
+                                console.log("amount: ",amount);
                                 if(statusCode === "PAID"){
                                     const putRes = await fetch("/api/manage_account/check_credit", {
                                         method: "PUT",
@@ -61,7 +67,7 @@ export default function UpgradePackagePage(){
                                         "Authorization": `Bearer ${token}`,
                                         "Content-Type": "application/json",
                                         },
-                                        body: JSON.stringify({ id: data.user.id, amount })
+                                        body: JSON.stringify({ user_id: data.user.id, amount })
                                     });
                                 
                                     if (!putRes.ok) {
@@ -200,84 +206,106 @@ export default function UpgradePackagePage(){
                     </div>
                     ) : (
                         <>
-                            <p className={styles.text_credits}>{t("text_credits")}<span style={{fontWeight: "bolder"}}>{credits}</span></p>
-                            {expirationDate && <p className={styles.text_expiration_date}>{t("text_expiration_date")}<span style={{fontWeight: "bolder"}}>{expirationDate}</span></p>}
                         </>
                     )
                 }
-                <div className={styles.package}>
-                    <h2 className={styles.title}>{t("title_page")}</h2>
-                    <p className={styles.subtitle}>{t("subtitle_page")}</p>
-                    <div className={styles.package_container}>
-                        <div className={styles.package_credits}>
-                            <h2>{t("package_credits_title")}</h2>
-                            <p className={styles.subtitle_package}>{t("package_credits_subtitle")}</p>
-                            <div className={styles.checkcircle}>
-                                <div className={styles.item_checkcircle}>
-                                    <CheckCircle className={styles.icon_checkcircle_credits}/>
-                                    <span className={styles.span}>{t("package_credits_check1")}</span>
+                <div className={styles.section}>
+                    <div className={styles.section_link}>
+                        <button onClick={() => setLinkCurrent("check")} className={ linkCurrent==="check" ? styles.check_credits : styles.check_credits_not_choose}>
+                            <p>Check credits</p>
+                        </button>
+                        <button onClick={() => setLinkCurrent("upgrade")} className={ linkCurrent==="upgrade" ? styles.upgrade : styles.upgrade_not_choose}>
+                            <p>Upgrade</p>
+                        </button>
+                    </div>
+                    <div className={styles.package}>
+                        { linkCurrent==="check" &&
+                            <>
+                                <div className={styles.form_check_credit}>
+                                    <p className={styles.text_credits}><AddCardIcon/>{t("text_credits")}<span className={styles.highlight} style={{fontWeight: "bolder"}}>{credits}</span></p>
                                 </div>
-                                <div className={styles.item_checkcircle}>
-                                    <CheckCircle className={styles.icon_checkcircle_credits}/>
-                                    <span className={styles.span}>{t("package_credits_check2")}</span>
+                                <div className={styles.form_check_expiration_date}>
+                                    <p className={styles.text_expiration_date}><CalendarMonthIcon/>{t("text_expiration_date")}<span className={styles.highlight} style={{fontWeight: "bolder"}}>{expirationDate ? <p>{expirationDate}</p> : <p>{t("not_purchase")}</p>}</span></p>
                                 </div>
-                                <div className={styles.item_checkcircle}>
-                                    <CheckCircle className={styles.icon_checkcircle_credits}/>
-                                    <span className={styles.span}>{t("package_credits_check3")}</span>
-                                </div>
-                                <div className={styles.item_checkcircle}>
-                                    <CheckCircle className={styles.icon_checkcircle_credits}/>
-                                    <span className={styles.span}>{t("package_credits_check4")}</span>
+                            </>
+                        }
+                        {
+                            linkCurrent==="upgrade" && <div className={styles.form_upgrade}>
+                                <h2 className={styles.title}>{t("title_page")}</h2>
+                                <p className={styles.subtitle}>{t("subtitle_page")}</p>
+                                <div className={styles.package_container}>
+                                    <div className={styles.package_credits}>
+                                        <h2>{t("package_credits_title")}</h2>
+                                        <p className={styles.subtitle_package}>{t("package_credits_subtitle")}</p>
+                                        <div className={styles.checkcircle}>
+                                            <div className={styles.item_checkcircle}>
+                                                <CheckCircle className={styles.icon_checkcircle_credits}/>
+                                                <span className={styles.span}>{t("package_credits_check1")}</span>
+                                            </div>
+                                            <div className={styles.item_checkcircle}>
+                                                <CheckCircle className={styles.icon_checkcircle_credits}/>
+                                                <span className={styles.span}>{t("package_credits_check2")}</span>
+                                            </div>
+                                            <div className={styles.item_checkcircle}>
+                                                <CheckCircle className={styles.icon_checkcircle_credits}/>
+                                                <span className={styles.span}>{t("package_credits_check3")}</span>
+                                            </div>
+                                            <div className={styles.item_checkcircle}>
+                                                <CheckCircle className={styles.icon_checkcircle_credits}/>
+                                                <span className={styles.span}>{t("package_credits_check4")}</span>
+                                            </div>
+                                        </div>
+                                        <button onClick={handleUpgradeCredits} className={styles.btn_package_credits} type="button">{t("package_credits_button")}</button>
+                                    </div>
+                                    <div className={styles.package_month}>
+                                        <h2>{t("package_month_title")}</h2>
+                                        <p className={styles.subtitle_package}>{t("package_month_subtitle")}</p>
+                                        <div className={styles.checkcircle}>
+                                            <div className={styles.item_checkcircle}>
+                                                <CheckCircle className={styles.icon_checkcircle_month}/>
+                                                <span className={styles.span}>{t("package_month_check1")}</span>
+                                            </div>
+                                            <div className={styles.item_checkcircle}>
+                                                <CheckCircle className={styles.icon_checkcircle_month}/>
+                                                <span className={styles.span}>{t("package_month_check2")}</span>
+                                            </div>
+                                            <div className={styles.item_checkcircle}>
+                                                <CheckCircle className={styles.icon_checkcircle_month}/>
+                                                <span className={styles.span}>{t("package_month_check3")}</span>
+                                            </div>
+                                            <div className={styles.item_checkcircle}>
+                                                <CheckCircle className={styles.icon_checkcircle_month}/>
+                                                <span className={styles.span}>{t("package_month_check4")}</span>
+                                            </div>
+                                        </div>
+                                        <button onClick={handleUpgradeMonth} className={styles.btn_package_month} type="button">{t("package_month_button")}</button>
+                                    </div>
+                                    <div className={styles.package_year}>
+                                        <h2>{t("package_year_title")}</h2>
+                                        <p className={styles.subtitle_package}>{t("package_year_subtitle")}</p>
+                                        <div className={styles.checkcircle}>
+                                            <div className={styles.item_checkcircle}>
+                                                <CheckCircle className={styles.icon_checkcircle_year}/>
+                                                <span className={styles.span}>{t("package_year_check1")}</span>
+                                            </div>
+                                            <div className={styles.item_checkcircle}>
+                                                <CheckCircle className={styles.icon_checkcircle_year}/>
+                                                <span className={styles.span}>{t("package_year_check2")}</span>
+                                            </div>
+                                            <div className={styles.item_checkcircle}>
+                                                <CheckCircle className={styles.icon_checkcircle_year}/>
+                                                <span className={styles.span}>{t("package_year_check3")}</span>
+                                            </div>
+                                            <div className={styles.item_checkcircle}>
+                                                <CheckCircle className={styles.icon_checkcircle_year}/>
+                                                <span className={styles.span}>{t("package_year_check4")}</span>
+                                            </div>
+                                        </div>
+                                        <button onClick={handleUpgradeYear} className={styles.btn_package_year} type="button">{t("package_month_button")}</button>
+                                    </div>
                                 </div>
                             </div>
-                            <button onClick={handleUpgradeCredits} className={styles.btn_package_credits} type="button">{t("package_credits_button")}</button>
-                        </div>
-                        <div className={styles.package_month}>
-                            <h2>{t("package_month_title")}</h2>
-                            <p className={styles.subtitle_package}>{t("package_month_subtitle")}</p>
-                            <div className={styles.checkcircle}>
-                                <div className={styles.item_checkcircle}>
-                                    <CheckCircle className={styles.icon_checkcircle_month}/>
-                                    <span className={styles.span}>{t("package_month_check1")}</span>
-                                </div>
-                                <div className={styles.item_checkcircle}>
-                                    <CheckCircle className={styles.icon_checkcircle_month}/>
-                                    <span className={styles.span}>{t("package_month_check2")}</span>
-                                </div>
-                                <div className={styles.item_checkcircle}>
-                                    <CheckCircle className={styles.icon_checkcircle_month}/>
-                                    <span className={styles.span}>{t("package_month_check3")}</span>
-                                </div>
-                                <div className={styles.item_checkcircle}>
-                                    <CheckCircle className={styles.icon_checkcircle_month}/>
-                                    <span className={styles.span}>{t("package_month_check4")}</span>
-                                </div>
-                            </div>
-                            <button onClick={handleUpgradeMonth} className={styles.btn_package_month} type="button">{t("package_month_button")}</button>
-                        </div>
-                        <div className={styles.package_year}>
-                            <h2>{t("package_year_title")}</h2>
-                            <p className={styles.subtitle_package}>{t("package_year_subtitle")}</p>
-                            <div className={styles.checkcircle}>
-                                <div className={styles.item_checkcircle}>
-                                    <CheckCircle className={styles.icon_checkcircle_year}/>
-                                    <span className={styles.span}>{t("package_year_check1")}</span>
-                                </div>
-                                <div className={styles.item_checkcircle}>
-                                    <CheckCircle className={styles.icon_checkcircle_year}/>
-                                    <span className={styles.span}>{t("package_year_check2")}</span>
-                                </div>
-                                <div className={styles.item_checkcircle}>
-                                    <CheckCircle className={styles.icon_checkcircle_year}/>
-                                    <span className={styles.span}>{t("package_year_check3")}</span>
-                                </div>
-                                <div className={styles.item_checkcircle}>
-                                    <CheckCircle className={styles.icon_checkcircle_year}/>
-                                    <span className={styles.span}>{t("package_year_check4")}</span>
-                                </div>
-                            </div>
-                            <button onClick={handleUpgradeYear} className={styles.btn_package_year} type="button">{t("package_month_button")}</button>
-                        </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -285,3 +313,4 @@ export default function UpgradePackagePage(){
         </div>
     );
 }
+

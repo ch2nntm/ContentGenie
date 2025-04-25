@@ -54,11 +54,14 @@ export async function POST(req) {
 
                 const postsYear = rows;
 
+                //Filter all information in the Dashboard by year
                 const [rows_checkYear] = await connection.execute(`
                     SELECT * FROM dashboard WHERE year = ?
                     `,[year]);
 
+                //If there are no records yet
                 if(rows_checkYear.length === 0){
+                    // Filter results for 12 months. If any month has data, add it to the database.
                     for (const item of postsYear) {
                         if(item.total_credits!=0 || item.total_posts_paiding!=0 || item.total_posts_posted!=0){
                             await connection.execute(`INSERT INTO dashboard(year, month, total_credits, total_posts_paiding, total_posts_posted) VALUE(?,?,?,?,?)`,
@@ -67,23 +70,31 @@ export async function POST(req) {
                         }
                     }
                 }
+                // If the record exists
                 else{
+                    // Filter results for 12 months.
                     for (const item of postsYear) {
+                        //Filter all information in the Dashboard by year and by month
                         const [rows_checkMonth] = await connection.execute(`
                             SELECT * FROM dashboard WHERE month = ? AND year = ?
                             `,[item.month, year]);
+                        //If there are no records yet
                         if(rows_checkMonth.length === 0){
+                            //  If this month has data, add it to the database.
                             if(item.total_credits!=0 || item.total_posts_paiding!=0 || item.total_posts_posted!=0){
                                 await connection.execute(`INSERT INTO dashboard(year, month, total_credits, total_posts_paiding, total_posts_posted) VALUE(?,?,?,?,?)`,
                                 [year, item.month, item.total_credits, item.total_posts_paiding, item.total_posts_posted]);
                                 console.log("Add success");
                             }
                         }
+                        // If the record exists
                         else{
+                            // If the filtered data of that month is 0, delete it from the database.
                             if(item.total_credits==0 && item.total_posts_paiding==0 && item.total_posts_posted==0){
                                 await connection.execute(`DELETE FROM dashboard WHERE id=?`,[rows_checkMonth[0].id]);
                                 console.log("DELETE success");
                             }
+                            // Update new data into database
                             else{
                                 await connection.execute(`UPDATE dashboard SET total_credits=?, total_posts_paiding=?, total_posts_posted=? WHERE id=?`,
                                     [item.total_credits, item.total_posts_paiding, item.total_posts_posted, rows_checkMonth[0].id]

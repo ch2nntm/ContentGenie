@@ -20,6 +20,7 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import RepeatIcon from '@mui/icons-material/Repeat';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import HttpsIcon from '@mui/icons-material/Https';
+import { useRouter } from "next/navigation";
 
 interface User {
     id: string;
@@ -51,6 +52,7 @@ function PreviewPage() {
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const hasFetched = useRef(false);
+    const router = useRouter();
 
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
@@ -72,7 +74,7 @@ function PreviewPage() {
             return file; 
         }
     
-        const cloudinaryUrl = process.env.CLOUDINARY_URL;
+        const cloudinaryUrl = process.env.NEXT_PUBLIC_CLOUDINARY_URL;
         const uploadPreset = "demo-upload";
         const form = new FormData();
         form.append("upload_preset", uploadPreset);
@@ -144,7 +146,7 @@ function PreviewPage() {
                 }
             }
             else if(topic.includes("Youtube")){
-                setImgUrl(`${process.env.YOUTUBE_URL}/embed/`+data.music);
+                setImgUrl(`${process.env.NEXT_PUBLIC_YOUTUBE_URL}/embed/`+data.music);
                 setIsVideo(true);
             }
             else if(topic.includes("Spotify")){
@@ -159,7 +161,6 @@ function PreviewPage() {
                 console.log("Spotify data: ",dataSpotify);
                 setIsSpotify(true);
                 setNameSpotify(dataSpotify?.name);
-                // setIdArtist(dataSpotify?.artists[0]?.id);
                 setIsVideo(true);
                 console.log("idArtist: ", dataSpotify?.artists[0].id);
                 await fetch("/api/spotify", {
@@ -271,7 +272,7 @@ function PreviewPage() {
                 if (res.message) {
                     setOpenModal(false);
                     toast.success("Successful");
-                    // router.push("/component/post_manage/list_post_user");
+                    router.push("/component/post_manage/list_post_user");
                 } else if (res.error) {
                     console.log("Res: ", res);
                 }
@@ -339,7 +340,7 @@ function PreviewPage() {
                                             <p className={styles.name_artist}>{nameArtist}</p>
                                         </div>
                                     </a>
-                            }
+                                }
                             </div>
                             <div className={styles.interact_post}>
                                 <div className={styles.back}>

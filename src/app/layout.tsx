@@ -3,6 +3,8 @@ import {NextIntlClientProvider} from 'next-intl';
 import {getLocale, getMessages} from 'next-intl/server';
 import Topbar from '../components/Topbar';
 import Script from 'next/script';
+import './globals.css';
+
 
 export const metadata = {
   title: "Home Page",

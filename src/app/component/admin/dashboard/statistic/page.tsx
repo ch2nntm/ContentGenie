@@ -164,7 +164,7 @@ function Statistic() {
                     <div className={styles.time}>
                         <label htmlFor="year">{t("label_year")}</label>
                         <select value={selectedYear} onChange={(e) => { setSelectedYear(e.target.value); setIsClickList(false); }} className={styles.select_time}>
-                        {[...Array(26 - 0)].map((_, i) => (
+                        {[...Array(26)].map((_, i) => (
                             <option key={i} value={2020 + i}>{2020 + i}</option>
                         ))}
                         </select>
@@ -195,7 +195,7 @@ function Statistic() {
                               
                         options = {{
                             plugins: {
-                                legend: {
+                                legend: { // Note
                                     display: true
                                 },
                                 title: {
@@ -209,7 +209,7 @@ function Statistic() {
                             },
                         }}
                         />
-                        <canvas height="363" width="726" className="chartjs-render-monitor" style={{ display: "block", width: "726px", height: "363px" }}></canvas>
+                        {/* <canvas height="363" width="726" className="chartjs-render-monitor" style={{ display: "block", width: "726px", height: "363px" }}></canvas> */}
                     </div>
                     }
                     {loading ? (

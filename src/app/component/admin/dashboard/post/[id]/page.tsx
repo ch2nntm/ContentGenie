@@ -74,7 +74,6 @@ export default async function ViewUserDetail(props : { params: PageProps }) {
   return (
     <div className={styles.container}>
       <NavbarComponent/>
-      {/* <button onClick={handleBack}><ArrowBackIosNewIcon className={styles.arrowback}/></button> */}
       <Link href="/component/admin/dashboard"><ArrowBackIosNewIcon className={styles.arrowback}/></Link>
       <div className={styles.inf_post_container}>
         <div className={styles.title}>
@@ -111,10 +110,9 @@ export default async function ViewUserDetail(props : { params: PageProps }) {
         </div>
         <div className={styles.inf_post}>
           <p>{detailPost.content}</p>
-          {/* {detailPost.image && <img src={detailPost.image} className={styles.img}/>} */}
-          {detailPost.image && !detailPost.image.startsWith(process.env.YOUTUBE_URL ?? "") && <img src={detailPost.image} className={styles.img}/>}
-          {detailPost.image && detailPost.image.startsWith(process.env.YOUTUBE_URL ?? "") && <iframe className={styles.img} src={detailPost.image} ></iframe>}
-          {detailPost.image && detailPost.image.startsWith(process.env.SPOTIFY_URL ?? "") && 
+          {detailPost.image && !detailPost.image.startsWith(process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "") && <img src={detailPost.image} className={styles.img}/>}
+          {detailPost.image && detailPost.image.startsWith(process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "") && <iframe className={styles.img} src={detailPost.image} ></iframe>}
+          {detailPost.image && detailPost.image.startsWith(process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "") && 
           <>
             <a className={styles.is_spotify} href={detailPost.image.split(",")[0]}>
                 <div className={styles.img_spotify}>
@@ -144,7 +142,7 @@ export default async function ViewUserDetail(props : { params: PageProps }) {
           <div className={styles.favorite}>
               <TurnedInNotIcon></TurnedInNotIcon>
           </div>
-      </div>
+        </div>
       </div>
     </div>
   );

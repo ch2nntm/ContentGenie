@@ -119,14 +119,14 @@
 }
 
 .post{
-    margin-top: 100px;
-    margin-left: 312px;
-    margin-bottom: 10px;
-    width: 860px;
-    height: 580px;
+    margin-left: 130px;
+    padding-top: 20px;
+    margin-top: -10px;
+    width: 80vw;
+    padding-bottom: 20px;
     background-color: #ffffff;
     border-radius: 6px;
-    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 4px 4px 4px 6px rgba(0,0,0,0.1);
 }
 
 .title{
@@ -135,7 +135,7 @@
     font-family: "Roboto";
     font-weight: bold;
     line-height: 38px;
-    padding-top: 30px;
+    padding-top: 60px;
     text-align: center;
 }
 
@@ -150,10 +150,10 @@
 .enable_trend,
 .audience{
     display: flex;
+    flex-direction: column;
     margin-left: 24px;
     margin-right: 24px;
     justify-content: space-between;
-    align-items: center;
 }
 
 .post_time,
@@ -173,10 +173,7 @@
     display: flex;
     align-items: center;
     gap: 15px;
-}
-
-.title_audience{
-    margin-top: 10px;
+    margin-top: -15px;
 }
 
 .icon_social_media,
@@ -192,10 +189,15 @@
     margin-top: -10px;
 }
 
+.content_audience{
+    display: flex;
+    flex-direction: column;
+}
+
 .platform_social_media{
     display: flex;
     align-items: center;
-    gap: 43px;
+    gap: 60px;
 }
 
 .warn_platform{
@@ -207,19 +209,24 @@
     cursor: pointer;
     border: none;
     display: flex;
+    gap: 5px;
     align-items: center;
     justify-content: center;
-    gap: 5px;
-    width: 100px;
-    height: 30px;
     border-radius: 5px;
     background-color: transparent;
     transition: all 0.3s ease;
 }
 
 .btn_platform_social_media:hover{
-    background-color: rgb(228, 126, 146);
+    background-color: var(--primary-color);
     color: #ffffff;
+    width: 300px;
+    height: 40px;
+}
+
+.btn_platform_social_media{
+    width: 300px;
+    height: 40px;
 }
 
 .icon_mastodon{
@@ -235,11 +242,16 @@
     gap: 5px;
     align-items: center;
     justify-content: center;
-    width: 100px;
-    height: 30px;
+    width: 300px;
+    height: 40px;
     border-radius: 5px;
-    background-color: rgb(228, 126, 146);
+    background-color: var(--primary-color);
     color: #ffffff;
+}
+
+.input_datetime{
+    display: flex;
+    gap: 10px;
 }
 
 .input_date,
@@ -248,7 +260,7 @@
 .warn_input_time{
     top: 290px;
     left: 960px;
-    width: 160px;
+    width: 80vw;
     height: 40px;
     padding: 0px 8px;
     border: 1px solid #8c8c8c;
@@ -263,59 +275,29 @@
     outline: none;
 }
 
-.input_date{
-    margin-left: 350px;
-}
-
-.warn_input_date{
-    border: 1px solid red;
-}
-
-.input_time,
-.warn_input_time{
-    width: 85px;
-}
-
 .warn_input_time{
     border: 1px solid red;
 }
 
-.input_number{
-    top: 354px;
-    left: 1048px;
-    width: 72px;
-    height: 38px;
-    padding: 0px 8px;
-    border: 1px solid #8c8c8c;
-    box-sizing: border-box;
-    border-radius: 6px;
-    background-color: #ffffff;
-    color: #94a3b8;
-    font-size: 14px;
-    font-family: "Open Sans";
-    line-height: 38px;
-    outline: none;
-}
 
 .content_topic{
     display: flex;
-    gap: 90px;
+    flex-direction: column;
 }
 
 .select_topic,
 .select_audience{
     padding: 5px;
     border-radius: 5px;
-    width: 100px;
-    height: 35px;
+    width: 76.7vw;
+    height: 40px;
 }
 
 .input_topic,
 .input_topic_miss{
-    top: 416px;
-    left: 931px;
-    width: 189px;
-    height: 38px;
+    width: 76.7vw;
+    height: 40px;
+    margin-top: 10px;
     padding: 0px 8px;
     border: 1px solid #8c8c8c;
     box-sizing: border-box;
@@ -335,7 +317,7 @@
 .toggle {
     width: 50px;
     height: 25px;
-    background-color: gray;
+    background-color: rgb(192, 190, 190);
     border-radius: 25px;
     display: flex;
     align-items: center;
@@ -370,7 +352,7 @@
 
 .btn_generate_content,
 .btn_generate_content_disable{
-    width: 174px;
+    width: 350px;
     height: 44px;
     padding: 0px 8px;
     border: 0;
@@ -383,6 +365,7 @@
     font-weight: 700;
     line-height: 20px;
     outline: none;
+    margin-top: -10px;
 }
 
 .btn_generate_content{
@@ -390,5 +373,6 @@
 }
 
 .btn_generate_content_disable{
-    background-color: #f39393;
+    background-color: var(--second-color);
+    color: #000;
 }

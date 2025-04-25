@@ -29,11 +29,12 @@
         "have_account": "Don't have an account?",
         "signinGG": "Sign in with Google",
         "title_page": "Login Page",
-        "forgot_password": "Forgot Password",
+        "forgot_password": "Forgot Password?",
         "signinLinkedIn": "Sign in with LinkedIn",
         "invalid_email": "Invalid email!",
         "exist_account": "Account already exists!",
-        "invalid_password": "Invalid password!"
+        "invalid_password": "Invalid password!",
+        "or_submitgoogle": "or"
     },
     "navbar_user":{
         "signout": "Sign out",
@@ -42,7 +43,7 @@
         "dashboard": "Dashboard",
         "post_management": "Post management",
         "create_content": "Generate Content",
-        "credits": "Check Credits",
+        "credits": "Credits",
         "edit_profile": "Edit Profile",
         "change_password": "Change Password",
         "error_http": "Error HTTP",
@@ -174,7 +175,9 @@
         "message": "Update email successful!",
         "code":"Code",
         "btn_update": "Update",
-        "btn_cancel": "Cancel"
+        "btn_cancel": "Cancel",
+        "error_internet":"Error sending code, please check your internet connection!",
+        "exist_email": "Email already exists!"
     },
     "forgot_password":{
         "enter_full": "Please enter full field!",
@@ -182,24 +185,32 @@
         "error_register": "Error during registration!",
         "password_not_match": "Password is not match!",
         "password_not_format" : "Password must be at least 8 characters long, including letters, numbers, and special characters!",
-        "title": "Forgot Password",
-        "email": "Email",
-        "btn_cancel": "Cancel",
-        "reset_password": "Reset Password",
-        "password": "Password",
-        "confirm_password": "Confirm Password",
+        "title": "Forgot Password?",
+        "send_reset_link": "Send Reset Link",
+        "input_email": "Email Address",
+        "btn_cancel_verify": "Back",
+        "back_siginin": "Back to Sign In",
+        "btn_reset_password": "Reset Password",
+        "title_reset_password": "Reset Password",
+        "subtitle_reset_password": "Enter your new password to reset your password.",
+        "password": "New Password",
+        "confirm_password": "Confirm New Password",
         "change_success": "Change password successful!",
         "message1": "Change password successful with email: ",
         "message2": " and new password: ",
-        "title_code": "Code",
-        "code": "Code",
+        "title_code": "Verify OTP",
+        "subtitle_code": "Please enter the OTP sent to your registered email address to reset your password.",
+        "code": "Enter OTP here",
         "send_code": "Send Code",
         "code_not_full": "Please enter field code!",
         "error_code": "Code is incorrect!",
-        "resend_code": "Resend code",
+        "resend_code": "Resend OTP",
         "resend_code_again": "Code sent again",
         "password_match": "New password matches old password!",
-        "email_wrong": "Email does not exist!"
+        "email_wrong": "Email does not exist!",
+        "subtitle_forgot": "Enter your registered email to receive a password reset link",
+        "code_success": "Code sent successfully!",
+        "error_internet": "Error sending code, please check your internet connection!"
     },
     "list_post_user":{
         "title_page": "List Post",
@@ -273,7 +284,14 @@
         "name": "Name: ",
         "email":"Email: ",
         "quantity_credits": "Number of remaining cards: ",
-        "quantity_post": "Total number of posts: "
+        "quantity_post": "Total number of posts: ",
+        "package_purchase": "Packages purchased: ",
+        "no_package": "No packages purchased yet",
+        "package_month": "Month package",
+        "package_year": "Year package",
+        "package_name": "Package name",
+        "package_price": "Package price",
+        "date_purchase": "Date of purchase"
     },
     "list_post_dashboard": {
         "sidebar_dashboard": "Dashboard",
@@ -300,7 +318,9 @@
         "sidebar_posts": "Posts",
         "sidebar_analytics": "Statistics",
         "sidebar_settings": "Settings",
-        "section_no_user":"No users found"
+        "section_no_user":"No users found",
+        "quantity_credits": "Number of remaining cards: ",
+        "quantity_post": "Total number of posts: "
     },
     "statistics": {
         "sidebar_dashboard": "Dashboard",
@@ -358,7 +378,8 @@
         "package_year_check2": "Validity: 365 days",
         "package_year_check3": "More cost-effective than monthly package if used long term",
         "package_year_check4": "Best choice for people who need to use regularly for a long time",
-        "package_year_button": "Upgrade"
+        "package_year_button": "Upgrade",
+        "not_purchase": "You have not purchased any package yet"
     }
 }
 

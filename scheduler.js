@@ -244,7 +244,7 @@ async function postToLinkedin(post, token_linkedin, sub_ID) {
           console.error(error);
         }
       }
-      else{
+      else if( post.image && !post.image.startsWith(process.env.NEXT_PUBLIC_SPOTIFY_URL)){
         //Register the image
         const registerUploadRequest = {
           registerUploadRequest: {
@@ -333,7 +333,7 @@ async function postToLinkedin(post, token_linkedin, sub_ID) {
             const dataResult = await response.json();
             if (response.ok) {
               await connection.execute(
-                  "UPDATE post SET id = ?, status = 1, posttime = ? WHERE id = ?",
+                  "UPDATE post SET id = ?, status = 1, posttime = ?, set_daily = 0 WHERE id = ?",
                   [dataResult.id, new Date(), post.id]
               );
       
@@ -351,6 +351,60 @@ async function postToLinkedin(post, token_linkedin, sub_ID) {
           }
         } catch (error) {
           console.error('Error during the upload process:', error);
+        }
+      }
+      else{
+        const postData = {
+          author: `urn:li:person:${sub_ID}`,
+          lifecycleState: "PUBLISHED",
+          specificContent: {
+            "com.linkedin.ugc.ShareContent": {
+              shareCommentary: { text: post.content },
+              shareMediaCategory: "ARTICLE",
+              media: [
+                  {
+                      status: "READY",
+                      description: {
+                          text: "Spotify"
+                      },
+                      originalUrl: post.image.split(",")[0],
+                      title: {
+                          text: post.image.split(",")[1]
+                      }
+                  }
+              ]
+            },
+          },
+          visibility: { "com.linkedin.ugc.MemberNetworkVisibility": post.audience === "public" ? "PUBLIC" : "CONNECTIONS" }, 
+        };
+      
+        const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token_linkedin}`,
+            "Content-Type": "application/json",
+            "X-Restli-Protocol-Version": "2.0.0",
+          },
+          body: JSON.stringify(postData),
+        });
+      
+        const data = await response.json();
+        console.log("DATA: ",data);
+      
+        if (response.ok) {
+          await connection.execute(
+              "UPDATE post SET id = ?, status = 1, posttime = ?, set_daily = 0 WHERE id = ?",
+              [data.id, new Date(), post.id]
+          );
+  
+          const email = await connection.execute(
+              "SELECT email FROM account WHERE id = ?", [post.user_id]
+          );
+          console.log("Email: ",email[0][0].email," - user_id: ",post.user_id);
+  
+          sendEmail(email[0][0].email);
+  
+          await connection.end();
         }
       }
     }catch(error){
@@ -405,7 +459,7 @@ async function postLinkedinDaily(post, token_linkedin, sub_ID) {
         console.error(error);
       }
     }
-    else{
+    else if( post.image && !post.image.startsWith(process.env.NEXT_PUBLIC_SPOTIFY_URL)){
       //Register the image
       const registerUploadRequest = {
         registerUploadRequest: {
@@ -514,6 +568,60 @@ async function postLinkedinDaily(post, token_linkedin, sub_ID) {
         console.error('Error during the upload process:', error);
       }
     }
+    else{
+      const postData = {
+        author: `urn:li:person:${sub_ID}`,
+        lifecycleState: "PUBLISHED",
+        specificContent: {
+          "com.linkedin.ugc.ShareContent": {
+            shareCommentary: { text: post.content },
+            shareMediaCategory: "ARTICLE",
+            media: [
+                {
+                    status: "READY",
+                    description: {
+                        text: "Spotify"
+                    },
+                    originalUrl: post.image.split(",")[0],
+                    title: {
+                        text: post.image.split(",")[1]
+                    }
+                }
+            ]
+          },
+        },
+        visibility: { "com.linkedin.ugc.MemberNetworkVisibility": post.audience === "public" ? "PUBLIC" : "CONNECTIONS" }, 
+      };
+    
+      const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token_linkedin}`,
+          "Content-Type": "application/json",
+          "X-Restli-Protocol-Version": "2.0.0",
+        },
+        body: JSON.stringify(postData),
+      });
+    
+      const data = await response.json();
+      console.log("DATA: ",data);
+    
+      if (response.ok) {
+        await connection.execute(
+          "INSERT INTO post(id, title, content, image, posttime, user_id, platform, status, audience, set_daily) VALUES(?,?,?,?,?,?,?,?,?,?)",
+            [data.id, post.title, post.content, post.image, new Date(), post.user_id, post.platform, 1, post.audience, 0]
+        );
+
+        const email = await connection.execute(
+            "SELECT email FROM account WHERE id = ?", [post.user_id]
+        );
+        console.log("Email: ",email[0][0].email," - user_id: ",post.user_id);
+
+        sendEmail(email[0][0].email);
+
+        await connection.end();
+      }
+    }
   }catch(error){
     console.log("error: ",error);
   }
@@ -548,7 +656,7 @@ cron.schedule('* * * * *', async () => {
     if(resultPost.length === 0)
         console.log("No posts have been posted yet!");
 
-    console.log("resultPost: ",resultPost);
+    // console.log("resultPost: ",resultPost);
     if (resultPost.length > 0) {
         for (let post of resultPost) {
             if (post.platform === "Mastodon") {
@@ -572,14 +680,25 @@ cron.schedule('* * * * *', async () => {
       "SELECT * FROM post WHERE set_daily = 1 AND status = 0"
     );
   
+    // console.log("resultPostDaily: ",resultPostDaily);
     if (resultPostDaily.length > 0) {
+      // console.log("If resultPostDaily");
       for (let post of resultPostDaily) {
-        const onlyPostDate = new Date(post.posttime).toISOString().split('T')[0]; 
-        const onlyCurrentDate = new Date(new Date(now)).toISOString().split('T')[0];
-        if(onlyCurrentDate > onlyPostDate){
+        // console.log("For resultPostDaily");
+        // console.log("onlyPostDate: ",post.posttime);
+        // console.log("onlyCurrentDate: ",new Date());
+        const onlyPostDate = new Date((post.posttime).toISOString().split('T')[0]); 
+        const onlyCurrentDate = new Date((new Date()).toISOString().split('T')[0]);
+        // console.log("onlyPostDate: ",onlyPostDate);
+        // console.log("onlyCurrentDate: ",onlyCurrentDate);
+        if(onlyCurrentDate >= onlyPostDate){
           const datetime = new Date(post.posttime);
           const time_hour = datetime.getHours();
           const time_minute = datetime.getMinutes();
+          // console.log("currentTime.getHours(): ",currentTime.getHours());
+          // console.log("currentTime.getMinutes(): ",currentTime.getMinutes());
+          // console.log("time_hour: ",time_hour);
+          // console.log("time_minute: ",time_minute);
           if(currentTime.getHours() === time_hour && currentTime.getMinutes() === time_minute){
             console.log(`Running cron daily ${post.id}!`);
             if(post.platform==="Mastodon"){

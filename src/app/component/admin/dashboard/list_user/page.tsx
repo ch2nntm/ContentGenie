@@ -112,8 +112,8 @@ function ListUserDashboard() {
                                             <p className={styles.item_name_user}>{item.name}</p>
                                         </Link>
                                         <p className={styles.item_email_user}>@{item.email}</p>
-                                        <p className={styles.item_credit_user}>So luong the con lai: {item.credits}</p>
-                                        <p className={styles.item_post_of_user}>So bai dang: {item.count_post}</p>
+                                        <p className={styles.item_credit_user}>{t("quantity_credits")}<span className={styles.span}>{item.credits}</span></p>
+                                        <p className={styles.item_post_of_user}>{t("quantity_post")}<span className={styles.span}>{item.count_post}</span></p>
                                     </div>
                                 ))
                             )
