@@ -26,7 +26,7 @@ export async function POST(req) {
             return NextResponse.json({ status: "error", message: "No tokens" }, { status: 401 });
         }
 
-        const listmessages = await fetchRecentConversation(body.messages[body.messages.length-1].content, body.topicName, body.user_Id);
+        const listmessages = await fetchRecentConversation(body.messages[body.messages.length-1].content, body.topicName);
         console.log("listmessages: ",listmessages);
         console.log("body.messages: ",body.messages);
         console.log("body.topic: ",body.topicName);
@@ -165,11 +165,11 @@ export async function POST(req) {
       }
   }
 
-const fetchRecentConversation = async (content, topicName, user_id) => {
+const fetchRecentConversation = async (content, topicName) => {
   const connection = await mysql.createConnection(dbConfig);
   const history = await connection.query(
-      'SELECT role, message FROM conversation_history WHERE topic_name = ? AND (user_id = ? OR user_id = (SELECT id FROM account WHERE role=1)) ORDER BY timestamp DESC LIMIT 3', 
-      [topicName, user_id]
+      'SELECT role, message FROM conversation_history WHERE topic_name = ? AND role = "system"', 
+      [topicName]
   );
 
   const messages = [];
