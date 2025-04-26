@@ -1,18 +1,7 @@
 import { NextResponse } from "next/server";
 import mysql from "mysql2/promise";
-import fs from "fs";
 import { cookies } from "next/headers";
-
-const dbConfig = {
-    host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
-    port: 4000,
-    user: "23RJwZS9wrfiKxq.root",
-    password: "SxywZGpysG9CqoUA",
-    database: "testdbnextjs",
-    ssl: {
-        ca: fs.readFileSync("/etc/ssl/cert.pem"), 
-    },
-  };
+import dbConfig from "../../../../../dbConfig.js";
 
 export async function GET(req, {params}) {
     const body = await params;
@@ -24,7 +13,7 @@ export async function GET(req, {params}) {
     console.log("Token từ cookies: ", token_mastodon);
 
     if (!token_mastodon) {
-        return NextResponse.json({ status: "error", message: "No token provided", error }, { status: 401 });
+        return NextResponse.json({ status: "error", message: "No token provided" }, { status: 401 });
     }
 
     try{
@@ -44,7 +33,7 @@ export async function GET(req, {params}) {
         }
         return NextResponse.json({ status: "success", message: "Get post on mastodon success", data: data}, {status:200});
     }catch(error){
-        return NextResponse.json({ status: "error", message: "Internal Server Error: ", error}, { status: 500 });
+        return NextResponse.json({ status: "error", message: error}, { status: 500 });
     }
 }
 
@@ -56,11 +45,11 @@ export async function DELETE(req, { params }) {
     console.log("Token từ cookies: ", token_mastodon);
 
     if (!token_mastodon) {
-        return NextResponse.json({ status: "error", message: "No token provided", error }, { status: 401 });
+        return NextResponse.json({ status: "error", message: "No token provided" }, { status: 401 });
     }
     
     if (!statusId) {
-        return NextResponse.json({ status: "error", message: "Missing post ID", error }, { status: 400 });
+        return NextResponse.json({ status: "error", message: "Missing post ID" }, { status: 400 });
     }
 
     try {
@@ -97,7 +86,7 @@ export async function DELETE(req, { params }) {
 
     } catch (error) {
         console.error("Error deleting post:", error);
-        return NextResponse.json({ status: "error", message: "Internal Server Error", error }, { status: 500 });
+        return NextResponse.json({ status: "error", message: error }, { status: 500 });
     }
 }
 
@@ -109,7 +98,7 @@ export async function PUT(req, {params}) {
         console.log("Token từ cookies: ", token_mastodon);
 
         if (!token_mastodon) {
-            return NextResponse.json({ status: "error", message: "No token provided", error }, { status: 401 });
+            return NextResponse.json({ status: "error", message: "No token provided" }, { status: 401 });
         }
     
         const formData = await req.formData();
@@ -125,7 +114,7 @@ export async function PUT(req, {params}) {
         const statusFormData = new URLSearchParams();
 
         if(!content){
-            return NextResponse.json({ status: "error", message: "Missing the field", error }, { status: 400 });
+            return NextResponse.json({ status: "error", message: "Missing the field" }, { status: 400 });
         }
         statusFormData.append("status",content);
 
@@ -164,7 +153,6 @@ export async function PUT(req, {params}) {
                 statusFormData.append("media_ids[]",mediaData.id);
             }
             
-        
             const statusResponse = await fetch(`${process.env.MASTODON_INSTANCE}/api/v1/statuses/${statusId}`,{
                 method: "PUT",
                 headers:{
@@ -191,12 +179,12 @@ export async function PUT(req, {params}) {
 
         if (result.affectedRows === 0) {
             await connection.end();
-            return NextResponse.json({ status: "error", message: "Unable to update information", error }, { status: 400 });
+            return NextResponse.json({ status: "error", message: "Unable to update information" }, { status: 400 });
         }
 
         return NextResponse.json({ status: "success", message: "Post updated successfully" }, { status: 200 });
     }catch(error){
       console.error("Error: ",error);
-      return NextResponse.json({ status:  "error", message: "Missing wrong", error}, {status: 500});
+      return NextResponse.json({ status:  "error", message: error}, {status: 500});
     }
 }

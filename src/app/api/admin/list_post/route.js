@@ -1,19 +1,7 @@
 import mysql from "mysql2/promise";
-import fs from "fs";
 import { jwtVerify } from "jose";
 import { NextResponse } from "next/server";
-
-const dbConfig = {
-    host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
-    port: 4000,
-    user: "23RJwZS9wrfiKxq.root",
-    password: "SxywZGpysG9CqoUA",
-    database: "testdbnextjs",
-    ssl: {
-        ca: fs.readFileSync("/etc/ssl/cert.pem"), 
-    },
-};
-
+import dbConfig from "../../../../../dbConfig.js";
 const secretKey = new TextEncoder().encode("your-secret-key");
 
 export async function GET(req) {
@@ -25,7 +13,7 @@ export async function GET(req) {
         console.log("searchQueryPost: ",searchQuery);
 
         if (!token) {
-            return NextResponse.json({ status: "error", message: "Missing token", error }, { status: 401 });
+            return NextResponse.json({ status: "error", message: "Missing token" }, { status: 401 });
         }
 
         try {
@@ -38,15 +26,15 @@ export async function GET(req) {
 
                 return NextResponse.json({ status: "success", message: "Get list post successfully", posts: rows }, { status: 200 });
             } else {
-                return NextResponse.json({ status: "error", message: "Forbidden", error }, { status: 403 });
+                return NextResponse.json({ status: "error", message: "Forbidden" }, { status: 403 });
             }
         } catch (error) {
             console.error("JWT Verification Error: ", error);
-            return NextResponse.json({ status: "error", message: "Invalid token", error }, { status: 401 });
+            return NextResponse.json({ status: "error", message: error }, { status: 401 });
         }
     } catch (error) {
         console.error("Database error:", error);
-        return NextResponse.json({ status: "error", message: "Database connection failed", error }, { status: 500 });
+        return NextResponse.json({ status: "error", message: error }, { status: 500 });
     }
 }
 
@@ -55,12 +43,12 @@ export async function POST(req) {
         const {year, month, week} = await req.json();
         console.log("Year: ",year," - month: ",month," - week: ",week);
         if(!year || !month || !week)
-            return NextResponse.json({ status: "error", message: "Missing the field", error}, { status: 400 });
+            return NextResponse.json({ status: "error", message: "Missing the field" }, { status: 400 });
         const authHeader = req.headers.get("authorization"); 
         const token = authHeader?.split(" ")[1];
 
         if (!token) {
-            return NextResponse.json({ status: "error", message: "Missing token", error }, { status: 401 });
+            return NextResponse.json({ status: "error", message: "Missing token" }, { status: 401 });
         }
 
         try {
@@ -77,14 +65,14 @@ export async function POST(req) {
 
                 return NextResponse.json({ status: "success", message: "Get list post successfully", posts: rows }, { status: 200 });
             } else {
-                return NextResponse.json({ status: "error", message: "Forbidden", error }, { status: 403 });
+                return NextResponse.json({ status: "error", message: "Forbidden" }, { status: 403 });
             }
         } catch (error) {
             console.error("JWT Verification Error: ", error);
-            return NextResponse.json({ status: "error", message: "Invalid token", error }, { status: 401 });
+            return NextResponse.json({ status: "error", message: error }, { status: 401 });
         }
     } catch (error) {
         console.error("Database error:", error);
-        return NextResponse.json({ status: "error", message: "Database connection failed", error }, { status: 500 });
+        return NextResponse.json({ status: "error", message: error }, { status: 500 });
     }
 }

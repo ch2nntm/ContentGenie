@@ -24,7 +24,7 @@ type UserDetail = {
 const getUserDetail = async (id: string) => {
   try {
     const BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXTAUTH_URL;
-    const res = await fetch(`${BASE_URL}/api/manage_account/user/${id}`, {
+    const res = await fetch(`${BASE_URL}/api/admin/user/${id}`, {
       method: "GET",
       headers: { "Accept": "application/json" },
       cache: "no-store" ,
@@ -45,7 +45,7 @@ export default async function ViewUserDetail(props: { params: PageProps}) {
   const detailUser = await getUserDetail((await props.params).id);
   console.log("User detail: ",detailUser);
 
-  const NavbarComponent = dynamic(() => import("@/components/navbar_user"));
+  const NavbarComponent = dynamic(() => import("@/app/component/navbar_user/page"));
   const t = getTranslations("detail_user");
   const monthPackage = (await t)("package_month");
   const yearPackage = (await t)("package_year");

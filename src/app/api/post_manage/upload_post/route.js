@@ -1,24 +1,13 @@
 import mysql from "mysql2/promise";
-import fs from "fs";
 import { NextResponse } from "next/server";
-
-const dbConfig = {
-    host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
-    port: 4000,
-    user: "23RJwZS9wrfiKxq.root",
-    password: "SxywZGpysG9CqoUA",
-    database: "testdbnextjs",
-    ssl: {
-        ca: fs.readFileSync("/etc/ssl/cert.pem"), // Đọc file chứng chỉ CA
-    },
-  };
+import dbConfig from "../../../../../dbConfig.js";
 
 export async function POST(req) {
   const authHeader = req.headers.get("authorization"); 
   const token = authHeader?.split(" ")[1];
 
   if (!token) {
-      return NextResponse.json({ status: "error", message: "No tokens", error }, { status: 401 });
+      return NextResponse.json({ status: "error", message: "No tokens" }, { status: 401 });
   }
   
   try {
@@ -55,6 +44,6 @@ export async function POST(req) {
 
   } catch (error) {
     console.error("Database error:", error);
-    return NextResponse.json({ status: "error", message: "Database connection failed", error }, { status: 500 });
+    return NextResponse.json({ status: "error", message: error }, { status: 500 });
   }
 }

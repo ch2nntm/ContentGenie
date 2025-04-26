@@ -1,19 +1,7 @@
 import mysql from "mysql2/promise";
 import { NextResponse } from "next/server";
-import fs from "fs";
 import { jwtVerify } from "jose";
-import { error } from "console";
-
-const dbConfig = {
-    host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
-    port: 4000,
-    user: "23RJwZS9wrfiKxq.root",
-    password: "SxywZGpysG9CqoUA",
-    database: "testdbnextjs",
-    ssl: {
-        ca: fs.readFileSync("/etc/ssl/cert.pem"),
-    },
-};
+import dbConfig from "../../../../../dbConfig.js";
 
 const secretKey = new TextEncoder().encode("your-secret-key");
 
@@ -24,7 +12,11 @@ export async function POST(req) {
         const {year} = await req.json();
 
         if (!token) {
-            return NextResponse.json({ status: "error", message: "Missing token", error }, { status: 401 });
+            return NextResponse.json({ status: "error", message: "Missing token" }, { status: 401 });
+        }
+
+        if(!year){
+            return NextResponse.json({ status: "error", message: "Missing year" }, { status: 400 });
         }
 
         try {
@@ -109,14 +101,14 @@ export async function POST(req) {
                 return NextResponse.json({ status: "success", message: "Get statistic success", posts: rows }, {status: 200 });
 
             } else {
-                return NextResponse.json({ status: "error", message: "Forbidden", error }, { status: 403 });
+                return NextResponse.json({ status: "error", message: "Forbidden" }, { status: 403 });
             }
         } catch (error) {
             console.error("JWT Verification Error: ", error);
-            return NextResponse.json({ status: "error", message: "Invalid token", error }, { status: 401 });
+            return NextResponse.json({ status: "error", message: error }, { status: 401 });
         }
     }catch(error){
-        return NextResponse.json({ status: "error", message: "Error", error}, { status: 500 });
+        return NextResponse.json({ status: "error", message: error }, { status: 500 });
     }
 }
 
@@ -126,7 +118,7 @@ export async function GET(req) {
         const token = authHeader?.split(" ")[1];
 
         if (!token) {
-            return NextResponse.json({ status: "error", message: "Missing token", error }, { status: 401 });
+            return NextResponse.json({ status: "error", message: "Missing token" }, { status: 401 });
         }
 
         const connection = await mysql.createConnection(dbConfig);
@@ -136,6 +128,6 @@ export async function GET(req) {
         return NextResponse.json({ status: "success", message: "Get dashboard success", data: rows }, { status: 200 });
     }catch(error){
         console.log(error);
-        return NextResponse.json({error});
+        return NextResponse.json({ status: "error", message: error });
     }
 }

@@ -52,12 +52,12 @@ export async function POST(req) {
         return NextResponse.json({ status: "success", message: "Create link success", data: dataResponse }, { status: 200 });
     } else {
       console.error(`Error from PayOS: ${dataResponse.desc}`);
-      return NextResponse.json({ status: "error", message: dataResponse.desc, error }, { status: 400 });
+      return NextResponse.json({ status: "error", message: dataResponse.desc }, { status: 400 });
     }
 
   } catch (error) {
     console.error("Error creating payment request:", error);
-    return NextResponse.json({ status: "error", message: "Error creating payment request: ", error }, { status: 500 });
+    return NextResponse.json({ status: "error", message: error }, { status: 500 });
   }
 }
 
@@ -83,6 +83,6 @@ export async function GET(req) {
     console.log("Response từ PayOS:", dataResponse.data.status);
     return NextResponse.json({ status: "success", message: "Get orderCode success", data: dataResponse }, { status: 200 });
   }catch(error){
-    return NextResponse.json({ status: "error", message: "Missing wrong", error }, { status: 500 });
+    return NextResponse.json({ status: "error", message: error }, { status: 500 });
   }
 }

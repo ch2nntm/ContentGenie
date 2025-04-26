@@ -47,8 +47,9 @@ function Register() {
                 return;
             } 
         }
-        const responseEmail = await fetch(`/api/manage_account/add_new_user?email=${email}`,{
-            method: "GET"
+        const responseEmail = await fetch(`/api/manage_account/register`,{
+            method: "POST",
+            body: JSON.stringify({name, email, password}),
         });
         
         if(responseEmail.ok){
@@ -110,7 +111,6 @@ function Register() {
     
     return(
         <>
-            {/* <NavbarUser/> */}
             <div className={styles.container}>
                 <div className={styles.img_main}>
                     <Image src="/main_login_register.png" alt="Icon" fill></Image>

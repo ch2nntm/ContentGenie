@@ -3,15 +3,15 @@
 import useSWR from "swr";
 import styles from "../dashboard/dashboard.module.css";
 import Link from "next/link";
-import NavbarUser from "@/components/navbar_user";
+import NavbarUser from "@/app/component/navbar_user/page";
 import SearchIcon from "@mui/icons-material/Search";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import SettingsIcon from "@mui/icons-material/Settings";
 import Cookies from "js-cookie";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
+
 
 interface account {
     id: number;
@@ -30,21 +30,6 @@ interface post{
     name: string;
     platform: string;
 }
-
-// const fetcher = async ([url, type]: [string, string]) => {
-//     const token = Cookies.get("token");
-//     if (!token) return [];
-
-//     const res = await fetch(url, {
-//         method: "GET",
-//         headers: {
-//             Authorization: `Bearer ${token}`,
-//         }
-//     });
-
-//     if (!res.ok) return [];
-//     return (await res.json())?.[type] || [];
-// };
 
 const fetcher = async ([url, type, searchQuery]: [string, string, string | null]) => {
     const token = Cookies.get("token");
@@ -70,23 +55,16 @@ export default function DashBoard() {
     const t = useTranslations("dashboard");
 
     const { data: users = [] } = useSWR(
-        ["/api/manage_account/user", "users", searchQuery],
+        ["/api/admin/user", "users", searchQuery],
         fetcher
     );
 
     const { data: posts = []} = useSWR(
-        ["/api/manage_account/list_post", "posts", searchQuery],
+        ["/api/admin/list_post", "posts", searchQuery],
         fetcher,
     );
 
-  
-
   console.log("searchQueryerre: ",searchQuery);
-
-  const token = Cookies.get("token");
-  if(!token){
-      window.location.href = "/component/account_user/login_user";
-  }
 
   return (
     <div className={styles.container}>
@@ -119,12 +97,6 @@ export default function DashBoard() {
                         </div>
                         <p className={styles.text_analytics}>{t("sidebar_analytics")}</p>
                     </Link>
-                    <div className={styles.settings}>
-                        <div className={styles.icon_settings}>
-                            <SettingsIcon></SettingsIcon>
-                        </div>
-                        <p className={styles.text_settings}>{t("sidebar_settings")}</p>
-                    </div>
                 </div>
                 <div className={styles.section}>
                     <div className={styles.user_management}>

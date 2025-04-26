@@ -13,7 +13,7 @@ export async function GET(req) {
     const cookieStore = await cookies();
   
     if (!code) {
-      return NextResponse.json({ status: "error", message: "Missing authorization code", error }, { status: 400 });
+      return NextResponse.json({ status: "error", message: "Missing authorization code" }, { status: 400 });
     }
   
     const MASTODON_INSTANCE = process.env.MASTODON_INSTANCE;
@@ -60,7 +60,7 @@ export async function GET(req) {
     
     } catch (error) {
       console.error("Error exchanging token:", error);
-      return NextResponse.json({ status: "error", message: "Internal Server Error", error }, { status: 500 });
+      return NextResponse.json({ status: "error", message: error }, { status: 500 });
     }
   }
   

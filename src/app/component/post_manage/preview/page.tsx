@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import styles from "../preview/preview.module.css";
-import NavbarUser from "@/components/navbar_user";
+import NavbarUser from "@/app/component/navbar_user/page";
 import { useAuth } from "../../authProvider";
 import Modal from "react-bootstrap/Modal";
 import Cookies from "js-cookie";
@@ -59,12 +59,7 @@ function PreviewPage() {
 
     const [imgUrl, setImgUrl] = useState("");
     const [imgUrlTest, setImgUrlTest] = useState("");
-    const [messages] = useState<{ role: string; content: string }[]>([
-        // {
-        //     // role: "system", 
-        //     // content: `Tôi đang sử dụng AI trong việc marketing, hãy giúp tôi đưa ra caption tối đa 500 kí tự về chủ đề ${topic}....! Hãy trả lời bằng ngôn ngữ mà người dùng hỏi`
-        // },
-    ]);
+    const [messages] = useState<{ role: string; content: string }[]>([]);
 
     const [loading, setLoading] = useState(false); 
    
@@ -181,7 +176,7 @@ function PreviewPage() {
     };
 
     useEffect(() => {
-        if (!hasFetched.current) {  // Tránh gọi hàm fetchData nhiều lần
+        if (!hasFetched.current) {  
             fetchData(keyword);
             hasFetched.current = true;
         }

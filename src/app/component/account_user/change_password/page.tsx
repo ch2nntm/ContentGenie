@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { toast, ToastContainer } from "react-toastify";
-import NavbarUser from "../../../../components/navbar_user";
+import NavbarUser from "../../navbar_user/page";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';

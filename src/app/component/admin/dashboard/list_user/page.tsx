@@ -1,12 +1,11 @@
 "use client"
-import NavbarUser from "@/components/navbar_user";
+import NavbarUser from "@/app/component/navbar_user/page";
 import styles from "../list_user/list_user_dashboard.module.css"
 import Link from "next/link";
 import SearchIcon from "@mui/icons-material/Search";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import SettingsIcon from "@mui/icons-material/Settings";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
@@ -35,7 +34,7 @@ function ListUserDashboard() {
             }
             setLoading(true);
             try{
-                const response = await fetch("/api/manage_account/user",{
+                const response = await fetch("/api/admin/user",{
                     method: "GET",
                     headers:{
                         "Authorization": `Bearer: ${token}`
@@ -87,12 +86,6 @@ function ListUserDashboard() {
                         </div>
                         <p className={styles.text_analytics}>{t("sidebar_analytics")}</p>
                     </Link>
-                    <div className={styles.settings}>
-                        <div className={styles.icon_settings}>
-                            <SettingsIcon></SettingsIcon>
-                        </div>
-                        <p className={styles.text_settings}>{t("sidebar_settings")}</p>
-                    </div>
                 </div>
                 <div className={styles.section}>
                     <div className={styles.item_user_management}>

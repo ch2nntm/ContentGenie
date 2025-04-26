@@ -11,7 +11,7 @@ export async function GET() {
     console.log("SCOPE", SCOPE);
   
     if (!CLIENT_ID) {
-      return NextResponse.json({ status: "error", message: "Missing MASTODON_CLIENT_ID", error }, { status: 500 });
+      return NextResponse.json({ status: "error", message: "Missing MASTODON_CLIENT_ID" }, { status: 500 });
     }
 
     const authUrl = `${MASTODON_INSTANCE}/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPE)}&response_type=code`;

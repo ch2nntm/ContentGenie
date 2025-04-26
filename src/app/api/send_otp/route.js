@@ -30,7 +30,7 @@ const sendEmail = async (email, otp) => {
 export async function POST(req) {
     try {
         const { email } = await req.json();
-        if (!email) return NextResponse.json({ status: "error", message: "Email is required", error }, { status: 400 });
+        if (!email) return NextResponse.json({ status: "error", message: "Email is required" }, { status: 400 });
 
         const otp = generateOTP();
 
@@ -46,6 +46,6 @@ export async function POST(req) {
         return NextResponse.json({ status: "success", message: "OTP sent successfully" }, { status: 200 });
     } catch (error) {
         console.log("Error sending OTP:", error);
-        return NextResponse.json({ status: "error", message: "Error sending OTP", error  }, { status: 500 });
+        return NextResponse.json({ status: "error", message: error  }, { status: 500 });
     }
 }

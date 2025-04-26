@@ -1,19 +1,8 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import mysql from "mysql2/promise";
-import fs from "fs";
 import { cookies } from "next/headers";
-
-const dbConfig = {
-    host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
-    port: 4000,
-    user: "23RJwZS9wrfiKxq.root",
-    password: "SxywZGpysG9CqoUA",
-    database: "testdbnextjs",
-    ssl: {
-        ca: fs.readFileSync("/etc/ssl/cert.pem"),
-    },
-};
+import dbConfig from "../../../../../dbConfig.js";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -34,7 +23,7 @@ export async function POST(req) {
         const token = authHeader?.split(" ")[1];
 
         if (!token) {
-            return NextResponse.json({ status: "error", message: "No tokens", error }, { status: 401 });
+            return NextResponse.json({ status: "error", message: "No tokens" }, { status: 401 });
         }
 
         const listmessages = await fetchRecentConversation(body.messages[body.messages.length-1].content, body.topicName, body.user_Id);
@@ -61,11 +50,11 @@ export async function POST(req) {
         );
 
         if(resultUser.length===0){
-          return NextResponse.json({ status: "error", message: "Missing user", error }, { status: 400 });
+          return NextResponse.json({ status: "error", message: "Missing user" }, { status: 400 });
         }
 
         if((resultUser[0][0].credits===0 && !resultUser[0][0].expiration_date) || (resultUser[0][0].credits===0 && resultUser[0][0].expiration_date < Date.now())){
-          return NextResponse.json({ status: "error", message: "Missing empty credits", error }, { status: 402 });
+          return NextResponse.json({ status: "error", message: "Missing empty credits" }, { status: 402 });
         }
         else {
           if((!resultUser[0][0].expiration_date && resultUser[0][0].credits>0) || (resultUser[0][0].expiration_date < Date.now() && resultUser[0][0].credits>0)){
@@ -127,7 +116,7 @@ export async function POST(req) {
                 ).toString("base64")}`,
             },
             body: new URLSearchParams({
-                grant_type: "client_credentials", // Không cho dùng tài khoản cá nhân
+                grant_type: "client_credentials", // No personal accounts allowed
             }),
           });
 
@@ -172,7 +161,7 @@ export async function POST(req) {
         }
       } catch (error) {
         console.error("Error:", error);
-        return NextResponse.json({ status: "error", message: "Internal server error", error}, { status: 500 });
+        return NextResponse.json({ status: "error", message: error}, { status: 500 });
       }
   }
 

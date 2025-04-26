@@ -19,7 +19,7 @@ type PageProps = Promise<{
 const getPostDetail = async (post_id: string) => {
   try {
     const BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXTAUTH_URL;
-    const res = await fetch(`${BASE_URL}/api/manage_account/list_post/${post_id}`, {
+    const res = await fetch(`${BASE_URL}/api/admin/list_post/${post_id}`, {
       method: "GET",
       headers: { "Accept": "application/json" },
       cache: "no-store",
@@ -42,7 +42,7 @@ export default async function ViewUserDetail(props : { params: PageProps }) {
   console.log("Post detail:", detailPost);
 
   const t = getTranslations("detail_post");
-  const NavbarComponent = dynamic(() => import("@/components/navbar_user"));
+  const NavbarComponent = dynamic(() => import("@/app/component/navbar_user/page"));
 
   const convertDay = async (day: Date) => {
     const postDate = new Date(day);

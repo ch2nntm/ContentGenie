@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl";
 import styles from "../content_generator/content_generator.module.css";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie"; //Client component
-import NavbarUser from "@/components/navbar_user";
+import NavbarUser from "@/app/component/navbar_user/page";
 import { useRouter } from "next/navigation";
 import ShareIcon from '@mui/icons-material/Share';
 import WatchLaterIcon from '@mui/icons-material/WatchLater';
@@ -26,7 +26,7 @@ function ContentGeneratorPage() {
     const [selectedPlatform, setSelectedPlatform] = useState("");
     const [selectTopic, setSelectTopic] = useState("Spotify");
     const [enterKeyword, setEnterKeyword] = useState("");
-    const [selectedAudience, setSelectedAudience] = useState("public");
+    const [selectedAudience, setSelectedAudience] = useState("");
     const [isOnDaily, setIsOnDaily] = useState(false);
     const [isFullField, setIsFullField] = useState(false);
     const router = useRouter();

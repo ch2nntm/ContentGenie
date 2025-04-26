@@ -107,7 +107,7 @@
   border: 0;
   box-sizing: border-box;
   border-radius: 6px;
-  background-color: #ff0001;
+  background-color: var(--primary-color);
   color: #ffffff;
   font-size: 24px;
   font-family: "Roboto";

@@ -1,17 +1,6 @@
-import fs from "fs";
 import mysql from "mysql2/promise";
 import { NextResponse } from "next/server";
-
-const dbConfig = {
-    host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
-    port: 4000,
-    user: "23RJwZS9wrfiKxq.root",
-    password: "SxywZGpysG9CqoUA",
-    database: "testdbnextjs",
-    ssl: {
-        ca: fs.readFileSync("/etc/ssl/cert.pem"),
-    },
-};
+import dbConfig from "../../../../../dbConfig.js";
 
 export async function POST(req) {
     try{
@@ -25,11 +14,11 @@ export async function POST(req) {
         if (rows.length > 0) {
             return NextResponse.json({ status: "success", message: "Email is exist!" }, { status: 200 });
         } else {
-            return NextResponse.json({ status: "error", message: "Wrong email!", error },{ status: 400 });
+            return NextResponse.json({ status: "error", message: "Wrong email!" },{ status: 400 });
         }
     } catch (error) {
         console.error(error);
-        return NextResponse.json({ status: "error", message: "Database connection error!", error },{ status: 500 });
+        return NextResponse.json({ status: "error", message: error },{ status: 500 });
     }
 }
 
@@ -38,7 +27,7 @@ export async function PUT(req) {
         const { password, email } = await req.json();
 
         if (!password) {
-            return NextResponse.json({ status: "error", message: "Missing password", error }, { status: 400 });
+            return NextResponse.json({ status: "error", message: "Missing password" }, { status: 400 });
         }
 
         const connection = await mysql.createConnection(dbConfig);
@@ -51,7 +40,7 @@ export async function PUT(req) {
 
         if(resultExist.affectedRows !== 0 && resultExist[0].password === password){
             console.log("resultExist:",resultExist);
-            return NextResponse.json({ status: "error", message: "Old password matches new password", error }, { status: 202 });;
+            return NextResponse.json({ status: "error", message: "Old password matches new password" }, { status: 400 });;
         }
 
         const [result] = await connection.execute(
@@ -62,13 +51,13 @@ export async function PUT(req) {
         await connection.end();
 
         if (result.affectedRows === 0) {
-            return NextResponse.json({ status: "error", message: "Wrong email or account not found", error }, { status: 400 });
+            return NextResponse.json({ status: "error", message: "Wrong email or account not found" }, { status: 400 });
         }
 
         return NextResponse.json({ status: "success", message: "Password updated successfully" }, { status: 200 });
 
     } catch (error) {
         console.error(error);
-        return NextResponse.json({ status: "error", message: "Database connection error!", error }, { status: 500 });
+        return NextResponse.json({ status: "error", message: error }, { status: 500 });
     }
 }

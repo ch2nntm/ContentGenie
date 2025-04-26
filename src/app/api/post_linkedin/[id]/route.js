@@ -1,18 +1,7 @@
 import { NextResponse } from "next/server";
 import mysql from "mysql2/promise";
-import fs from "fs";
 import { cookies } from "next/headers";
-
-const dbConfig = {
-    host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
-    port: 4000,
-    user: "23RJwZS9wrfiKxq.root",
-    password: "SxywZGpysG9CqoUA",
-    database: "testdbnextjs",
-    ssl: {
-        ca: fs.readFileSync("/etc/ssl/cert.pem"), 
-    },
-};
+import dbConfig from "../../../../../dbConfig.js";
 
 const LINKEDIN_URL_API = process.env.LINKEDIN_URL_API;
 
@@ -25,7 +14,7 @@ export async function DELETE(req, { params }) {
         console.log("Token từ cookies: ", token_linkedin);
     
         if (!token_linkedin) {
-            return NextResponse.json({ status: "error", message: "No token provided", error }, { status: 401 });
+            return NextResponse.json({ status: "error", message: "No token provided" }, { status: 401 });
         }
 
         const connection = await mysql.createConnection(dbConfig);
@@ -59,6 +48,6 @@ export async function DELETE(req, { params }) {
         return NextResponse.json({ status: "success", message: "Delete post success" }, { status: 200 });
     } catch (error) {
       console.error("Token Decode Error:", error);
-      return NextResponse.json({ status: "error", message: "Failed to decode ID Token", error }, { status: 500 });
+      return NextResponse.json({ status: "error", message: error}, { status: 500 });
     }
   }

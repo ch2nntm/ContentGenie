@@ -1,18 +1,7 @@
 import mysql from "mysql2/promise";
 import { NextResponse } from "next/server";
 import { SignJWT } from "jose";
-import fs from "fs";
-
-const dbConfig = {
-    host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
-    port: 4000,
-    user: "23RJwZS9wrfiKxq.root",
-    password: "SxywZGpysG9CqoUA",
-    database: "testdbnextjs",
-    ssl: {
-        ca: fs.readFileSync("/etc/ssl/cert.pem"), 
-    },
-  };
+import dbConfig from "../../../../../dbConfig.js";
 
 const secretKey = new TextEncoder().encode("your-secret-key");
 
@@ -29,7 +18,7 @@ async function generateToken(payload) {
     const token = authHeader?.split(" ")[1];
 
     if (!token) {
-        return NextResponse.json({ status: "error", message: "No tokens", error }, { status: 401 });
+        return NextResponse.json({ status: "error", message: "No tokens" }, { status: 401 });
     }
 
     try {
@@ -43,7 +32,7 @@ async function generateToken(payload) {
 
         if (result.affectedRows === 0) {
             await connection.end();
-            return NextResponse.json({ status: "error", message: "Incorrect username or password", error }, { status: 400 });
+            return NextResponse.json({ status: "error", message: "Incorrect username or password" }, { status: 400 });
         }
 
         const [updatedUser] = await connection.execute(
@@ -53,7 +42,7 @@ async function generateToken(payload) {
         await connection.end();
 
         if (updatedUser.length === 0) {
-            return NextResponse.json({ status: "error", message: "User not found", error }, { status: 404 });
+            return NextResponse.json({ status: "error", message: "User not found" }, { status: 404 });
         }
 
         const user = updatedUser[0];
@@ -63,13 +52,13 @@ async function generateToken(payload) {
 
         return NextResponse.json({
             status: "success",
-            message: "Mật khẩu đã được thay đổi thành công",
+            message: "Password has been changed successfully",
             accessToken: newToken, 
             data: user, 
         }, { status: 200 });
 
     } catch (error) {
         console.error("Error: ", error);
-        return NextResponse.json({ status: "error", message: "System error", error }, { status: 500 });
+        return NextResponse.json({ status: "error", message: error }, { status: 500 });
     }
 }

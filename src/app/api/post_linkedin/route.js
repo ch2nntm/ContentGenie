@@ -1,4 +1,3 @@
-import { error } from "console";
 import { NextResponse } from "next/server";
 
 const LINKEDIN_URL_API = process.env.LINKEDIN_URL_API;
@@ -9,7 +8,7 @@ export async function GET(req) {
     const token = authHeader?.split(" ")[1];
 
     if (!token) {
-      return NextResponse.json({ status: "error", message: "Missing ID Token", error }, { status: 400 });
+      return NextResponse.json({ status: "error", message: "Missing ID Token" }, { status: 400 });
     }
 
     const response = await fetch(`${LINKEDIN_URL_API}/v2/userinfo`, {
@@ -23,7 +22,7 @@ export async function GET(req) {
     return NextResponse.json({ status: "success", message: "Get info account linkedin success", data: data }, { status: 200 });
   } catch (error) {
     console.error("Token Decode Error:", error);
-    return NextResponse.json({ status: "error", message: "Failed to decode ID Token", error }, { status: 500 });
+    return NextResponse.json({ status: "error", message: error }, { status: 500 });
   }
 }
 
@@ -32,7 +31,7 @@ export async function POST(req) {
     const { userId, content, audience, image} = await req.json();
   
     if (!userId || !content || !audience) {
-      return NextResponse.json({ status: "error", message: "Missing data", error }, { status: 400 });
+      return NextResponse.json({ status: "error", message: "Missing data" }, { status: 400 });
     }
     const authHeader = req.headers.get("authorization"); 
     const token = authHeader?.split(" ")[1];
@@ -66,7 +65,7 @@ export async function POST(req) {
       if (response.ok) {
         return NextResponse.json({ status: "success", message: "Post linkedin success", data: data });
       } else {
-        return NextResponse.json({ status: "error", message: "Failed to post", error }, { status: 400 });
+        return NextResponse.json({ status: "error", message: "Failed to post" }, { status: 400 });
       }
     }
     else{
@@ -158,19 +157,19 @@ export async function POST(req) {
           if (response.ok) {
             return NextResponse.json({ status: "success", message: "Post linkedin success", data: dataResult });
           } else {
-            return NextResponse.json({ status: "error", message: "Failed to post", error }, { status: 400 });
+            return NextResponse.json({ status: "error", message: "Failed to post" }, { status: 400 });
           }
         }
         
-        return NextResponse.json({ status: "error", message: "Missing wrong", error }, { status: 400 });
+        return NextResponse.json({ status: "error", message: "Missing wrong" }, { status: 400 });
       } catch (error) {
         console.error('Error during the upload process:', error);
+        return NextResponse.json({ status: "error", message: error}, { status: 400 });
       }
-    return NextResponse.json({ status: "error", message: "Missing wrong", error}, { status: 400 });
     }
   }catch(error){
     console.log("error: ",error);
-    return NextResponse.json({ status: "error", message: "Missing wrong", error}, {status: 500});
+    return NextResponse.json({ status: "error", message: error}, {status: 500});
   }
 }
 

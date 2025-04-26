@@ -13,7 +13,7 @@ export async function GET(req) {
     const cookieStore = await cookies();
   
     if (!code) {
-      return NextResponse({ status: "error", message: "Missing authorization code", code: 400, error }, { status: 400 });
+      return NextResponse({ status: "error", message: "Missing authorization code" }, { status: 400 });
     }
   
     const LINKEDIN_INSTANCE = process.env.LINKEDIN_INSTANCE;
@@ -65,7 +65,7 @@ export async function GET(req) {
     return Response.redirect(new URL(`/component/post_manage/preview_linkedin?${redirectParams.value}`, req.url), 302);
     } catch (error) {
       console.error("Error exchanging token:", error);
-      return NextResponse.json({ status: "error", message: "Internal Server Error: ", code: 500, error }, { status: 500 });
+      return NextResponse.json({ status: "error", message: error }, { status: 500 });
     }
   }
   

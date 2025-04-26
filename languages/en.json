@@ -79,7 +79,8 @@
         "send_code_successful":"Send code successful!",
         "wrong_code":"Wrong code!",
         "resend_code": "Resend code",
-        "resend_code_again": "Code sent again"
+        "resend_code_again": "Code sent again",
+        "exist_account": "Account already exists!"
     },
     "preview": {
         "time": "hours ago",

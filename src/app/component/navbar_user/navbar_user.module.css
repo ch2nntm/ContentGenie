@@ -173,7 +173,9 @@
 }
 
 .edit_profile_hide,
-.dashboard_hide{
+.dashboard_hide,
+.content_generator_hide,
+.upgrade_package_hide{
     display: none;
 }
 

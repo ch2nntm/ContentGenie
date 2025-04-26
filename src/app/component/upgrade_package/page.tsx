@@ -1,6 +1,6 @@
 "use client"
 import styles from "../upgrade_package/upgrade_package.module.css";
-import NavbarUser from "@/components/navbar_user";
+import NavbarUser from "@/app/component/navbar_user/page";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useSearchParams } from "next/navigation";
@@ -120,7 +120,7 @@ export default function UpgradePackagePage(){
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    amount: 1,
+                    amount: 10000,
                     description: "Upgrade credits",
                     cancelUrl: "/component/upgrade_package",
                     returnUrl: "/component/upgrade_package"
@@ -136,9 +136,6 @@ export default function UpgradePackagePage(){
                 window.location.href = data.paymentUrl.data.checkoutUrl;
             } 
         }
-        else{
-            toast.error("Vui long dang nhap!");
-        }
     }
 
     const handleUpgradeMonth = async () => {
@@ -147,7 +144,7 @@ export default function UpgradePackagePage(){
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    amount: 3,
+                    amount: 30000,
                     description: "Upgrade month",
                     cancelUrl: "/component/upgrade_package",
                     returnUrl: "/component/upgrade_package"
@@ -163,9 +160,6 @@ export default function UpgradePackagePage(){
                 window.location.href = data.paymentUrl.data.checkoutUrl;
             } 
         }
-        else{
-            toast.error("Vui long dang nhap!");
-        }
     }
 
     const handleUpgradeYear = async () => {
@@ -174,7 +168,7 @@ export default function UpgradePackagePage(){
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    amount: 20,
+                    amount: 250000,
                     description: "Upgrade year",
                     cancelUrl: "/component/upgrade_package",
                     returnUrl: "/component/upgrade_package"
@@ -189,9 +183,6 @@ export default function UpgradePackagePage(){
             if (data && data.paymentUrl.code === '00') {
                 window.location.href = data.paymentUrl.data.checkoutUrl;
             } 
-        }
-        else{
-            toast.error("Vui long dang nhap!");
         }
     }
 

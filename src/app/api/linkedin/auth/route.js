@@ -7,7 +7,7 @@ export async function GET() {
     const SCOPE = process.env.LINKEDIN_SCOPE;
   
     if (!CLIENT_ID) {
-      return NextResponse.json({ status: "error", message: "Missing MASTODON_CLIENT_ID", code: 500, error }, { status: 500 });
+      return NextResponse.json({ status: "error", message: "Missing MASTODON_CLIENT_ID" }, { status: 500 });
     }
   
     const authUrl = `${LINKEDIN_INSTANCE}/oauth/v2/authorization?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPE)}`;

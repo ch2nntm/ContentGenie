@@ -1,7 +1,7 @@
 "use client";
 import useSWR from "swr";
-import { useEffect, useState } from "react";
-import styles from "../app/styles/navbar_user.module.css";
+import { useState } from "react";
+import styles from "../navbar_user/navbar_user.module.css";
 import Image from "next/image";
 import Link from "next/link";
 import Cookies from "js-cookie";
@@ -36,21 +36,12 @@ function NavbarUser() {
     const t = useTranslations("navbar_user");
     const router = useRouter();
     const pathname = usePathname();  
-    const isDashboard = pathname === "/component/admin/dashboard";
 
-    const { data, error } = useSWR("/api/manage_account/login", fetcher);
+    const { data } = useSWR("/api/manage_account/login", fetcher);
     const user = data?.user?.name || null;
     const roleUser = data?.user?.role || 0;
     const avtUser = data?.user?.avatar || null;
     const password = data?.user?.password || null;
-
-    useEffect(() => {
-        if (error) {
-            Cookies.remove("token");
-            window.location.href = "/component/account_user/login_user";
-            console.error(t('error_get_user'), error);
-        }
-    }, [error]);
 
     const handleSubmitSignout = async () => {
         try {
@@ -65,8 +56,7 @@ function NavbarUser() {
                 Cookies.remove("mastodon_token");
                 Cookies.remove("token");  
                 Cookies.remove("redirect_params");
-                await signOut({ redirect: false });
-                router.push("/component/account_user/login_user");
+                await signOut({ callbackUrl: "/component/account_user/login_user" });
                 toast.success(t("logout_success"));
             } else {
                 toast.error(t("logout_fail"));
@@ -96,22 +86,22 @@ function NavbarUser() {
 
             {user && (
                 <div className={styles.link_nav}>
-                    <Link href="/component/post_manage/content_generator" className={pathname === "/component/post_manage/content_generator" ? styles.content_generator_current : styles.content_generator}>
+                    <Link href="/component/post_manage/content_generator" className={roleUser === 0 ? (pathname === "/component/post_manage/content_generator" ? styles.content_generator_current : styles.content_generator) : styles.content_generator_hide }>
                         <p>{t("create_content")}</p>
                     </Link>
-                    <Link href="/component/upgrade_package" className={pathname === "/component/upgrade_package" ? styles.upgrade_package_current : styles.upgrade_package}>
+                    <Link href="/component/upgrade_package" className={roleUser === 0 ? (pathname === "/component/upgrade_package" ? styles.upgrade_package_current : styles.upgrade_package) : styles.upgrade_package_hide}>
                         <p>{t("credits")}</p>
                     </Link>
                     <Link href="/component/post_manage/list_post_user" className={roleUser === 0 ? (pathname === "/component/post_manage/list_post_user" ? styles.post_management_current : styles.post_management) : styles.edit_profile_hide}>
                         <p>{t("post_management")}</p>
                     </Link>
-                    <Link href="/component/admin/dashboard" className={roleUser === 1 ? (pathname === "/component/admin/dashboard" ? styles.dashboard_current : styles.dashboard) : styles.dashboard_hide}>
+                    {/* <Link href="/component/admin/dashboard" className={roleUser === 1 ? (pathname === "/component/admin/dashboard" ? styles.dashboard_current : styles.dashboard) : styles.dashboard_hide}>
                         <p>{t("dashboard")}</p>
-                    </Link>
+                    </Link> */}
                 </div>
             )}
 
-            <div className={isDashboard ? styles.search : styles.search_hide}>
+            <div className={ pathname === "/component/admin/dashboard" ? styles.search : styles.search_hide}>
                 <input className={roleUser === 0 ? styles.input_search_hide : styles.input_search} type="text" placeholder={t("input_search")} value={inputSearch} onChange={(e) => setInputSearch(e.target.value)} />
                 <button onClick={handleSearch} className={roleUser === 0 ? styles.btn_search_hide : styles.btn_search}>
                     <SearchIcon />

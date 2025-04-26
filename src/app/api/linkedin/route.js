@@ -46,7 +46,7 @@ export async function GET(req) {
     const token = authHeader?.split(" ")[1];
 
     if (!token) {
-      return NextResponse.json({ status: "error", message: "Missing ID Token", error }, { status: 401 });
+      return NextResponse.json({ status: "error", message: "Missing ID Token" }, { status: 401 });
     }
 
     const decoded = jwt.decode(token);
@@ -55,7 +55,7 @@ export async function GET(req) {
     return NextResponse.json({ status: "success", message: "Get info linkedin success", data: decoded}, { status: 200 });
   } catch (error) {
     console.error("Token Decode Error:", error);
-    return NextResponse.json({ status: "error", message: "Failed to decode ID Token", error }, { status: 500 });
+    return NextResponse.json({ status: "error", message: error }, { status: 500 });
   }
 }
 

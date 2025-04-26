@@ -2,7 +2,7 @@ import NextAuth, { NextAuthOptions, Profile } from 'next-auth';
 import prisma from '../../../../../lib/prisma';
 import GoogleProvider from 'next-auth/providers/google';
 import { JWTPayload, SignJWT } from 'jose';
-import  {cookies} from "next/headers";
+// import  {cookies} from "next/headers";
 
 declare module "next-auth" {
   interface Profile {
@@ -13,6 +13,13 @@ declare module "next-auth" {
     name?: string;
     credits?: number;
     expiration_date?: Date;
+  }
+
+  interface Session {
+    accessToken?: string;
+    user: {
+      role?: number;
+    };
   }
 }
 
@@ -71,16 +78,29 @@ const authOptions: NextAuthOptions = {
           const payload = profile;
          
           token.accessToken = await generateToken(payload);
+          token.role = profile.role;
         }
-        if (token.accessToken) {
-          const cookieStore = await cookies();
-          console.log("Session accessToken: ", String(token.accessToken));
-          cookieStore.set("token", String(token.accessToken), { path: "/", sameSite: "lax" });
-        }
-
+        // if (token.accessToken) {
+        //   const cookieStore = await cookies();
+        //   console.log("Session accessToken: ", String(token.accessToken));
+        //   cookieStore.set("token", String(token.accessToken), { path: "/", sameSite: "lax" });
+        // }
         console.log("Token JWT Backend: ", token);
         return token;
-      }
+      },
+      async session({ session, token }) {
+        session.accessToken = typeof token.accessToken === 'string' ? token.accessToken : undefined;
+        session.user.role = token.role as number | undefined;
+        return session;
+      },
+      // async redirect(token){
+      //   if(token.role === 1){
+      //     return "/component/admin/dashboard";
+      //   }
+      //   else {
+      //     return "/component/post_manage/content_generator";
+      //   }
+      // }
     },
 };
 

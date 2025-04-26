@@ -5,8 +5,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import SettingsIcon from "@mui/icons-material/Settings";
-import NavbarUser from "@/components/navbar_user";
+import NavbarUser from "@/app/component/navbar_user/page";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
@@ -149,12 +148,6 @@ function Statistic() {
                         <div className={styles.container_text_analytics}>
                             <p className={styles.text_analytics}>{t("sidebar_analytics")}</p>
                         </div>
-                    </div>
-                    <div className={styles.settings}>
-                        <div className={styles.icon_settings}>
-                            <SettingsIcon></SettingsIcon>
-                        </div>
-                        <p className={styles.text_settings}>{t("sidebar_settings")}</p>
                     </div>
                 </div>
                 <div className={styles.section}>

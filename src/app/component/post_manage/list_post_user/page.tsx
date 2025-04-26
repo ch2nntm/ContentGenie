@@ -20,7 +20,7 @@ import Form from "react-bootstrap/esm/Form";
 import CloseIcon from '@mui/icons-material/Close';
 import { toast, ToastContainer } from "react-toastify";
 
-const NavbarComponent = dynamic(() => import("@/components/navbar_user"));
+const NavbarComponent = dynamic(() => import("@/app/component/navbar_user/page"));
 
 interface Post {
     id: number;

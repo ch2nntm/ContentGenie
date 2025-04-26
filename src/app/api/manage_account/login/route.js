@@ -2,27 +2,16 @@ import mysql from "mysql2/promise";
 import { NextResponse } from "next/server";
 import { SignJWT } from "jose";
 import { jwtVerify } from "jose"; 
-import fs from "fs";
+import dbConfig from "../../../../../dbConfig.js";
 
-const dbConfig = {
-    host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
-    port: 4000,
-    user: "23RJwZS9wrfiKxq.root",
-    password: "SxywZGpysG9CqoUA",
-    database: "testdbnextjs",
-    ssl: {
-        ca: fs.readFileSync("/etc/ssl/cert.pem"), // Đọc file chứng chỉ CA
-    },
-  };
-
-const secretKey = new TextEncoder().encode("your-secret-key"); //khóa bí mật dùng để ký JWT (JSON Web Token), chuyển đổi khoá bị mật thành một dạng Uint8Array (mảng byte).
+const secretKey = new TextEncoder().encode("your-secret-key"); 
 
 async function generateToken(payload) {
     return await new SignJWT(payload)
-        .setProtectedHeader({ alg: "HS256" }) // Định nghĩa thuật toán mã hoá (HS256)
-        .setIssuedAt() // Thêm thời điểm phát hành (iat)
+        .setProtectedHeader({ alg: "HS256" }) 
+        .setIssuedAt() 
         .setExpirationTime("1h") 
-        .sign(secretKey); //Ký JWT với khoá bí mật
+        .sign(secretKey); 
 }
 
 export async function GET(request) {
@@ -77,7 +66,7 @@ export async function POST(req) {
         }
     } catch (error) {
         console.error(error);
-        return NextResponse.json({ status: "error", message: "Database connection error!" }, { status: 500 });
+        return NextResponse.json({ status: "error", message: error }, { status: 500 });
     }
 }
 

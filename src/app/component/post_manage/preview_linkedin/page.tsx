@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import styles from "../preview_linkedin/preview_linkedin.module.css";
-import NavbarUser from "@/components/navbar_user";
+import NavbarUser from "@/app/component/navbar_user/page";
 import { useAuth } from "../../authProvider";
 import Modal from "react-bootstrap/Modal";
 import Cookies from "js-cookie";
@@ -55,19 +55,14 @@ function PreviewPage() {
 
     const [imgUrl, setImgUrl] = useState("");
     const [imgUrlTest, setImgUrlTest] = useState("");
-    const [messages] = useState([
-        {
-            role: "system", 
-            content: `Tôi đang sử dụng AI trong việc marketing, hãy giúp tôi đưa ra caption tối đa 500 kí tự về chủ đề ${topic}....! Hãy trả lời bằng ngôn ngữ mà người dùng hỏi`
-        },
-    ]);
+    const [messages] = useState<{ role: string; content: string }[]>([]);
 
     const [loading, setLoading] = useState(false); 
 
     const uploadToCloudinary = async (file: string | Blob) => {
         if (typeof file === "string" && file.startsWith("http")) {
             console.log("Skipping upload for already uploaded URL:", file);
-            return file; // Trả luôn URL cũ
+            return file; 
         }
     
         const cloudinaryUrl = process.env.CLOUDINARY_URL;
@@ -204,24 +199,14 @@ function PreviewPage() {
         setIsVideoTest(false);
     }
 
-
     const hanldeSave = async () => {
         setContent(updateContent);
         setOpenModal(false);
-        if(!imgUrl.startsWith("https://www.youtube.com")){
-            if(imgUrlTest !== "/upload_avt.png"){
-                const uploadedImgUrl = await uploadToCloudinary(imgUrlTest);
-                setImgUrl(uploadedImgUrl);
-            }
-            else{
-                setImgUrl("");
-            }
-            setIsVideo(false);
-        }
-        else{
+        if(imgUrlTest !== "/upload_avt.png")
             setImgUrl(imgUrlTest);
-            setIsVideo(true);
-        }
+        else
+            setImgUrl("");
+        setIsVideo(false);
     };
 
     const handleImageClick = () => {
@@ -230,72 +215,71 @@ function PreviewPage() {
         }
     };
 
-    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files.length > 0) {
-            const file = e.target.files[0];
-            const imageUrlTest = URL.createObjectURL(file);
-            const uploadedImgUrl = await uploadToCloudinary(imageUrlTest);
-            setImgUrlTest(uploadedImgUrl);
-        }
-    };
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            if (e.target.files && e.target.files.length > 0) {
+                const file = e.target.files[0];
+                const imageUrlTest = URL.createObjectURL(file);
+                setImgUrlTest(imageUrlTest);
+                console.log("Image Test: ", imageUrlTest);
+            }
+        };
 
-    const hanldeUpload = async () => {
-        try {
-            const linkedin_id_token = Cookies.get("linkedin_id_token");
-            const responseGetInfo = await fetch("/api/linkedin",{
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${linkedin_id_token}`,
+        const hanldeUpload = async () => {
+            try {
+                let uploadedImgUrl = imgUrl; 
+                if (imgUrl !== "/upload_avt.png" && imgUrl) {
+                    uploadedImgUrl = await uploadToCloudinary(imgUrl);
+                    setImgUrl(uploadedImgUrl);
                 }
-            });
-            const dataresponseGetInfo = await responseGetInfo.json();
-            console.log("dataresponseGetInfo: ",dataresponseGetInfo);
-
-            const token = Cookies.get("token");
-            const id_post = Math.floor(1000 + Math.random() * 9000).toString();
-            const userId = auth?.user?.id || null; 
-            const formattedPostTime = postTime instanceof Date 
-            ? postTime.toLocaleString("en-CA", { timeZone: "Asia/Ho_Chi_Minh" }) 
-            : postTime 
-                ? new Date(postTime).toLocaleString("en-CA", { timeZone: "Asia/Ho_Chi_Minh", hour12: false}) 
-                : null;
-            fetch("/api/post_manage/upload_post", {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    Accept: "application/json, text/plain,*/*",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    id: id_post,
-                    keyword,
-                    content,
-                    imgUrl,
-                    posttime: formattedPostTime,
-                    user_id: userId,
-                    platform,
-                    status: 0,
-                    audience,
-                    set_daily,
-                    nameSpotify,
-                    nameArtist,
-                    resultImage
-                }),
-            })
-            .then((res) => res.json())
-            .then((res) => {
-                if (res.message) {
-                    setOpenModal(false);
-                    toast.success("Successful");
-                    router.push("/component/post_manage/list_post_user");
-                } else if (res.error) {
-                    console.log("Res: ", res);
-                }
-            });
-        } catch (error) {
-            console.error("Lỗi khi đăng tweet:", error);
+    
+                const token = Cookies.get("token");
+    
+                const id_post = Math.floor(1000 + Math.random() * 9000).toString();
+    
+                const userId = auth?.user?.id || null; 
+                const formattedPostTime = postTime instanceof Date 
+                ? postTime.toLocaleString("en-CA", { timeZone: "Asia/Ho_Chi_Minh" }) 
+                : postTime 
+                    ? new Date(postTime).toLocaleString("en-CA", { timeZone: "Asia/Ho_Chi_Minh", hour12: false}) 
+                    : null;
+    
+                fetch("/api/post_manage/upload_post", {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: "application/json, text/plain,*/*",
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        id: id_post,
+                        keyword,
+                        content,
+                        imgUrl,
+                        posttime: formattedPostTime,
+                        user_id: userId,
+                        platform,
+                        status: 0,
+                        audience,
+                        set_daily,
+                        nameSpotify,
+                        nameArtist,
+                        resultImage
+                    }),
+                })
+                .then((res) => res.json())
+                .then((res) => {
+                    if (res.message) {
+                        setOpenModal(false);
+                        toast.success("Successful");
+                        router.push("/component/post_manage/list_post_user");
+                    } else if (res.error) {
+                        console.log("Res: ", res);
+                    }
+                });
+            } catch (error) {
+                console.error(error);
+            }
         }
-    }
 
     const handleDateChange = (event: { target: { value: string | number | Date; }; }) => {
         setPostTime(new Date(event.target.value));

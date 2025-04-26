@@ -244,7 +244,7 @@ function EditProfilePage() {
         setAvatar("");
     }
 
-    const NavbarComponent = dynamic(() => import("@/components/navbar_user"), {ssr: false});
+    const NavbarComponent = dynamic(() => import("@/app/component/navbar_user/page"), {ssr: false});
     return (
         <div className={styles.container}>
             <NavbarComponent />

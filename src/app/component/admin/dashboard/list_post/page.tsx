@@ -1,11 +1,9 @@
 "use client"
 import styles from "../list_post/list_post_dashboard.module.css";
-import NavbarUser from "@/components/navbar_user";
 import SearchIcon from "@mui/icons-material/Search";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import SettingsIcon from "@mui/icons-material/Settings";
 import { useTranslations } from "next-intl";
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import Cookies from "js-cookie";
@@ -14,6 +12,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PanToolAltOutlinedIcon from '@mui/icons-material/PanToolAltOutlined';
 import Link from "next/link";
 import Image from "next/image";
+import NavbarUser from "@/app/component/navbar_user/page";
 
 interface post{
     post_id: string;
@@ -41,7 +40,7 @@ function ListPostDashboard() {
                 window.location.href = "/component/account_user/login_user";
             }
             try {
-                const res = await fetch("/api/manage_account/list_post", {
+                const res = await fetch("/api/admin/list_post", {
                     method: "POST",
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -108,12 +107,6 @@ function ListPostDashboard() {
                         </div>
                         <p className={styles.text_analytics}>{t("sidebar_analytics")}</p>
                     </Link>
-                    <div className={styles.settings}>
-                        <div className={styles.icon_settings}>
-                            <SettingsIcon></SettingsIcon>
-                        </div>
-                        <p className={styles.text_settings}>{t("sidebar_settings")}</p>
-                    </div>
                 </div>
                 <div className={styles.section}>
                     <div className={styles.btn_time_group}>

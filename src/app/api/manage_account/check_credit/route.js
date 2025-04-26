@@ -1,17 +1,6 @@
 import mysql from "mysql2/promise";
 import { NextResponse } from "next/server";
-import fs from "fs";
-
-const dbConfig = {
-    host: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
-    port: 4000,
-    user: "23RJwZS9wrfiKxq.root",
-    password: "SxywZGpysG9CqoUA",
-    database: "testdbnextjs",
-    ssl: {
-        ca: fs.readFileSync("/etc/ssl/cert.pem"),
-    },
-};
+import dbConfig from "../../../../../dbConfig.js";
 
 export async function POST(req) {
     try{
@@ -22,11 +11,11 @@ export async function POST(req) {
         const token = authHeader?.split(" ")[1];
 
         if (!token) {
-            return NextResponse.json({ status: "error", message: "Missing token", error }, { status: 401 });
+            return NextResponse.json({ status: "error", message: "Missing token" }, { status: 401 });
         }
 
         if(!id){
-            return NextResponse.json({ status: "error", message: "Missing field", error}, {status: 402})
+            return NextResponse.json({ status: "error", message: "Missing field" }, {status: 402})
         }
         const [result] = await connection.execute(
             "SELECT credits, expiration_date FROM account WHERE id = ?",[id]
@@ -35,12 +24,12 @@ export async function POST(req) {
         await connection.end();
 
         if(result.length === 0){
-            throw new NextResponse.json({error}, {status: 400});
+            return NextResponse.json({ status: "error", message: "Credits of user isn't exist"}, {status: 400});
         }
         return NextResponse.json({ status: "success", message: "Check credits success", data: result}, {status: 200});
 
     }catch(error){
-        return NextResponse.json({ status: "error", message: "Something went wrong", error}, {status: 500});
+        return NextResponse.json({ status: "error", message: error}, {status: 500});
     }
 }
 
@@ -55,17 +44,17 @@ export async function PUT(req) {
         const token = authHeader?.split(" ")[1];
 
         if (!token) {
-            return new Response(JSON.stringify({ message: "Missing token" }), { status: 401 });
+            return NextResponse.json({ status: "error", message: "Missing token" }, { status: 401 });
         }
 
         if(!user_id){
-            return NextResponse.json({error: "Missing field"}, {status: 402})
+            return NextResponse.json({ status: "error", message: "Missing field" }, { status: 402 });
         }
         const [resultCheck] = await connection.execute(
             "SELECT credits, expiration_date FROM account WHERE id = ?", [user_id]
         );
 
-        if(amount === 1){
+        if(amount === 10000){
             const data = resultCheck[0].credits;
             const number_update = data + 20;
             await connection.execute(
@@ -73,10 +62,13 @@ export async function PUT(req) {
             );
             await connection.execute("INSERT INTO user_upgrade(user_id, package_buy, price, purchase_date) VALUES"
                  +" (?, 'Goi The', ?, ?)", [user_id, amount, new Date()]);
+
+            await connection.end();
+            return NextResponse.json({ status: "success", message: "Update package credit success" }, { status: 200 });
         }
         else{
             const expiration_date = resultCheck[0].expiration_date;
-            if(amount === 3){
+            if(amount === 30000){
                 const oneMonthLater = expiration_date;
                 oneMonthLater.setMonth(expiration_date.getMonth() + 1);
                 await connection.execute(
@@ -84,8 +76,11 @@ export async function PUT(req) {
                 );
                 await connection.execute("INSERT INTO user_upgrade(user_id, package_buy, price, purchase_date) VALUES"
                  +" (?, 'Goi Thang', ?, ?)", [user_id, amount, new Date()]);
+
+                await connection.end();
+                return NextResponse.json({ status: "success", message: "Update package month success" }, { status: 200 });
             }
-            else if(amount === 20){
+            else if(amount === 250000){
                 const oneYearLater = expiration_date;
                 oneYearLater.setFullYear(expiration_date.getFullYear() + 1);
                 await connection.execute(
@@ -93,16 +88,17 @@ export async function PUT(req) {
                 );
                 await connection.execute("INSERT INTO user_upgrade(user_id, package_buy, price, purchase_date) VALUES"
                  +" (?, 'Goi Nam', ?, ?)", [user_id, amount, new Date()]);
+
+                await connection.end();
+                return NextResponse.json({ status: "success", message: "Update package year success" }, { status: 200 });
+            }
+            else{
+                await connection.end();
+                return NextResponse.json({ status: "error", message: "Invalid amount" }, { status: 500 });
             }
         }
-        
-
-        await connection.end();
-
-        return NextResponse.json({ status: "success", message: "Update success" }, {status: 200});
-
     }catch(error){
         console.log("error: ",error);
-        return NextResponse.json({ status: "error", message: "Something went wrong", error}, {status: 500});
+        return NextResponse.json({ status: "error", message: error }, { status: 500 });
     }
 }
