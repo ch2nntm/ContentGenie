@@ -132,8 +132,8 @@ export default function UpgradePackagePage(){
             if(data.error) {
                 console.error("Lỗi từ PayOS:", data.desc);
             }
-            if (data && data.paymentUrl.code === '00') {
-                window.location.href = data.paymentUrl.data.checkoutUrl;
+            if (data && data.data.code === '00') {
+                window.location.href = data.data.data.checkoutUrl;
             } 
         }
     }
@@ -156,8 +156,8 @@ export default function UpgradePackagePage(){
             if(data.error) {
                 console.error("Lỗi từ PayOS:", data.desc);
             }
-            if (data && data.paymentUrl.code === '00') {
-                window.location.href = data.paymentUrl.data.checkoutUrl;
+            if (data && data.data.code === '00') {
+                window.location.href = data.data.data.checkoutUrl;
             } 
         }
     }
@@ -180,8 +180,8 @@ export default function UpgradePackagePage(){
             if(data.error) {
                 console.error("Lỗi từ PayOS:", data.desc);
             }
-            if (data && data.paymentUrl.code === '00') {
-                window.location.href = data.paymentUrl.data.checkoutUrl;
+            if (data && data.data.code === '00') {
+                window.location.href = data.data.data.checkoutUrl;
             } 
         }
     }
