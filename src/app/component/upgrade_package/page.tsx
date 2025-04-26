@@ -128,6 +128,7 @@ export default function UpgradePackagePage(){
             });
         
             const data = await response.json();
+            console.log("data: ",data);
 
             if(data.error) {
                 console.error("Lỗi từ PayOS:", data.desc);
