@@ -36,9 +36,7 @@ export async function POST(req) {
           messages: listmessages,
         });
 
-        // const connection = await mysql.createConnection(dbConfig);
-        const pool = mysql.createPool(dbConfig);
-        const connection = await pool.getConnection();
+        const connection = await mysql.createConnection(dbConfig);
         console.log("chat.choices[0].message: ",chat.choices[0].message);
 
         await connection.execute(
@@ -168,13 +166,12 @@ export async function POST(req) {
   }
 
 const fetchRecentConversation = async (content, topicName, user_id) => {
-  // const connection = await mysql.createConnection(dbConfig);
-  const connection = await pool.getConnection();
+  const connection = await mysql.createConnection(dbConfig);
   const history = await connection.query(
       'SELECT role, message FROM conversation_history WHERE topic_name = ? AND (user_id = ? OR user_id = (SELECT id FROM account WHERE role=1)) ORDER BY timestamp DESC LIMIT 5', 
       [topicName, user_id]
   );
-  connection.release();
+  
   const messages = [];
   messages.push({
     role: "user",
