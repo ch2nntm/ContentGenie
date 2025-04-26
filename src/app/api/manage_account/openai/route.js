@@ -168,10 +168,10 @@ export async function POST(req) {
 const fetchRecentConversation = async (content, topicName, user_id) => {
   const connection = await mysql.createConnection(dbConfig);
   const history = await connection.query(
-      'SELECT role, message FROM conversation_history WHERE topic_name = ? AND (user_id = ? OR user_id = (SELECT id FROM account WHERE role=1)) ORDER BY timestamp DESC LIMIT 5', 
+      'SELECT role, message FROM conversation_history WHERE topic_name = ? AND (user_id = ? OR user_id = (SELECT id FROM account WHERE role=1)) ORDER BY timestamp DESC LIMIT 3', 
       [topicName, user_id]
   );
-  
+
   const messages = [];
   messages.push({
     role: "user",
