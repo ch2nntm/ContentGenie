@@ -25,10 +25,40 @@ export async function POST(req) {
 
     await connection.end(); 
 
-    return NextResponse.json({ status: "error", message: "Account created successfully" }, { status: 201 });
+    return NextResponse.json({ status: "success", message: "Account created successfully" }, { status: 201 });
 
   } catch (error) {
     console.error("Database error:", error);
     return NextResponse.json({ status: "error", message: error },{ status: 500 });
+  }
+}
+
+export async function GET(req) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const email = searchParams.get('email');
+
+    if (!email) {
+      return NextResponse.json({ status: "error", message: "Email is required" }, { status: 400 });
+    }
+
+    const connection = await mysql.createConnection(dbConfig);
+
+    const [rows] = await connection.execute(
+      "SELECT * FROM account WHERE email = ?",
+      [email]
+    );
+
+    await connection.end();
+
+    if (rows.length > 0) {
+      return NextResponse.json({ status: "error", message: "Email is exist" }, { status: 400 });
+    }
+
+    return NextResponse.json({ status: "success", message: "Email is not exist" }, { status: 200 });
+
+  } catch (error) {
+    console.error("Database error:", error);
+    return NextResponse.json({ status: "error", message: error.message }, { status: 500 });
   }
 }

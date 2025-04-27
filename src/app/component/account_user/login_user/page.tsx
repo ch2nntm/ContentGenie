@@ -3,8 +3,7 @@ import Image from "next/image";
 import styles from "../login_user/login.module.css";
 import Link from "next/link";
 import { toast, ToastContainer } from "react-toastify";
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+import { useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -25,18 +24,6 @@ function Login() {
     const handleGoogleSignIn = async () => {
         signIn("google", { callbackUrl: "/component/auth/redirect_after_login" });
       };      
-
-    const { data: session } = useSession();
-
-    useEffect(() => {
-        if (session?.accessToken && session?.user?.role === 1) {
-            Cookies.set("token", session.accessToken, { expires: 1, sameSite: "Lax" });
-            router.push("/component/admin/dashboard");
-        }
-        else if(session?.accessToken && session?.user?.role === 0) {
-            router.push("/component/post_manage/content_generator");
-        }
-    }, [session, router]);
     
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault(); 

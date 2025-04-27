@@ -110,7 +110,7 @@ export default async function ViewUserDetail(props : { params: PageProps }) {
         </div>
         <div className={styles.inf_post}>
           <p>{detailPost.content}</p>
-          {detailPost.image && !detailPost.image.startsWith(process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "") && <img src={detailPost.image} className={styles.img}/>}
+          {detailPost.image && !detailPost.image.startsWith(process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "") && !detailPost.image.startsWith(process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "") && <img src={detailPost.image} className={styles.img}/>}
           {detailPost.image && detailPost.image.startsWith(process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "") && <iframe className={styles.img} src={detailPost.image} ></iframe>}
           {detailPost.image && detailPost.image.startsWith(process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "") && 
           <>

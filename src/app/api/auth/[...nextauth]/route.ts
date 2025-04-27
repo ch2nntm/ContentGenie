@@ -80,11 +80,6 @@ const authOptions: NextAuthOptions = {
           token.accessToken = await generateToken(payload);
           token.role = profile.role;
         }
-        // if (token.accessToken) {
-        //   const cookieStore = await cookies();
-        //   console.log("Session accessToken: ", String(token.accessToken));
-        //   cookieStore.set("token", String(token.accessToken), { path: "/", sameSite: "lax" });
-        // }
         console.log("Token JWT Backend: ", token);
         return token;
       },
@@ -93,14 +88,6 @@ const authOptions: NextAuthOptions = {
         session.user.role = token.role as number | undefined;
         return session;
       },
-      // async redirect(token){
-      //   if(token.role === 1){
-      //     return "/component/admin/dashboard";
-      //   }
-      //   else {
-      //     return "/component/post_manage/content_generator";
-      //   }
-      // }
     },
 };
 

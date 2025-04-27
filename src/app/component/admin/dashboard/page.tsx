@@ -12,7 +12,6 @@ import Cookies from "js-cookie";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 
-
 interface account {
     id: number;
     name: string;

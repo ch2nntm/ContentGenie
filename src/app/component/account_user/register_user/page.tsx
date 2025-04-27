@@ -47,9 +47,8 @@ function Register() {
                 return;
             } 
         }
-        const responseEmail = await fetch(`/api/manage_account/register`,{
-            method: "POST",
-            body: JSON.stringify({name, email, password}),
+        const responseEmail = await fetch(`/api/manage_account/register?email=${email}`,{
+            method: "GET",
         });
         
         if(responseEmail.ok){
@@ -57,9 +56,13 @@ function Register() {
                 method: "POST",
                 body: JSON.stringify({email})
             })
-            .then(()=>{
-                toast.success(t("send_code_successful"));
-                setIsEnterCode(true);
+            .then((data)=>{
+                if(data.status === 200){
+                    toast.success(t("send_code_successful"));
+                    setIsEnterCode(true);
+                }
+                else
+                    toast.error(t("send_code_failed"));
             });
         }
         else{
@@ -105,8 +108,13 @@ function Register() {
         fetch("/api/send_otp",{
             method: "POST",
             body: JSON.stringify({email})
+        }).then((data)=>{
+            if(data.status === 200){
+                toast.success(t("resend_code_again"));
+            }
+            else
+                toast.error(t("resend_code_failed"));
         });
-        toast.success(t("resend_code_again"));
     }
     
     return(

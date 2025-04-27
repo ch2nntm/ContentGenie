@@ -277,7 +277,6 @@ async function postToLinkedin(post, token_linkedin, sub_ID) {
           console.log("data.value.uploadMechanism: ",data);
           const uploadUrl = data.value.uploadMechanism["com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest"].uploadUrl;
   
-          // const imageUrl = image;
           const imageResponse = await fetch(post.image);
           if (!imageResponse.ok) throw new Error("Failed to fetch image");
           const imageBuffer = await imageResponse.arrayBuffer();
