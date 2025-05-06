@@ -91,12 +91,22 @@ function NavbarUser() {
 
     return (
         <div className={styles.navbar}>
-            <Link href="/component/post_manage/content_generator" className={styles.title_logo}>
-                <div className={styles.icon_logo}>
-                    <Image src="/wand_magic_sparkles.png" alt="logo" fill />
+            {roleUser === 1 
+            ? 
+                <div className={styles.title_logo}>
+                    <div className={styles.icon_logo}>
+                        <Image src="/wand_magic_sparkles.png" alt="logo" fill />
+                    </div>
+                    <h1 className={styles.title_navbar}>ContentGenie</h1>
                 </div>
-                <h1 className={styles.title_navbar}>ContentGenie</h1>
-            </Link>
+            :
+                <Link href="/component/post_manage/content_generator" className={styles.title_logo}>
+                    <div className={styles.icon_logo}>
+                        <Image src="/wand_magic_sparkles.png" alt="logo" fill />
+                    </div>
+                    <h1 className={styles.title_navbar}>ContentGenie</h1>
+                </Link>
+            }
 
             {user && (
                 <div className={styles.link_nav}>
