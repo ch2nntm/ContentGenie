@@ -20,19 +20,14 @@ export async function GET(req) {
         console.log("ID: ",userId);
 
         const connection = await mysql.createConnection(dbConfig);
-        const [rows_mastodon] = await connection.execute(
-            "SELECT CAST(id AS CHAR) AS id, title, content, image, platform, posttime, status, user_id, audience FROM post WHERE user_id = ? AND platform = 'Mastodon' AND set_daily = 'false'", 
-            [userId]
-        );
-
-        const [rows_linkedin] = await connection.execute(
-            "SELECT CAST(id AS CHAR) AS id, title, content, image, platform, posttime, status, user_id, audience FROM post WHERE user_id = ? AND platform = 'LinkedIn' AND set_daily = 'false'", 
+        const [rows] = await connection.execute(
+            "SELECT CAST(id AS CHAR) AS id, title, content, image, platform, posttime, status, user_id, audience FROM post WHERE user_id = ? AND set_daily = 'false'", 
             [userId]
         );
 
         await connection.end(); 
 
-        return NextResponse.json({ status: "success", message: "Get list post of user successfully", posts_mastodon: rows_mastodon, posts_linkedin: rows_linkedin}, { status: 200 });
+        return NextResponse.json({ status: "success", message: "Get list post of user successfully", posts: rows}, { status: 200 });
     } catch (error) {
         console.error("Error:", error);
         return NextResponse.json({ status: "error", message: error }, { status: 401 });

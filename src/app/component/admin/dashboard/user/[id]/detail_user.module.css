@@ -17,12 +17,12 @@
     position: relative;
     width: 20px;
     height: 20px;
-    margin-top: 20px;
+    margin-top: 0px;
     margin-left: 30px;
 }
 
 .arrowback{
-    margin-top: 70px;
+    margin-top: 20px;
     margin-left: 0px;
     color: grey;
     width: 20px;

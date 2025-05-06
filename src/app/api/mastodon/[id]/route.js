@@ -39,12 +39,13 @@ export async function GET(req, {params}) {
 
 export async function DELETE(req, { params }) {
     const statusId = params?.id;
+    const body = await params;
     console.log("Id:", statusId); 
     const cookieStore = await cookies();
     const token_mastodon = cookieStore.get("mastodon_token")?.value;
     console.log("Token từ cookies: ", token_mastodon);
 
-    if (!token_mastodon) {
+    if (!token_mastodon && body.status === "1") {
         return NextResponse.json({ status: "error", message: "No token provided" }, { status: 401 });
     }
     
@@ -93,20 +94,20 @@ export async function DELETE(req, { params }) {
 
 export async function PUT(req, {params}) {
     try{
-        const cookieStore = await cookies();
-        const token_mastodon = cookieStore.get("mastodon_token")?.value;
-        console.log("Token từ cookies: ", token_mastodon);
-
-        if (!token_mastodon) {
-            return NextResponse.json({ status: "error", message: "No token provided" }, { status: 401 });
-        }
-    
         const formData = await req.formData();
         const content = formData.get("content");
         const imageUrl = formData.get("image");
         const status = formData.get("status");
         const body = await params;
         const statusId = body?.id;
+
+        const cookieStore = await cookies();
+        const token_mastodon = cookieStore.get("mastodon_token")?.value;
+        console.log("Token từ cookies: ", token_mastodon);
+
+        if (!token_mastodon && status === "1") {
+            return NextResponse.json({ status: "error", message: "No token provided" }, { status: 401 });
+        }
 
         console.log("Content: ",content);
         console.log("Image: ",imageUrl);

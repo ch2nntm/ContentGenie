@@ -51,7 +51,12 @@
         "invalid_json": "Phản hồi JSON không hợp lệ!",
         "logout_success": "Đăng xuất thành công!",
         "logout_fail": "Đăng xuất không thành công!",
-        "error_signout": "Lỗi đăng xuất!"
+        "error_signout": "Lỗi đăng xuất!",
+        "user_management": "Quản lý thông tin",
+        "sidebar_dashboard": "Trang Tổng Quan",
+        "sidebar_users": "Người Dùng",
+        "sidebar_posts": "Bài Viết",
+        "sidebar_analytics": "Thống Kê"
     },
     "register": {
         "label_name": "Họ tên",
@@ -80,7 +85,9 @@
         "exist_account": "Tài khoản đã tồn tại!",
         "wrong_code":"Mã sai!",
         "resend_code": "Gửi lại mã",
-        "resend_code_again": "Đã gửi lại mã"
+        "resend_code_again": "Đã gửi lại mã",
+        "send_code_failed": "Gửi mã thất bại",
+        "resend_code_failed": "Gửi lại mã thất bại"
     },
     "preview": {
         "time": "giờ trước",
@@ -135,7 +142,11 @@
         "delete_success":"Xoá người dùng thành công: ",
         "delete_fail": "Xoá người dùng thất bại!",
         "cancel_delete": "Huỷ bỏ xoá!",
-        "error_load": "Lỗi tải người dùng..."
+        "error_load": "Lỗi tải người dùng...",
+        "rate_post_increase": "Tỷ lệ bài đăng trong tháng này so với tháng trước đã giảm: ",
+        "rate_post_reduce": "Tỷ lệ bài đăng trong tháng này so với tháng trước đã tăng: ",
+        "rate_credit_increase": "Tỷ lệ sử dụng thẻ trong tháng này so với tháng trước đã giảm: ",
+        "rate_credit_reduce": "Tỷ lệ sử dụng thẻ trong tháng này so với tháng trước đã tăng: "
     },
     "change_password":{
         "hi": "Xin chào",
@@ -278,7 +289,16 @@
         "social_linkedin": "Mạng xã hội LinkedIn",
         "status_pending": "Chưa đăng",
         "status_posted": "Đã đăng",
-        "error_fetch":"Lỗi khi tìm kiếm thông tin chi tiết bài đăng:"
+        "error_fetch":"Lỗi khi tìm kiếm thông tin chi tiết bài đăng:",
+        "edit": "Sửa",
+        "delete": "Xoá",
+        "export_pdf": "Xuất file PDF",
+        "content": "Nội Dung",
+        "btn_close": "Đóng",
+        "btn_save": "Lưu",
+        "btn_edit": "Sửa bài đăng",
+        "image": "Hình Ảnh",
+        "confirm_delete": "Bạn có chắc chắn muốn xóa bài viết này không?"
     },
     "detail_user": {
         "user_detail": "Thông tin chi tiết người dùng!",
@@ -320,8 +340,15 @@
         "sidebar_analytics": "Thống Kê",
         "sidebar_settings": "Cài Đặt",
         "section_no_user":"Không có người dùng nào được tìm thấy",
-        "quantity_credits": "Số thẻ còn lại: ",
-        "quantity_post": "Tổng số bài đăng: "
+        "quantity_credits": "Thẻ còn lại",
+        "quantity_post": "Tổng bài đăng",
+        "name":"Họ Tên",
+        "email": "Email",
+        "image": "Hình Ảnh",
+        "input_search":"Tìm kiếm...",
+        "previous_page": "Trang trước",
+        "next_page": "Trang sau",
+        "page": "Trang"
     },
     "statistics": {
         "sidebar_dashboard": "Trang Tổng Quan",
@@ -332,7 +359,7 @@
         "title_page": "THỐNG KÊ",
         "label_year": "Năm:",
         "title_statistic": "Số lượng bài đăng và thẻ trong từng năm",
-        "label_post_paiding": "Bài chưa đăng",
+        "label_post_pending": "Bài chưa đăng",
         "label_post_posted": "Bài đã đăng",
         "label_credit": "Số thẻ",
         "lable_time": "Thời gian",
@@ -380,6 +407,8 @@
         "package_year_check3": "Tiết kiệm chi phí hơn so với gói tháng nếu dùng lâu dài",
         "package_year_check4": "Lựa chọn tốt nhất cho người cần dùng thường xuyên trong thời gian dài",
         "package_year_button": "Nâng cấp",
-        "not_purchase": "Bạn chưa mua bất kỳ gói nào"
+        "not_purchase": "Bạn chưa mua bất kỳ gói nào",
+        "title_check": "Kiểm tra thẻ",
+        "title_upgrade":"Nâng cấp"
     }
 }

@@ -51,7 +51,12 @@
         "invalid_json": "Invalid JSON response!",
         "logout_success": "Logout successful!",
         "logout_fail": "Logout failed!",
-        "error_signout": "Error signing out!"
+        "error_signout": "Error signing out!",
+        "user_management": "User Management",
+        "sidebar_dashboard": "Dashboard",
+        "sidebar_users": "Users",
+        "sidebar_posts": "Posts",
+        "sidebar_analytics": "Statistics"
     },
     "register": {
         "label_name": "Name",
@@ -80,7 +85,9 @@
         "wrong_code":"Wrong code!",
         "resend_code": "Resend code",
         "resend_code_again": "Code sent again",
-        "exist_account": "Account already exists!"
+        "exist_account": "Account already exists!",
+        "send_code_failed": "Send code failed",
+        "resend_code_failed": "Resend code failed"
     },
     "preview": {
         "time": "hours ago",
@@ -134,7 +141,11 @@
         "delete_success":"User deleted successfully: ",
         "delete_fail": "User deleted failed!",
         "cancel_delete": "Canceled delete!",
-        "error_load": "Error loading users..."
+        "error_load": "Error loading users...",
+        "rate_post_increase": "The rate of posts this month compared to last month has increased: ",
+        "rate_post_reduce": "The rate of posts this month compared to last month has decreased: ",
+        "rate_credit_increase": "Card usage rate this month compared to last month has increased: ",
+        "rate_credit_reduce": "Card usage rate this month compared to last month has decreased: "
     },
     "change_password":{
         "hi": "Hi",
@@ -225,13 +236,13 @@
         "years": "years ago",
         "edit": "Edit",
         "delete": "Delete",
+        "btn_edit": "Edit Post",
         "content": "Content",
+        "image": "Image",
         "btn_close": "Close",
         "btn_save": "Save",
-        "btn_edit": "Edit Post",
         "img": "Image",
         "upload_post": "Upload",
-        "image": "Image",
         "error_http": "HTTP error! Status:",
         "error_fetch": "Error fetching post details:",
         "confirm_delete": "Are you sure you want to delete this post?",
@@ -278,7 +289,16 @@
         "social_linkedin": "Social Media LinkedIn",
         "status_pending": "Pending",
         "status_posted": "Posted",
-        "error_fetch":"Error fetching post details:"
+        "error_fetch":"Error fetching post details:",
+        "edit": "Edit",
+        "delete": "Delete",
+        "export_pdf": "Export PDF",
+        "btn_edit": "Edit Post",
+        "content": "Content",
+        "image": "Image",
+        "btn_close": "Close",
+        "btn_save": "Save",
+        "confirm_delete": "Are you sure you want to delete this post?"
     },
     "detail_user": {
         "user_detail": "User details!",
@@ -320,8 +340,15 @@
         "sidebar_analytics": "Statistics",
         "sidebar_settings": "Settings",
         "section_no_user":"No users found",
-        "quantity_credits": "Number of remaining cards: ",
-        "quantity_post": "Total number of posts: "
+        "quantity_credits": "Remaining cards",
+        "quantity_post": "Total posts",
+        "name": "Name",
+        "email": "Email",
+        "image": "Image",
+        "input_search": "Search...",
+        "previous_page": "Previous page",
+        "next_page": "Next page",
+        "page": "Page"
     },
     "statistics": {
         "sidebar_dashboard": "Dashboard",
@@ -332,7 +359,7 @@
         "title_page": "STATISTICS",
         "label_year": "Year:",
         "title_statistic": "Number of posts and credits per year",
-        "label_post_paiding": "Posts Paiding",
+        "label_post_pending": "Posts Pending",
         "label_post_posted": "Posts Posted",
         "label_credit": "Credits",
         "lable_time": "Time",
@@ -380,7 +407,9 @@
         "package_year_check3": "More cost-effective than monthly package if used long term",
         "package_year_check4": "Best choice for people who need to use regularly for a long time",
         "package_year_button": "Upgrade",
-        "not_purchase": "You have not purchased any package yet"
+        "not_purchase": "You have not purchased any package yet",
+        "title_check": "Check Credits",
+        "title_upgrade":"Upgrade"
     }
 }
 

@@ -33,13 +33,17 @@ export async function POST(req) {
                         SELECT 10 UNION ALL SELECT 11 UNION ALL SELECT 12
                     )
                     SELECT 
-                        m.month, 
+                        m.month,
                         COALESCE(COUNT(DISTINCT CASE WHEN p.status = 0 THEN p.id END), 0) AS total_posts_paiding,
                         COALESCE(COUNT(DISTINCT CASE WHEN p.status = 1 THEN p.id END), 0) AS total_posts_posted,
-                        COALESCE(SUM(DISTINCT c.credit_use), 0) AS total_credits
+                        COALESCE(
+                            (SELECT SUM(c.credit_use) 
+                            FROM credits c 
+                            WHERE c.id IN (SELECT DISTINCT c2.id FROM credits c2 WHERE MONTH(c2.date) = m.month AND YEAR(c2.date) = ?)
+                            ), 0) AS total_credits
                     FROM months m
-                    LEFT JOIN post p ON MONTH(p.posttime) = m.month AND YEAR(p.posttime) = ?
-                    LEFT JOIN credits c ON MONTH(c.date) = m.month AND YEAR(c.date) = ?
+                    LEFT JOIN post p 
+                        ON MONTH(p.posttime) = m.month AND YEAR(p.posttime) = ?
                     GROUP BY m.month
                     ORDER BY m.month;
                 `, [year, year]);
@@ -131,3 +135,5 @@ export async function GET(req) {
         return NextResponse.json({ status: "error", message: error });
     }
 }
+
+

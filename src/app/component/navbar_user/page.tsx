@@ -1,6 +1,5 @@
 "use client";
 import useSWR from "swr";
-import { useState } from "react";
 import styles from "../navbar_user/navbar_user.module.css";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,11 +8,15 @@ import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { signOut } from "next-auth/react";
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import SearchIcon from '@mui/icons-material/Search';
-import PasswordIcon from '@mui/icons-material/Password';
+import { useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
+import SearchIcon from "@mui/icons-material/Search";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
+import CreditCardIcon from '@mui/icons-material/CreditCard';
+import LocalPostOfficeIcon from '@mui/icons-material/LocalPostOffice';
+import MiscellaneousServicesIcon from '@mui/icons-material/MiscellaneousServices';
 
 const fetcher = (url: string) => {
     const token = Cookies.get("token");
@@ -31,8 +34,6 @@ const fetcher = (url: string) => {
 };
 
 function NavbarUser() {
-    const [inputSearch, setInputSearch] = useState("");
-    const [showDropdownUser, setShowDropdownUser] = useState(false);
     const t = useTranslations("navbar_user");
     const router = useRouter();
     const pathname = usePathname();  
@@ -40,8 +41,29 @@ function NavbarUser() {
     const { data } = useSWR("/api/manage_account/login", fetcher);
     const user = data?.user?.name || null;
     const roleUser = data?.user?.role || 0;
-    const avtUser = data?.user?.avatar || null;
     const password = data?.user?.password || null;
+
+    useEffect(() => {
+        const token = Cookies.get("token");
+
+        if (!token) {
+            router.push("/component/account_user/login_user");
+            return;
+        }
+
+        try {
+            const decoded = jwtDecode(token);
+            const now = Date.now() / 1000;
+
+            if (decoded.exp && decoded.exp < now) {
+                Cookies.remove("token");
+                router.push("/component/account_user/login_user");
+            }
+        } catch {
+            Cookies.remove("token");
+            router.push("/component/account_user/login_user");
+        }
+    }, []);
 
     const handleSubmitSignout = async () => {
         try {
@@ -67,14 +89,6 @@ function NavbarUser() {
         }
     }
 
-    const handleSearch = () => {
-        if (inputSearch.trim() === "") {
-            router.push("/component/admin/dashboard");
-        } else {
-            router.push(`/component/admin/dashboard?searchQuery=${encodeURIComponent(inputSearch)}`);
-        }
-    };
-
     return (
         <div className={styles.navbar}>
             <Link href="/component/post_manage/content_generator" className={styles.title_logo}>
@@ -86,66 +100,53 @@ function NavbarUser() {
 
             {user && (
                 <div className={styles.link_nav}>
-                    <Link href="/component/post_manage/content_generator" className={roleUser === 0 ? (pathname === "/component/post_manage/content_generator" ? styles.content_generator_current : styles.content_generator) : styles.content_generator_hide }>
-                        <p>{t("create_content")}</p>
-                    </Link>
-                    <Link href="/component/upgrade_package" className={roleUser === 0 ? (pathname === "/component/upgrade_package" ? styles.upgrade_package_current : styles.upgrade_package) : styles.upgrade_package_hide}>
-                        <p>{t("credits")}</p>
-                    </Link>
-                    <Link href="/component/post_manage/list_post_user" className={roleUser === 0 ? (pathname === "/component/post_manage/list_post_user" ? styles.post_management_current : styles.post_management) : styles.edit_profile_hide}>
+                    <Link href="/component/post_manage/list_post_user" className={roleUser === 0 ? (pathname === "/component/post_manage/list_post_user"  || pathname === "/component/post_manage/content_generator"  || pathname.startsWith("/component/post_manage/list_post_user/detail_post") ? styles.post_management_current : styles.post_management) : styles.edit_profile_hide}>
+                        <LocalPostOfficeIcon/>
                         <p>{t("post_management")}</p>
                     </Link>
-                    {/* <Link href="/component/admin/dashboard" className={roleUser === 1 ? (pathname === "/component/admin/dashboard" ? styles.dashboard_current : styles.dashboard) : styles.dashboard_hide}>
-                        <p>{t("dashboard")}</p>
-                    </Link> */}
+                    <Link href="/component/upgrade_package" className={roleUser === 0 ? (pathname === "/component/upgrade_package" ? styles.upgrade_package_current : styles.upgrade_package) : styles.upgrade_package_hide}>
+                        <CreditCardIcon/>
+                        <p>{t("credits")}</p>
+                    </Link>
+                    {password &&
+                        <div className={styles.link}>
+                            <Link href="/component/account_user/edit_profile" className={roleUser === 0 ? (pathname === "/component/account_user/edit_profile" || pathname === "/component/account_user/change_password" ? styles.user_management_current : styles.user_management) : styles.user_management_hide}>
+                                <MiscellaneousServicesIcon/>
+                                <p>{t("user_management")}</p>
+                            </Link>
+                        </div>
+                    }   
                 </div>
             )}
-
-            <div className={ pathname === "/component/admin/dashboard" ? styles.search : styles.search_hide}>
-                <input className={roleUser === 0 ? styles.input_search_hide : styles.input_search} type="text" placeholder={t("input_search")} value={inputSearch} onChange={(e) => setInputSearch(e.target.value)} />
-                <button onClick={handleSearch} className={roleUser === 0 ? styles.btn_search_hide : styles.btn_search}>
-                    <SearchIcon />
-                </button>
-            </div>
-
-            <div className={styles.icon_navbar}>
-                <div className={styles.icon_bell}>
-                    <NotificationsIcon />
+            {roleUser === 1 && 
+                <div className={styles.link_nav_admin}>
+                    <Link href="/component/admin/dashboard" className={ pathname === "/component/admin/dashboard" ? styles.dashboard_current : styles.dashboard}>
+                        <div className={styles.icon_dashboard}>
+                            <SearchIcon></SearchIcon>
+                        </div>
+                        <p className={pathname === "/component/admin/dashboard" ? styles.text_dashboard_current : styles.text_dashboard}>{t("sidebar_dashboard")}</p>
+                    </Link>
+                    <Link href="/component/admin/dashboard/list_user" className={ pathname === "/component/admin/dashboard/list_user" ? styles.users_current : styles.users}>
+                        <div className={styles.icon_users}>
+                            <PeopleAltIcon></PeopleAltIcon>
+                        </div>
+                        <p className={pathname === "/component/admin/dashboard/list_user" ? styles.text_users_current : styles.text_users}>{t("sidebar_users")}</p>
+                    </Link>
+                    <Link href="/component/admin/dashboard/list_post" className={ pathname === "/component/admin/dashboard/list_post" ? styles.posts_current : styles.posts}>
+                        <div className={styles.icon_posts}>
+                            <MarkAsUnreadIcon></MarkAsUnreadIcon>
+                        </div>
+                        <p className={pathname === "/component/admin/dashboard/list_post" ? styles.text_posts_current : styles.text_posts}>{t("sidebar_posts")}</p>
+                    </Link>
                 </div>
-                <button className={styles.button_user} onClick={() => setShowDropdownUser(!showDropdownUser)}>
-                    <div className={avtUser ? styles.avt_user : styles.icon_user}>
-                        {!avtUser && <Image src="/icon_circle_user.png" alt="avt" fill />}
-                    </div>
-                    {avtUser && <img className={styles.avt_user} src={avtUser} alt={avtUser} />}
-                    <p className={styles.name_user}>{user}</p>
-                </button>
-                {user && (
-                    <div className={showDropdownUser ? styles.manage_user_show : styles.manage_user_hide}>
-                            {password &&
-                                <div className={styles.link}>
-                                    <Link href="/component/account_user/edit_profile" className={styles.edit_profile}>
-                                        <div className={styles.icon_edit_profile}>
-                                            <BorderColorIcon />
-                                        </div>
-                                        <p>{t("edit_profile")}</p>
-                                    </Link>
-                                    <Link href="/component/account_user/change_password" className={styles.change_password}>
-                                        <div className={styles.icon_edit_profile}>
-                                            <PasswordIcon />
-                                        </div>
-                                        <p>{t("change_password")}</p>
-                                    </Link>
-                                </div>
-                            }
-                            <button className={password ? styles.btn_signout : styles.btn_signout_gmail} onClick={handleSubmitSignout}>
-                                <div className={styles.icon_signout}>
-                                    <ExitToAppIcon />
-                                </div>
-                                <p className={styles.text_signout}>{t("signout")}</p>
-                            </button>
-                    </div>
-                )}
-            </div>
+            }
+
+            <button className={password ? styles.btn_signout : styles.btn_signout_gmail} onClick={handleSubmitSignout}>
+                <div className={styles.icon_signout}>
+                    <ExitToAppIcon />
+                </div>
+                <p className={styles.text_signout}>{t("signout")}</p>
+            </button>
         </div>
     );
 }

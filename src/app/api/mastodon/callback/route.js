@@ -24,7 +24,7 @@ export async function GET(req) {
     console.log("MASTODON_INSTANCE: ",MASTODON_INSTANCE," - CLIENT_ID: ",CLIENT_ID," - CLIENT_SECRET: ",CLIENT_SECRET," - REDIRECT_URI: ",REDIRECT_URI);
   
     try {
-      const tokenResponse = await fetch(`${MASTODON_INSTANCE}/oauth/token`, {
+      const tokenResponse = await fetch(`https://mastodon.social/oauth/token`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({

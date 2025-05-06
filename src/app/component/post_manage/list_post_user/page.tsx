@@ -15,7 +15,7 @@ import RepeatIcon from '@mui/icons-material/Repeat';
 import HttpsIcon from '@mui/icons-material/Https';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Modal from "react-bootstrap/Modal";
-import { Button } from "@mui/material";
+import { Button, Link } from "@mui/material";
 import Form from "react-bootstrap/esm/Form";
 import CloseIcon from '@mui/icons-material/Close';
 import { toast, ToastContainer } from "react-toastify";
@@ -24,6 +24,7 @@ const NavbarComponent = dynamic(() => import("@/app/component/navbar_user/page")
 
 interface Post {
     id: number;
+    title: string;
     content: string;
     image: string;
     posttime: Date;
@@ -47,11 +48,11 @@ function ListPostUser() {
     const [isClickBtnEdit, setIsClickBtnEdit] = useState(false); 
     const [activeDots, setActiveDots] = useState<number | null>(null); 
     const [activeEdit, setActiveEdit] = useState<number | null>(null); 
-    const [likes, setLikes] = useState<Record<number, number>>({});
+    // const [likes, setLikes] = useState<Record<number, number>>({});
     const [updateContent, setUpdateContent] = useState("");
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [image, setImage] = useState("");
-    const [isClickMastodon, setIsClickMastodon] = useState(true);
+    // const [isClickMastodon, setIsClickMastodon] = useState(true);
 
     const slidesRef = useRef<{ [key: number]: HTMLElement | null }>({});
     const handleGeneratePdf = (postId: number) => {
@@ -104,8 +105,8 @@ function ListPostUser() {
         if(!token){
             window.location.href = "/component/account_user/login_user";
         }
-        if(isClickMastodon===true)
-            handlePostMastodon();
+        // if(isClickMastodon===true)
+        //     handlePostMastodon();
     }, []);
 
     const uploadToCloudinary = async (file: string | Blob) => {
@@ -147,107 +148,107 @@ function ListPostUser() {
         }
     };
 
-    const handlePostMastodon = async() => {
-        setIsClickMastodon(true);
-        try {
-            const token = Cookies.get("token");
-            if (!token) {
-                setPosts([]);
-                return;
-            }
-            setLoading(true);
-            const token_mastodon = Cookies.get("mastodon_token");
+    // const handlePostMastodon = async() => {
+    //     setIsClickMastodon(true);
+    //     try {
+    //         const token = Cookies.get("token");
+    //         if (!token) {
+    //             setPosts([]);
+    //             return;
+    //         }
+    //         setLoading(true);
+    //         const token_mastodon = Cookies.get("mastodon_token");
 
-            if(!token_mastodon){
-                toast.error(t("miss_token_mastondon"));
-                window.location.href = "/api/mastodon/auth";  
-                return;
-            }
+    //         if(!token_mastodon){
+    //             toast.error(t("miss_token_mastondon"));
+    //             window.location.href = "/api/mastodon/auth";  
+    //             return;
+    //         }
 
-            const response = await fetch("/api/post_manage/list_post_user", {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+    //         const response = await fetch("/api/post_manage/list_post_user", {
+    //             method: "GET",
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`,
+    //             },
+    //         });
 
-            if (!response.ok) {
-                throw new Error(`t("error_http") ${response.status}`);
-            }
+    //         if (!response.ok) {
+    //             throw new Error(`t("error_http") ${response.status}`);
+    //         }
 
-            const data = await response.json();
-            const sortedPosts = data.posts_mastodon.sort((a: { posttime: string | number | Date; }, b: { posttime: string | number | Date; }
-                                ) => new Date(b.posttime).getTime() - new Date(a.posttime).getTime());
-            setPosts(sortedPosts);
+    //         const data = await response.json();
+    //         const sortedPosts = data.posts.sort((a: { posttime: string | number | Date; }, b: { posttime: string | number | Date; }
+    //                             ) => new Date(b.posttime).getTime() - new Date(a.posttime).getTime());
+    //         setPosts(sortedPosts);
 
-            if (data.posts_mastodon.length > 0) {
-                for (const post of data.posts_mastodon) {
-                    try {
-                        const detailResponse = await fetch(`/api/mastodon/${post.id}`, {
-                            method: "GET"
-                        });
+    //         // if (data.posts_mastodon.length > 0) {
+    //         //     for (const post of data.posts_mastodon) {
+    //         //         try {
+    //         //             const detailResponse = await fetch(`/api/mastodon/${post.id}`, {
+    //         //                 method: "GET"
+    //         //             });
 
-                        if (!detailResponse.ok) {
-                            throw new Error(`${detailResponse.status}`);
-                        }
+    //         //             if (!detailResponse.ok) {
+    //         //                 throw new Error(`${detailResponse.status}`);
+    //         //             }
 
-                        const detailData = await detailResponse.json();
+    //         //             const detailData = await detailResponse.json();
 
-                        setLikes(prevLikes => ({
-                            ...prevLikes,
-                            [post.id]: detailData.data.favourites_count ?? 0 
-                        }));
-                    } catch (error) {
-                        console.error(t("error_fetch"), error);
-                    }
-                }
-            }
-        } catch (error) {
-            console.error(t("error_fetch"), error);
-        } finally {
-            setLoading(false);
-        }
-    }
+    //         //             setLikes(prevLikes => ({
+    //         //                 ...prevLikes,
+    //         //                 [post.id]: detailData.data.favourites_count ?? 0 
+    //         //             }));
+    //         //         } catch (error) {
+    //         //             console.error(t("error_fetch"), error);
+    //         //         }
+    //         //     }
+    //         // }
+    //     } catch (error) {
+    //         console.error(t("error_fetch"), error);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // }
 
-    const handlePostLinkedin = async() => {
-        setIsClickMastodon(false);
-        try {
-            const token = Cookies.get("token");
-            if (!token) {
-                setPosts([]);
-                return;
-            }
-            setLoading(true);
+    // const handlePostLinkedin = async() => {
+    //     setIsClickMastodon(false);
+    //     try {
+    //         const token = Cookies.get("token");
+    //         if (!token) {
+    //             setPosts([]);
+    //             return;
+    //         }
+    //         setLoading(true);
 
-            const token_mastodon = Cookies.get("linkedin_access_token");
+    //         const token_mastodon = Cookies.get("linkedin_access_token");
 
-            if(!token_mastodon){
-                toast.error(t("miss_token_linkedin"));
-                window.location.href = "/api/linkedin/auth";  
-                return;
-            }
+    //         if(!token_mastodon){
+    //             toast.error(t("miss_token_linkedin"));
+    //             window.location.href = "/api/linkedin/auth";  
+    //             return;
+    //         }
 
-            const response = await fetch("/api/post_manage/list_post_user", {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+    //         const response = await fetch("/api/post_manage/list_post_user", {
+    //             method: "GET",
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`,
+    //             },
+    //         });
 
-            if (!response.ok) {
-                throw new Error(`t("error_http") ${response.status}`);
-            }
+    //         if (!response.ok) {
+    //             throw new Error(`t("error_http") ${response.status}`);
+    //         }
 
-            const data = await response.json();
-            const sortedPosts = data.posts_linkedin.sort((a: { posttime: string | number | Date; }, b: { posttime: string | number | Date; }
-                                ) => new Date(b.posttime).getTime() - new Date(a.posttime).getTime());
-            setPosts(sortedPosts);
-        } catch (error) {
-            console.error(t("error_fetch"), error);
-        } finally {
-            setLoading(false);
-        }
-    }
+    //         const data = await response.json();
+    //         const sortedPosts = data.posts_linkedin.sort((a: { posttime: string | number | Date; }, b: { posttime: string | number | Date; }
+    //                             ) => new Date(b.posttime).getTime() - new Date(a.posttime).getTime());
+    //         setPosts(sortedPosts);
+    //     } catch (error) {
+    //         console.error(t("error_fetch"), error);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // }
     
     const handleCancel = () => {
         setIsClickBtnEdit(false);
@@ -255,44 +256,44 @@ function ListPostUser() {
         // setIsVideoTest(true);
     }
 
-    const handleDelete = async (id: number) => {
-        if (window.confirm(t("confirm_delete"))) {
-            try {
-                if(isClickMastodon === true){
-                    const response = await fetch(`/api/mastodon/${id}`, {
-                        method: "DELETE"
-                    });
+    // const handleDelete = async (id: number) => {
+    //     if (window.confirm(t("confirm_delete"))) {
+    //         try {
+    //             if(isClickMastodon === true){
+    //                 const response = await fetch(`/api/mastodon/${id}`, {
+    //                     method: "DELETE"
+    //                 });
     
-                    if (response.status === 401) {
-                        toast.error(t("miss_token_mastondon"));
-                        window.location.href = "/api/mastodon/auth";  
-                        return;
-                    }
-                    toast.success(t("post_delete"));
-                    window.location.reload();
-                }
-                else{
-                    const response = await fetch(`/api/post_linkedin/${id}`, {
-                        method: "DELETE"
-                    });
+    //                 if (response.status === 401) {
+    //                     toast.error(t("miss_token_mastondon"));
+    //                     window.location.href = "/api/mastodon/auth";  
+    //                     return;
+    //                 }
+    //                 toast.success(t("post_delete"));
+    //                 window.location.reload();
+    //             }
+    //             else{
+    //                 const response = await fetch(`/api/post_linkedin/${id}`, {
+    //                     method: "DELETE"
+    //                 });
     
-                    if (response.status === 401) {
-                        toast.error(t("miss_token_linkedin"));
-                        window.location.href = "/api/linkedin/auth";  
-                        return;
-                    }
-                    toast.success(t("post_delete"));
-                    window.location.reload();
-                }
-            }catch (error) {
-                console.error(t("error_delete"), error);
-            }finally{
-                setLoading(false);
-            }
-        } else {
-            toast.error(t("cancel_delete"));
-        }
-    }
+    //                 if (response.status === 401) {
+    //                     toast.error(t("miss_token_linkedin"));
+    //                     window.location.href = "/api/linkedin/auth";  
+    //                     return;
+    //                 }
+    //                 toast.success(t("post_delete"));
+    //                 window.location.reload();
+    //             }
+    //         }catch (error) {
+    //             console.error(t("error_delete"), error);
+    //         }finally{
+    //             setLoading(false);
+    //         }
+    //     } else {
+    //         toast.error(t("cancel_delete"));
+    //     }
+    // }
 
     const handleSave = async (id: number, img: string, status: number) => {
         const token_mastodon = Cookies.get("mastodon_token");
@@ -364,26 +365,46 @@ function ListPostUser() {
                 return `${monthsAgo} ${t("years")}`;
             }
         } 
-    };    
+    };   
+    
+    useEffect(() => {
+        const fetchPosts = async () => {
+            const token = Cookies.get("token");
+            if (!token) {
+                setPosts([]);
+                return;
+            }
+            setLoading(true);
+            try {
+                const response = await fetch("/api/post_manage/list_post_user", {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`t("error_http") ${response.status}`);
+                }
+
+                const data = await response.json();
+                const sortedPosts = data.posts.sort((a: { posttime: string | number | Date; }, b: { posttime: string | number | Date; }
+                                    ) => new Date(b.posttime).getTime() - new Date(a.posttime).getTime());
+                setPosts(sortedPosts);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPosts();
+    }, []);
 
     return (
         <>
             <NavbarComponent />
             <div className={styles.list_container}>
-                <div className={styles.btn_platform}>
-                    <button className={ isClickMastodon ? styles.btn_mastodon : styles.btn_mastodon_not_choose} type="button" onClick={handlePostMastodon}>
-                        Mastodon
-                        <div className={styles.icon_mastodon}>
-                            <Image  src="/icon_mastodon.png" fill alt={""}/>
-                        </div>
-                    </button>
-                    <button className={ !isClickMastodon ? styles.btn_linkedin : styles.btn_linkedin_not_choose} type="button" onClick={handlePostLinkedin}>
-                        Linkedin
-                        <div className={styles.icon_linkedin}>
-                            <Image  src="/icon_linkedin.webp" fill alt={""}/>
-                        </div>
-                    </button>
-                </div>
                 <div className={styles.list_post}>
                     {loading ? (
                         <div className={styles.loading}>
@@ -391,13 +412,15 @@ function ListPostUser() {
                             Loading...
                         </div>
                     ) : ( 
-                        <> {posts.length > 0 ? (
+                        <>
+                        <Link href="/component/post_manage/content_generator" className={styles.btn_create}><p>Create New Post</p></Link> 
+                        {posts.length > 0 ? (
                         posts.map((item) => (
                             <div key={item.id} className={styles.item_post}>
                                 <div className={styles.mastodon_platform}>
                                     <div ref={(el) => { slidesRef.current[item.id] = el; }}>
                                         <div className={styles.navbar_user}>
-                                            <div className={styles.inf_user}>
+                                            {/* <div className={styles.inf_user}>
                                                 {auth?.user?.avatar ? (
                                                     <img className={styles.inf_user_avt} src={auth.user.avatar} alt="Avatar" />
                                                 ) : (
@@ -409,8 +432,8 @@ function ListPostUser() {
                                                     <p className={styles.name_user}>{auth?.user?.name}</p>
                                                     <p className={styles.user_name}>@{item.platform}</p>
                                                 </div>
-                                            </div>
-                                            <div className={styles.time_post}>
+                                            </div> */}
+                                            {/* <div className={styles.time_post}>
                                                 <div className={styles.time_user}>
                                                     {item.audience==="public" && <PublicIcon />}
                                                     {item.audience==="private" && <HttpsIcon/> }
@@ -419,12 +442,16 @@ function ListPostUser() {
                                                 <div className={styles.status_post}>
                                                     <p>{item.status===1 ? t("posted") : t("pending")}</p>
                                                 </div>
-                                            </div>
+                                            </div> */}
                                             
                                         </div>
-                                        <div className={styles.content_post}>
+                                        <a href={`/component/post_manage/list_post_user/detail_post/${item.id}`} className={styles.content_post}>
+                                            <p className={styles.item_title}>{item.title}</p>
+                                            {item.audience==="public" && <p className={styles.item_time}>Published on {convertDay(item.posttime)}</p>}
+                                            {item.audience==="private" && <p className={styles.item_time}>Pending on {convertDay(item.posttime)}</p>}
+                                            
                                             <p className={styles.item_content}>{item.content}</p>
-                                            {item.image && !item.image.startsWith(process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "") && !item.image.startsWith(process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "") && <img src={item.image} className={styles.img_post}/>}
+                                            {/* {item.image && !item.image.startsWith(process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "") && !item.image.startsWith(process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "") && <img src={item.image} className={styles.img_post}/>}
                                             {item.image && item.image.startsWith(process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "") && <iframe src={item.image} className={styles.video_post} ></iframe>}
                                             {item.image && item.image.startsWith(process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "") && 
                                                 <a className={styles.is_spotify} href={item.image.split(",")[0]}>
@@ -437,10 +464,10 @@ function ListPostUser() {
                                                         <p className={styles.name_artist}>{item.image.split(",")[2]}</p>
                                                     </div>
                                                 </a>
-                                            }
+                                            } */}
                                             
-                                        </div>
-                                        <div className={styles.interact_post}>
+                                        </a>
+                                        {/* <div className={styles.interact_post}>
                                             <div className={styles.back}>
                                                 <KeyboardReturnIcon></KeyboardReturnIcon>
                                                 <p className={styles.text_like_post}>0</p>
@@ -450,7 +477,7 @@ function ListPostUser() {
                                             </div>
                                             <div className={styles.star}>
                                                 <StarBorderIcon></StarBorderIcon>
-                                                {item.status === 1 && <p className={styles.text_like_post}>{likes[item.id]}</p>}
+                                                {item.status === 1 && <p className={styles.text_like_post}>{likes[item.id]}</p>} 
                                             </div>
                                             <div className={styles.favorite}>
                                                 <TurnedInNotIcon></TurnedInNotIcon>
@@ -458,12 +485,12 @@ function ListPostUser() {
                                             <div onClick={() => handleDots(item.id)} className={styles.dots}>
                                                 <MoreHorizIcon></MoreHorizIcon>
                                             </div>
-                                        </div>
+                                        </div> */}
                                     </div>
                                     {activeDots === item.id && (
                                         <div className={styles.dots_menu}>
                                             {item.platform === "Mastodon" && <button className={styles.dots_edit} type="button" onClick={() => handleEdit(item.id, item.content)}>{t("edit")}</button>}
-                                            <button className={styles.dots_delete} type="button" onClick={() => handleDelete(item.id)}>{t("delete")}</button>
+                                            {/* <button className={styles.dots_delete} type="button" onClick={() => handleDelete(item.id)}>{t("delete")}</button> */}
                                             <button className={styles.dots_export} type="button" onClick={() => handleGeneratePdf(item.id)}>{t("export_pdf")}</button>
                                         </div>
                                     )}

@@ -72,7 +72,7 @@ export async function POST(req) {
   
           if(testCredits.length === 0){
             await connection.execute(
-              "INSERT INTO credits values (?, ?, 1)", [body.user_Id, formattedDate]
+              "INSERT INTO credits(user_id, date, credit_use) values (?, ?, 1)", [body.user_Id, formattedDate]
             )
           }
           else{

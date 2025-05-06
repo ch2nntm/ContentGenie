@@ -8,12 +8,13 @@ const LINKEDIN_URL_API = process.env.LINKEDIN_URL_API;
 export async function DELETE(req, { params }) {
     try {
         const postId = params?.id;
+        const body = await params;
         console.log("Id:", postId); 
         const cookieStore = await cookies();
         const token_linkedin = cookieStore.get("linkedin_access_token")?.value;
         console.log("Token từ cookies: ", token_linkedin);
     
-        if (!token_linkedin) {
+        if (!token_linkedin && body.status === "1") {
             return NextResponse.json({ status: "error", message: "No token provided" }, { status: 401 });
         }
 
@@ -38,7 +39,7 @@ export async function DELETE(req, { params }) {
             }
         }
 
-        const [] = await connection.execute(
+        await connection.execute(
             "DELETE FROM post WHERE id = ?",
             [postId]
         );
@@ -50,4 +51,4 @@ export async function DELETE(req, { params }) {
       console.error("Token Decode Error:", error);
       return NextResponse.json({ status: "error", message: error}, { status: 500 });
     }
-  }
+}

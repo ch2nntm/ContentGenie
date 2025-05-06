@@ -1,114 +1,101 @@
-.list_container{
-    margin: 100px 115px;
-}
-
-.loading {
+.inf_post_container{
     display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-    margin-top: 100px;
-  }
-  
-  .spinner {
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(0, 0, 0, 0.2);
-    border-top-color: #000;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-right: 8px;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
-
-.item_post{
+    flex-direction: column;
     width: 70vw;
-    box-shadow: 0px 2px 4px var(--primary-color);
-    margin-top: 30px;
-    padding: 0px 20px;
-    border-radius: 5px;
-    padding-bottom: 20px;
+    box-shadow: 1px 1px 3px var(--primary-color);
+    margin: auto;
+    border-radius: 10px;
+    padding: 20px;
+    padding-left: 50px;
+    margin-left: 290px;
 }
 
-.time_user{
+.title{
     display: flex;
-    margin-top: 30px;
-    margin-right: 30px;
     align-items: center;
     gap: 10px;
 }
 
-.item_time{
-    color: #919191;
-    font-size: 14px;
-    font-family: "Open Sans";
-    color: var(--primary-color);
-    line-height: 16px;
+.icon_platform{
+    width: 30px;
+    height: 30px;
+}
+
+.icon_back{
+    position: relative;
+    width: 20px;
+    height: 20px;
+    margin-top: 20px;
+    margin-left: 30px;
+}
+
+.img{
+    width: 300px;
+    margin-left: 330px;
+}
+
+.navbar_post{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 15px;
+    margin-top: -20px;
+}
+
+.arrowback{
+    margin-top: 30px;
+    margin-bottom: 20px;
+    margin-left: 300px;
+    color: grey;
+    width: 20px;
+}
+
+.inf_user{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.email_user{
     margin-top: -10px;
-    margin-left: 20px;
+}
+
+.avt_user{
+    width: 40px;
+    height: 40px;
+}
+
+.name_user{
+    font-weight: 600;
+}
+
+.audience_post{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 5px;
 }
 
 .status_post{
-    margin-top: -20px;
-    margin-left: 35px;
+    margin-top: -15px;
+    margin-left: 30px;
 }
 
-.item_title{
-    font-size: 20px;
-    font-weight: 600;
-    margin-top: 20px;
-    margin-left: 20px;
-    padding-top: 20px;
-    text-decoration: none;
-    color: #000;
-}
-
-.item_content{
-    padding: 0 20px;
-    margin-top: 0px;
-}
-
-.content_post{
-    text-decoration: none;
-    color: #000;
-}
-
-.video_post{
-    width: 80%;
-    height: 400px;
-    margin: auto;
-    display: block;
-}
-
-.is_spotify,
-.is_spotify_edit{
-    position: relative;
+.is_spotify{
     display: flex;
     align-items: center;
     gap: 30px;
     margin-left: 40px;
     margin-right: 60px;
-    box-shadow: 4px 4px 4px 4px var(--second-color);
+    border: 0.3px solid grey;
     border-radius: 10px;
     text-decoration: none;
     color: #000;
     transition: all 0.5s ease;
 }
 
-.is_spotify_edit{
-    width: 400px;
-    margin-left: 130px;
-}
-
 .is_spotify:hover{
-    color: var(--primary-color);
+    color: rgb(0, 128, 255);
 }
 
 .img_spotify{
@@ -122,27 +109,24 @@
     font-weight: 600;
 }
 
+.inf_post {
+    flex-grow: 1; 
+}
 
 .interact_post{
     display: flex;
-    margin: 0 24px;
-    margin-top: 15px;
+    align-items: center;
     justify-content: space-between;
+    margin: 0 20px;
+    margin-top: 20px;
 }
 
 .back,
-.repeat,
-.star,
-.favorite,
-.dots{
+.star{
     display: flex;
     align-items: center;
-    gap: 3px;
 }
 
-.text_like_post{
-    margin-top: 15px;
-}
 
 .dots_delete,
 .dots_edit,
@@ -179,7 +163,7 @@
     border-radius: 5px;
     box-shadow: 0px 4px 6px var(--second-color);
     z-index: 99;
-    left: 80%; 
+    left: 83%; 
     margin-top: -165px;
     padding: 10px 20px;
 }
@@ -188,6 +172,7 @@
     position: relative; 
     cursor: pointer;
 }
+
 
 .modal_container{
     position: fixed;
@@ -198,8 +183,8 @@
     width: 60%;
     height: 500px;
     margin: auto;
-    top: 15%;
-    left: 20%;
+    top: 25%;
+    left: 28%;
 }
 
 .button_close{
@@ -325,4 +310,39 @@
 
 .btn_create p{
     color: #fff;
+}
+
+.is_spotify,
+.is_spotify_edit{
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-left: 40px;
+    margin-right: 60px;
+    box-shadow: 4px 4px 4px 4px var(--second-color);
+    border-radius: 10px;
+    text-decoration: none;
+    color: #000;
+    transition: all 0.5s ease;
+}
+
+.is_spotify_edit{
+    width: 400px;
+    margin-left: 130px;
+}
+
+.is_spotify:hover{
+    color: var(--primary-color);
+}
+
+.img_spotify{
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    height: 153px;
+}
+
+.name_spotify{
+    font-size: 18px;
+    font-weight: 600;
 }

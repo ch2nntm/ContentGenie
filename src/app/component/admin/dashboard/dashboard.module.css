@@ -1,7 +1,6 @@
 .container{
     max-height: 100vh;
     width: 100vw;
-    top: 0;
 }
 
 .navbar{
@@ -186,8 +185,16 @@
 
 .section{
     margin-top: 60px;
-    margin-left: 24px;
+    margin-left: 290px;
     width: 1090px;
+}
+
+.statistic_month{
+    margin-top: -50px;
+}
+
+.text_bold{
+    font-weight: 700;
 }
 
 .content_user_management{

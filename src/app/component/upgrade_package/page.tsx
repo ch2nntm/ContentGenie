@@ -71,7 +71,7 @@ export default function UpgradePackagePage(){
                                     });
                                 
                                     if (!putRes.ok) {
-                                        throw new Error("PUT credit thất bại");
+                                        throw new Error("PUT credit failed");
                                     }
                                     toast.success("Upgrade pro success");
                                 }
@@ -84,11 +84,11 @@ export default function UpgradePackagePage(){
                                 body: JSON.stringify({id: data.user.id})
                             }).then(async (res) => {
                                 if (!res) {
-                                    throw new Error(`Lỗi HTTP: ${res}`);
+                                    throw new Error(`Error HTTP: ${res}`);
                                 }
                                 const contentType = res.headers.get("content-type");
                                 if (!contentType || !contentType.includes("application/json")) {
-                                    throw new Error("Phản hồi không phải JSON hợp lệ");
+                                    throw new Error("Response is not valid JSON");
                                 }
                                 return res.json();
                             })
@@ -102,7 +102,7 @@ export default function UpgradePackagePage(){
                             })
                         }
                     })
-                    .catch((error) => console.error("Lỗi lấy thông tin user:", error));
+                    .catch((error) => console.error("Error getting user information:", error));
                 }
             }catch(error){
                 console.log(error);
@@ -204,10 +204,10 @@ export default function UpgradePackagePage(){
                 <div className={styles.section}>
                     <div className={styles.section_link}>
                         <button onClick={() => setLinkCurrent("check")} className={ linkCurrent==="check" ? styles.check_credits : styles.check_credits_not_choose}>
-                            <p>Check credits</p>
+                            <p>{t("title_check")}</p>
                         </button>
                         <button onClick={() => setLinkCurrent("upgrade")} className={ linkCurrent==="upgrade" ? styles.upgrade : styles.upgrade_not_choose}>
-                            <p>Upgrade</p>
+                            <p>{t("title_upgrade")}</p>
                         </button>
                     </div>
                     <div className={styles.package}>

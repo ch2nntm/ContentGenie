@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import styles from "../[id]/detail_user.module.css";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { getTranslations } from "next-intl/server";
@@ -45,7 +44,6 @@ export default async function ViewUserDetail(props: { params: PageProps}) {
   const detailUser = await getUserDetail((await props.params).id);
   console.log("User detail: ",detailUser);
 
-  const NavbarComponent = dynamic(() => import("@/app/component/navbar_user/page"));
   const t = getTranslations("detail_user");
   const monthPackage = (await t)("package_month");
   const yearPackage = (await t)("package_year");
@@ -54,8 +52,8 @@ export default async function ViewUserDetail(props: { params: PageProps}) {
 
   return (
     <div className={styles.container}>
-      <NavbarComponent/>
-      <Link href="/component/admin/dashboard"><ArrowBackIosNewIcon className={styles.arrowback}/></Link>
+      {/* <NavbarComponent/> */}
+      <Link href="/component/admin/dashboard/list_user"><ArrowBackIosNewIcon className={styles.arrowback}/></Link>
       <div className={styles.inf_user_container}>
         <h1 className={styles.title}>{(await t)("user_detail")}</h1>
         <div className={styles.inf_user}>

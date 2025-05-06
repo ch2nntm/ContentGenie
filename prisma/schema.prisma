@@ -42,10 +42,10 @@ model post {
 }
 
 model credits{
+  id Int @id @default(autoincrement()) 
   user_id Int
   date DateTime
   credit_use Int
-  @@id([user_id, date])
 
   user    account   @relation("AccountCredits", fields: [user_id], references: [id])
 }

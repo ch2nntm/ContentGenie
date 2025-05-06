@@ -17,7 +17,7 @@ export default function RedirectAfterLogin() {
         }
         else if(session?.accessToken && session?.user?.role === 0) {
             Cookies.set("token", session.accessToken, { expires: 1, sameSite: "Lax" });
-            router.push("/component/post_manage/content_generator");
+            router.push("/component/post_manage/list_post_user");
         }
     }
   }, [session, status, router]);

@@ -96,7 +96,7 @@ function ForgotPassword(){
                     }
                     );
                 }
-                else if(res.error){
+                else{
                     toast.error(t("email_wrong"));
                 }
             })

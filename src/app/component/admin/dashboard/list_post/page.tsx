@@ -1,9 +1,5 @@
 "use client"
 import styles from "../list_post/list_post_dashboard.module.css";
-import SearchIcon from "@mui/icons-material/Search";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import { useTranslations } from "next-intl";
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import Cookies from "js-cookie";
@@ -29,9 +25,9 @@ interface post{
 function ListPostDashboard() {
     const t = useTranslations("list_post_dashboard");
     const [data, setData] = useState<post[]>([]);
-    const [selectedYear, setSelectedYear] = useState<number>(2020);
-    const [selectedMonth, setSelectedMonth] = useState<number>(1);
-    const [selectedWeek, setSelectedWeek] = useState<number>(1);
+    const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+    const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth() + 1);
+    const [selectedWeek, setSelectedWeek] = useState<number>(new Date().getDate() / 7);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -80,7 +76,7 @@ function ListPostDashboard() {
         <div className={styles.container}>
             <NavbarUser/>
             <div className={styles.content}>
-                <div className={styles.sidebar}>
+                {/* <div className={styles.sidebar}>
                     <Link href="/component/admin/dashboard" className={styles.dashboard}>
                         <div className={styles.icon_dashboard}>
                             <SearchIcon></SearchIcon>
@@ -107,7 +103,7 @@ function ListPostDashboard() {
                         </div>
                         <p className={styles.text_analytics}>{t("sidebar_analytics")}</p>
                     </Link>
-                </div>
+                </div> */}
                 <div className={styles.section}>
                     <div className={styles.btn_time_group}>
                         <select className={styles.select_year} onChange={(e) => setSelectedYear(Number(e.target.value))}>
@@ -164,7 +160,6 @@ function ListPostDashboard() {
 
                                                             {post.image && 
                                                             post.image.includes(process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "") && (
-                                                                // <p>{post.image.split(',')[1]}</p>
                                                                 <div className={styles.inf_spotify}>
                                                                     <Image src="/icon_spotify.png" width={20} height={20} alt="Icon Spotify" />
                                                                     <p>Spotify</p>

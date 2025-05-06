@@ -6,13 +6,11 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { toast, ToastContainer } from "react-toastify";
 import NavbarUser from "../../navbar_user/page";
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 function ChangePassword(){
     const t = useTranslations("change_password");
-    const [nameUser, setNameUser] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showOldPassword, setShowOldPassword] = useState(false);
@@ -46,7 +44,6 @@ function ChangePassword(){
             })
             .then((data) => {
                 if (data.user) {
-                    setNameUser(data.user.name);
                     setEmail(data.user.email);
                     setPassword(data.user.password);
                 }
@@ -139,7 +136,7 @@ function ChangePassword(){
         <div className={styles.container}>
             <NavbarUser></NavbarUser>
             <div className={styles.content}>
-                <div className={styles.sidebar}>
+                {/* <div className={styles.sidebar}>
                     <p className={styles.sidebar_name_user}>{t("hi")} {nameUser}!</p>
                     <div className={styles.sidebar_account_manage}>
                         <div className={styles.icon_account_manage}>
@@ -149,7 +146,7 @@ function ChangePassword(){
                     </div>
                     <Link href="/component/account_user/edit_profile" className={styles.sidebar_edit_profile}>{t("edit_profile")}</Link>
                     <Link href="" className={styles.sidebar_change_password}>{t("change_password")}</Link>
-                </div>
+                </div> */}
                 <div className={styles.section_body}>
                     <p className={styles.title_section}>
                         {t("account_manage")}

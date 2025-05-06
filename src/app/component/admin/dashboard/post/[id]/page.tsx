@@ -4,7 +4,6 @@ import Image from "next/image";
 import PublicIcon from '@mui/icons-material/Public';
 import HttpsIcon from '@mui/icons-material/Https';
 import { getTranslations } from "next-intl/server";
-import dynamic from "next/dynamic";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import Link from "next/link";
 import TurnedInNotIcon from '@mui/icons-material/TurnedInNot';
@@ -42,7 +41,6 @@ export default async function ViewUserDetail(props : { params: PageProps }) {
   console.log("Post detail:", detailPost);
 
   const t = getTranslations("detail_post");
-  const NavbarComponent = dynamic(() => import("@/app/component/navbar_user/page"));
 
   const convertDay = async (day: Date) => {
     const postDate = new Date(day);
@@ -73,8 +71,7 @@ export default async function ViewUserDetail(props : { params: PageProps }) {
 
   return (
     <div className={styles.container}>
-      <NavbarComponent/>
-      <Link href="/component/admin/dashboard"><ArrowBackIosNewIcon className={styles.arrowback}/></Link>
+      <Link href="/component/admin/dashboard/list_post"><ArrowBackIosNewIcon className={styles.arrowback}/></Link>
       <div className={styles.inf_post_container}>
         <div className={styles.title}>
           { detailPost.platform === "Mastodon" && 

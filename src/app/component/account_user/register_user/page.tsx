@@ -8,7 +8,6 @@ import { toast, ToastContainer } from "react-toastify";
 import { useTranslations } from "next-intl";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-// import NavbarUser from "@/components/navbar_user";
 
 function Register() {
     const [name, setName] = useState<string>("");
@@ -133,7 +132,6 @@ function Register() {
                     {!isEnterCode && 
                     <div>
                         <form className={styles.form}>
-                            {/* <label className={styles.label} htmlFor="name">{t("label_name")}</label> */}
                             <input
                                 type="text"
                                 id="name"
@@ -142,7 +140,6 @@ function Register() {
                                 className={styles.input}
                                 onChange={(e) => setName(e.target.value)}
                             />
-                            {/* <label className={styles.label} htmlFor="email">{t("input_email")}</label> */}
                             <input
                                 type="email"
                                 id="email"
@@ -151,7 +148,6 @@ function Register() {
                                 className={styles.input}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
-                            {/* <label className={styles.label} htmlFor="password">{t("label_password")}</label> */}
                             <input
                                 type={showPassword ? "text" : "password"}
                                 id="password"
@@ -170,7 +166,6 @@ function Register() {
                                     {!showPassword && <VisibilityOffIcon></VisibilityOffIcon>}
                                 </div>
                             </button>
-                            {/* <label className={styles.label_confirm_password} htmlFor="confirmpassword">{t("label_confirm_password")}</label> */}
                             <input
                                 type={showConfirmPassword ? "text" : "password"}
                                 id="confirmpassword"
@@ -205,7 +200,6 @@ function Register() {
                         <div className={styles.container_enter_code}>
                             <div>
                                 <div className={styles.form_group}>
-                                    {/* <label className={styles.label} htmlFor='code'>{t("code")}:</label> */}
                                     <input className={styles.input} placeholder={t("placeholder_code")}
                                         type='text'
                                         id='code'

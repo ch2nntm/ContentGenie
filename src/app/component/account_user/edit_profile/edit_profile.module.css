@@ -1,7 +1,8 @@
 
 .content{
     display: flex;
-    margin-top: 75px;
+    margin-top: 15px;
+    margin-left: 250px;
 }
 
 .sidebar{

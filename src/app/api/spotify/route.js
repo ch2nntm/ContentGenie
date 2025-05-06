@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 
 const url_api = process.env.SPOTIFY_API_URL;
-// const url_base = process.env.SPOTIFY_BASE_URL;
 
 export async function POST(req) {
     try{

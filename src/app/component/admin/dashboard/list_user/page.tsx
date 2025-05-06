@@ -2,13 +2,11 @@
 import NavbarUser from "@/app/component/navbar_user/page";
 import styles from "../list_user/list_user_dashboard.module.css"
 import Link from "next/link";
-import SearchIcon from "@mui/icons-material/Search";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import SearchIcon from '@mui/icons-material/Search';
+import Image from "next/image";
 
 interface account{
     avatar: string;
@@ -55,66 +53,108 @@ function ListUserDashboard() {
         fetchData();
     },[])
     
+    const [currentPage, setCurrentPage] = useState(1);
+    const usersPerPage = 5;
+
+    const indexOfLastUser = currentPage * usersPerPage;
+    const indexOfFirstUser = indexOfLastUser - usersPerPage;
+    const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+
+    const totalPages = Math.ceil(users.length / usersPerPage);
+
+    const [valueSearch, setValueSearch] = useState("");
+
+    const handleSearch = async() => {
+        const token = Cookies.get("token");
+        if(!token){
+            window.location.href = "/component/account_user/login_user";
+        }
+        const res = await fetch(`/api/admin/user?searchQuery=${encodeURIComponent(valueSearch)}`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        const dataResponse = await res.json();
+        const data = dataResponse.users;
+        setUsers(data);
+        console.log("data: ",data);
+    }
+
     return(
         <div className={styles.container}>
             <NavbarUser/>
             <div className={styles.content}>
-                <div className={styles.sidebar}>
-                    <Link href="/component/admin/dashboard" className={styles.dashboard}>
-                        <div className={styles.icon_dashboard}>
-                            <SearchIcon></SearchIcon>
-                        </div>
-                        <p className={styles.text_dashboard}>{t("sidebar_dashboard")}</p>
-                    </Link>
-                    <div className={styles.users}>
-                        <div className={styles.icon_users}>
-                            <PeopleAltIcon></PeopleAltIcon>
-                        </div>
-                        <div className={styles.container_text_users}>
-                            <p className={styles.text_users}>{t("sidebar_users")}</p>
-                        </div>
-                    </div>
-                    <Link href="/component/admin/dashboard/list_post" className={styles.posts}>
-                        <div className={styles.icon_posts}>
-                            <MarkAsUnreadIcon></MarkAsUnreadIcon>
-                        </div>
-                        <p className={styles.text_posts}>{t("sidebar_posts")}</p>
-                    </Link>
-                    <Link href="/component/admin/dashboard/statistic" className={styles.analytics}>
-                        <div className={styles.icon_analytics}>
-                            <TrendingUpIcon></TrendingUpIcon>
-                        </div>
-                        <p className={styles.text_analytics}>{t("sidebar_analytics")}</p>
-                    </Link>
-                </div>
                 <div className={styles.section}>
-                    <div className={styles.item_user_management}>
-                        {loading ? (
-                            <div className={styles.loading}>
-                                <div className={styles.spinner}></div>
-                                Loading...
-                            </div>
-                        ) : 
-                            users.length > 0 ? (
-                                users.map((item: account) => (
-                                    <div key={item.id} className={styles.item_user}>
-                                        <Link href={`/component/admin/dashboard/user/${item.id}`} className={styles.inf_user}>
-                                            <div className={styles.avt_user_container}>
-                                                <img className={styles.avt_user} src={item.avatar ? item.avatar : "/icon_circle_user.png"}></img>
-                                            </div>
-                                            <p className={styles.item_name_user}>{item.name}</p>
-                                        </Link>
-                                        <p className={styles.item_email_user}>@{item.email}</p>
-                                        <p className={styles.item_credit_user}>{t("quantity_credits")}<span className={styles.span}>{item.credits}</span></p>
-                                        <p className={styles.item_post_of_user}>{t("quantity_post")}<span className={styles.span}>{item.count_post}</span></p>
-                                    </div>
-                                ))
-                            )
-                            : (
-                                null
-                            )
-                        }
+                    <div className={styles.search}>
+                        <input type="text" placeholder={t("input_search")} onChange={(e) => setValueSearch(e.target.value)} value={valueSearch} className={styles.input_search} />
+                        <button className={styles.btn_search} onClick={handleSearch}><SearchIcon/></button>
                     </div>
+                    <div className={styles.item_user_management}>
+                    {loading ? (
+                        <div className={styles.loading}>
+                        <div className={styles.spinner}></div>
+                        Loading...
+                        </div>
+                    ) : currentUsers.length > 0 ? (
+                        <>
+                        <div className={styles.title_list}>
+                            <p className={styles.avt_user_container_title}>{t("image")}</p>
+                            <p className={styles.item_name_user_title}>{t("name")}</p>
+                            <p className={styles.item_email_user}>{t("email")}</p>
+                            <p className={styles.item_credit_user_title}>{t("quantity_credits")}</p>
+                            <p className={styles.item_post_of_user_title}>{t("quantity_post")}</p>
+                        </div>
+                        {currentUsers.map((item: account) => (
+                            <div key={item.id} className={styles.item_user}>
+                                <Link href={`/component/admin/dashboard/user/${item.id}`} className={styles.inf_user}>
+                                    <div className={styles.avt_user_container}>
+                                        <Image
+                                            alt="avatar"
+                                            width={50}
+                                            height={50}
+                                            className={styles.avt_user}
+                                            src={item.avatar ? item.avatar : "/icon_circle_user.png"}
+                                        />
+                                    </div>
+                                    <p className={styles.item_name_user}>{item.name}</p>
+                                    <p className={styles.item_email_user}>@{item.email}</p>
+                                    <p className={styles.item_credit_user}>
+                                        <span className={styles.span}>{item.credits}</span>
+                                    </p>
+                                    <p className={styles.item_post_of_user}>
+                                        <span className={styles.span}>{item.count_post}</span>
+                                    </p>
+                                </Link>
+                            </div>
+                        ))}
+                        <div className={styles.pagination}>
+                            <button
+                                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                                disabled={currentPage === 1}
+                                className={currentPage === 1 ? styles.btn_previous_page : styles.btn_previous_page_active}
+                            >
+                                {t("previous_page")}
+                            </button>
+
+                            <span>
+                                {t("page")} {currentPage} / {totalPages}
+                            </span>
+
+                            <button
+                                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                                disabled={currentPage === totalPages}
+                                className={currentPage === totalPages ? styles.btn_next_page : styles.btn_next_page_active}
+                            >
+                                {t("next_page")}
+                            </button>
+                        </div>
+                        </>
+                    ) : (
+                        <p></p>
+                    )}
+                    </div>
+
                 </div>
             </div>
         </div>

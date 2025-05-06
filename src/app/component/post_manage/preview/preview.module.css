@@ -190,7 +190,7 @@
 
 .post{
     margin-top: 88px;
-    margin-left: 312px;
+    margin-left: 412px;
     width: 860px;
     /* height: 506px; */
     background-color: #ffffff;
@@ -283,7 +283,7 @@
 
 .scheduled_post{
     margin-top: 24px;
-    margin-left: 312px;
+    margin-left: 412px;
     width: 863px;
     height: 140px;
     background-color: #eaecf0;
@@ -369,7 +369,7 @@
 .btn_container{
     display: flex;
     gap: 100px;
-    margin-left: 450px;
+    margin-left: 530px;
 }
 
 .btn_edit:hover{

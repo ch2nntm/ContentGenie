@@ -7,7 +7,6 @@ import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify";
 import dynamic from "next/dynamic";
 import { useAuth } from "../../authProvider"; 
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -24,7 +23,6 @@ const cloudinaryUrl = process.env.NEXT_PUBLIC_CLOUDINARY_URL;
 function EditProfilePage() {
     const t = useTranslations("edit_profile");
     
-    const [nameUser, setNameUser] = useState("");
     const [inputName, setInputName] = useState("");
     const [inputEmail, setInputEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -83,7 +81,6 @@ function EditProfilePage() {
 
     const fetchUserData = () => {
         if (auth?.user?.name) {
-            setNameUser(auth.user.name);
             setInputName(auth?.user.name);
             setPassword(auth?.user.password);
             setInputEmail(auth?.user.email);
@@ -249,7 +246,7 @@ function EditProfilePage() {
         <div className={styles.container}>
             <NavbarComponent />
             <div className={styles.content}>
-                <div className={styles.sidebar}>
+                {/* <div className={styles.sidebar}>
                     <p className={styles.sidebar_name_user}>{t("hi")} {nameUser} !</p>
                     <div className={styles.sidebar_account_manage}>
                         <div className={styles.icon_account_manage}>
@@ -259,7 +256,7 @@ function EditProfilePage() {
                     </div>
                     <Link href="" className={styles.sidebar_edit_profile}>{t("edit_profile")}</Link>
                     <Link href="/component/account_user/change_password" className={styles.sidebar_change_password}>{t("change_password")}</Link>
-                </div>
+                </div> */}
                 <div className={styles.section_body}>
                     <p className={styles.title_section}>{t("account_manage")}</p>
                     <div className={styles.section}>

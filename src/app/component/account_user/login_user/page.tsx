@@ -64,7 +64,7 @@ function Login() {
                         router.push("/component/admin/dashboard");
                     }
                     else if (data.user.role === 0) {
-                        router.push("/component/post_manage/content_generator");
+                        router.push("/component/post_manage/list_post_user");
                     }
                 });
             } else {
@@ -90,7 +90,6 @@ function Login() {
                         <h1 className={styles.text_main}>ContentGenie</h1>
                     </Link>
                     <form onSubmit={handleSubmit} className={styles.form}>
-                        {/* <label className={styles.label} htmlFor="email">{t("label_email")}</label> */}
                         <input
                             type="email"
                             id="email"
@@ -99,7 +98,6 @@ function Login() {
                             onChange={(e) => setEmail(e.target.value)}
                             className={styles.input}
                         />
-                        {/* <label className={styles.label} htmlFor="password">{t("label_password")}</label> */}
                         <input
                             type={showPassword ? "text" : "password"}
                             id="password"

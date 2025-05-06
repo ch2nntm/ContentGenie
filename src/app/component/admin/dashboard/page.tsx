@@ -1,159 +1,112 @@
 "use client";
 
-import useSWR from "swr";
+// import useSWR from "swr";
 import styles from "../dashboard/dashboard.module.css";
-import Link from "next/link";
+// import Link from "next/link";
 import NavbarUser from "@/app/component/navbar_user/page";
-import SearchIcon from "@mui/icons-material/Search";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
+import Statistic from "./statistic/page";
 import { useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
+// import { useTranslations } from "next-intl";
+// import { useSearchParams } from "next/navigation";
 
-interface account {
-    id: number;
-    name: string;
-    avatar: string;
-    email: string;
-}
+// interface account {
+//     id: number;
+//     name: string;
+//     avatar: string;
+//     email: string;
+// }
 
-interface post{
-    post_id: string;
-    title: string;
-    content: string;
-    image: string;
-    audience: string;
-    avatar: string;
-    name: string;
-    platform: string;
-}
+// interface post{
+//     post_id: string;
+//     title: string;
+//     content: string;
+//     image: string;
+//     audience: string;
+//     avatar: string;
+//     name: string;
+//     platform: string;
+// }
 
-const fetcher = async ([url, type, searchQuery]: [string, string, string | null]) => {
-    const token = Cookies.get("token");
-    if (!token) return [];
+// const fetcher = async ([url, type, searchQuery]: [string, string, string | null]) => {
+//     const token = Cookies.get("token");
+//     if (!token) return [];
 
-    const queryParam = searchQuery ? `?searchQuery=${encodeURIComponent(searchQuery)}` : "";
+//     const queryParam = searchQuery ? `?searchQuery=${encodeURIComponent(searchQuery)}` : "";
     
-    const res = await fetch(`${url}${queryParam}`, {
-        method: "GET",
-        headers: {
-            Authorization: `Bearer ${token}`,
-        }
-    });
+//     const res = await fetch(`${url}${queryParam}`, {
+//         method: "GET",
+//         headers: {
+//             Authorization: `Bearer ${token}`,
+//         }
+//     });
 
-    if (!res.ok) return [];
-    return (await res.json())?.[type] || [];
-};
+//     if (!res.ok) return [];
+//     return (await res.json())?.[type] || [];
+// };
 
 
 export default function DashBoard() {
-    const searchParams = useSearchParams();
-    const searchQuery = searchParams.get("searchQuery") || "";
+    const [ratePost, setRatePost] = useState("");
+    const [rateCredit, setRateCredit] = useState("");
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const token = Cookies.get("token");
+            if (!token) return;
+    
+            try {
+                const response = await fetch("/api/admin/statistic_month", {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+    
+                const result = await response.json(); 
+    
+                if (result.status === "success") {
+                    setRatePost(result.data.rate_post);   
+                    setRateCredit(result.data.rate_credit);
+                } else {
+                    console.error("API Error:", result.message);
+                }
+            } catch (error) {
+                console.error("Fetch error:", error);
+            }
+        };
+    
+        fetchData();
+    }, []);
+    
+
+    // const searchParams = useSearchParams();
+    // const searchQuery = searchParams.get("searchQuery") || "";
     const t = useTranslations("dashboard");
 
-    const { data: users = [] } = useSWR(
-        ["/api/admin/user", "users", searchQuery],
-        fetcher
-    );
+    // const { data: users = [] } = useSWR(
+    //     ["/api/admin/user", "users", searchQuery],
+    //     fetcher
+    // );
 
-    const { data: posts = []} = useSWR(
-        ["/api/admin/list_post", "posts", searchQuery],
-        fetcher,
-    );
-
-  console.log("searchQueryerre: ",searchQuery);
+    // const { data: posts = []} = useSWR(
+    //     ["/api/admin/list_post", "posts", searchQuery],
+    //     fetcher,
+    // );
 
   return (
     <div className={styles.container}>
             <NavbarUser/>
             <div className={styles.content}>
-                <div className={styles.sidebar}>
-                    <Link href="/component/admin/dashboard" className={styles.dashboard}>
-                        <div className={styles.icon_dashboard}>
-                            <SearchIcon></SearchIcon>
-                        </div>
-                        <div className={styles.container_text_dashboard}>
-                            <p className={styles.text_dashboard}>{t("sidebar_dashboard")}</p>
-                        </div>
-                    </Link>
-                    <Link href="/component/admin/dashboard/list_user" className={styles.users}>
-                        <div className={styles.icon_users}>
-                            <PeopleAltIcon></PeopleAltIcon>
-                        </div>
-                        <p className={styles.text_users}>{t("sidebar_users")}</p>
-                    </Link>
-                    <Link href="/component/admin/dashboard/list_post" className={styles.posts}>
-                        <div className={styles.icon_posts}>
-                            <MarkAsUnreadIcon></MarkAsUnreadIcon>
-                        </div>
-                        <p className={styles.text_posts}>{t("sidebar_posts")}</p>
-                    </Link>
-                    <Link href="/component/admin/dashboard/statistic" className={styles.analytics}>
-                        <div className={styles.icon_analytics}>
-                            <TrendingUpIcon></TrendingUpIcon>
-                        </div>
-                        <p className={styles.text_analytics}>{t("sidebar_analytics")}</p>
-                    </Link>
-                </div>
                 <div className={styles.section}>
-                    <div className={styles.user_management}>
-                        <div className={styles.content_user_management}>
-                            <Link href="/component/admin/dashboard/list_user" className={styles.text_user_management}>{t("section_user_management")}</Link>
-                            <div className={styles.item_user_management}>
-                                {users.length > 0 ? (
-                                    users.map((item: account) => (
-                                        <div key={item.id} className={styles.item_user}>
-                                            <Link href={`/component/admin/dashboard/user/${item.id}`} className={styles.inf_user}>
-                                                <div className={styles.avt_user_container}>
-                                                    <img className={styles.avt_user} src={item.avatar ? item.avatar : "/icon_circle_user.png"}></img>
-                                                </div>
-                                                <p className={styles.item_name_user}>{item.name}</p>
-                                            </Link>
-                                            <p className={styles.item_email_user}>@{item.email}</p>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <p>{t("section_no_user")}</p>
-                                )}
-                            </div>
-                        </div>
+                    <div className={styles.statistic_month}>
+                        { ratePost && (ratePost.startsWith("-") ? <p>{t("rate_post_reduce")}<span className={styles.text_bold}>{ratePost.replace("-","")}</span></p> : <p>{t("rate_post_increase")}<span className={styles.text_bold}>{ratePost}</span></p>)}
+                        { rateCredit && (rateCredit.startsWith("-") ? <p>{t("rate_credit_reduce")}<span className={styles.text_bold}>{rateCredit.replace("-","")}</span></p> : <p>{t("rate_credit_increase")}<span className={styles.text_bold}>{rateCredit}</span></p>)}
                     </div>
-                    <div className={styles.user_management}>
-                        <div className={styles.content_user_management}>
-                            <Link href="/component/admin/dashboard/list_post" className={styles.text_post_management}>{t("section_list_post")}</Link>
-                            <div className={styles.item_post_management}>
-                                {posts.length > 0 ? (
-                                    posts.map((item: post) => (
-                                        <div key={item.post_id} className={styles.item_post}>
-                                            <Link href={`/component/admin/dashboard/post/${item.post_id}`} className={styles.item_user}>
-                                                <div className={styles.inf_user}>
-                                                    <div className={styles.avt_user_container}>
-                                                        <img className={styles.avt_user} src={item.avatar ? item.avatar : "/icon_circle_user.png"}></img>
-                                                    </div>
-                                                    <p className={styles.item_name_user}>{item.name}</p>
-                                                </div>
-                                                <div className={styles.content_post}>
-                                                    <div className={styles.gene_post}>
-                                                        <p className={styles.text_title}>{item.title}</p>
-                                                        {item.platform === "Mastodon" && <img className={styles.icon_platform} src="/icon_mastodon.png"/>}
-                                                        {item.platform === "LinkedIn" && <img className={styles.icon_platform} src="/icon_linkedin.webp"/>}
-                                                    </div>
-                                                    <p className={styles.text_content}>{item.content}</p>
-                                                </div>
-                                            </Link>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <p>{t("section_no_post")}</p>
-                                )}
-                            </div>
-                        </div>
-                    </div>
+                    <Statistic/>
                 </div>
             </div>
-            
         </div>
   );
 }

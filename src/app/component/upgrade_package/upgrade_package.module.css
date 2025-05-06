@@ -3,8 +3,9 @@
     flex-direction: column;
     justify-content: center; 
     align-items: center; 
-    height: 100vh; 
+    height: 80vh; 
     margin-top: 0px;
+    margin-left: 230px;
 }
 
 .loading {
@@ -37,7 +38,7 @@
     box-shadow: 4px 4px 4px 4px rgb(214, 213, 213);
     padding: 20px;
     top: 75px;
-    width: 80vw;
+    width: 70vw;
     height: 80vh;
     border-radius: 10px;
 }  
@@ -135,7 +136,7 @@
 .package_month,
 .package_year{
     width: 27%;
-    height: 400px;
+    height: 410px;
     border: 1px solid grey;
     border-radius: 10px;
     text-align: center;
@@ -168,7 +169,7 @@
 
 .item_checkcircle{
     display: flex;
-    height: 40px;
+    height: 55px;
     text-align: left;
 }
 
@@ -197,7 +198,7 @@
     border-radius: 5px;
     background-color: rgb(43, 185, 137);
     color: #fff;
-    margin-top: 50px;
+    margin-top: 10px;
     font-size: 16px;
 }
 

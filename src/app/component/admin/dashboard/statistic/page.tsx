@@ -1,12 +1,7 @@
 "use client"
 
 import styles from "../statistic/statistic.module.css"
-import SearchIcon from "@mui/icons-material/Search";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import NavbarUser from "@/app/component/navbar_user/page";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
@@ -27,7 +22,7 @@ interface statistic {
 function Statistic() {
 
     const t = useTranslations("statistics");
-    const [selectedYear, setSelectedYear] = useState("2020");
+    const [selectedYear, setSelectedYear] = useState((new Date().getFullYear()).toString());
     const [dataStatistics, setDataStatistic] = useState<statistic[]> ([]);
     const [list, setList] = useState<statistic[]> ([]);
     const [isClickList, setIsClickList] = useState(false);
@@ -117,39 +112,13 @@ function Statistic() {
         console.log("data.posts: ",data.data);
         setList(data.data);
     }
+
+    const before10Year = new Date().getFullYear() - 10;
     
     return(
         <div className={styles.container}>
             <NavbarUser/>
             <div className={styles.content}>
-                <div className={styles.sidebar}>
-                    <Link href="/component/admin/dashboard" className={styles.dashboard}>
-                        <div className={styles.icon_dashboard}>
-                            <SearchIcon></SearchIcon>
-                        </div>
-                        <p className={styles.text_dashboard}>{t("sidebar_dashboard")}</p>
-                    </Link>
-                    <Link href="/component/admin/dashboard/list_user" className={styles.users}>
-                        <div className={styles.icon_users}>
-                            <PeopleAltIcon></PeopleAltIcon>
-                        </div>
-                        <p className={styles.text_users}>{t("sidebar_users")}</p>
-                    </Link>
-                    <Link href="/component/admin/dashboard/list_post" className={styles.posts}>
-                        <div className={styles.icon_posts}>
-                            <MarkAsUnreadIcon></MarkAsUnreadIcon>
-                        </div>
-                        <p className={styles.text_posts}>{t("sidebar_posts")}</p>
-                    </Link>
-                    <div className={styles.analytics}>
-                        <div className={styles.icon_analytics}>
-                            <TrendingUpIcon></TrendingUpIcon>
-                        </div>
-                        <div className={styles.container_text_analytics}>
-                            <p className={styles.text_analytics}>{t("sidebar_analytics")}</p>
-                        </div>
-                    </div>
-                </div>
                 <div className={styles.section}>
                     <p className={styles.title_page}>
                         {t("title_page")}
@@ -157,8 +126,8 @@ function Statistic() {
                     <div className={styles.time}>
                         <label htmlFor="year">{t("label_year")}</label>
                         <select value={selectedYear} onChange={(e) => { setSelectedYear(e.target.value); setIsClickList(false); }} className={styles.select_time}>
-                        {[...Array(26)].map((_, i) => (
-                            <option key={i} value={2020 + i}>{2020 + i}</option>
+                        {[...Array(11)].map((_, i) => (
+                            <option key={i} value={before10Year + i}>{before10Year + i}</option>
                         ))}
                         </select>
                         { isClickList === true && <button className={styles.btn_export} type="button" onClick={() => handleGeneratePdf()}>{t("export_pdf")}</button>}
@@ -169,7 +138,7 @@ function Statistic() {
                             labels: labels,
                             datasets: [
                                 {
-                                    label: t("label_post_paiding"),
+                                    label: t("label_post_pending"),
                                     backgroundColor: ["#3e95cd"],
                                     data: totalPostsPaiding,
                                 },
@@ -218,7 +187,7 @@ function Statistic() {
                                     <thead>
                                         <tr className={styles.tablerow}>
                                         <td className={styles.title_tablecell}>{t("lable_time")}</td>
-                                        <td className={styles.title_tablecell}>{t("label_post_paiding")}</td>
+                                        <td className={styles.title_tablecell}>{t("label_post_pending")}</td>
                                         <td className={styles.title_tablecell}>{t("label_post_posted")}</td>
                                         <td className={styles.title_tablecell}>{t("label_credit")}</td>
                                         </tr>
