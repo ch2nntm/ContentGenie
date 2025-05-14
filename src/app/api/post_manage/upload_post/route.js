@@ -1,6 +1,7 @@
 import mysql from "mysql2/promise";
 import { NextResponse } from "next/server";
 import dbConfig from "../../../../../dbConfig.js";
+import { checkBlacklist } from '../../../../../lib/checkBlackList';
 
 export async function POST(req) {
   const authHeader = req.headers.get("authorization"); 
@@ -32,6 +33,12 @@ export async function POST(req) {
     console.log("statusSetDaily: ", statusSetDaily);  
 
     const connection = await mysql.createConnection(dbConfig);
+
+    const violations = checkBlacklist(content);
+
+    if (Object.keys(violations).length > 0) {
+        return NextResponse.json({ status: "error", message: "Contain blacklist", data: violations}, {status: 400});
+    }
 
     await connection.execute(
       "INSERT INTO post (id, title, content, image, posttime, user_id, platform, status, audience, set_daily) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",

@@ -24,10 +24,15 @@ export async function GET(req) {
 
             if (payload.role === 1) {
                 const connection = await mysql.createConnection(dbConfig);
-                const [rows] = await connection.execute("SELECT ac.*, count(*) as count_post FROM account ac LEFT JOIN post ps ON ac.id = ps.user_id WHERE role <> 1 AND name LIKE ? GROUP BY ac.id;", [`%${searchQuery}%`]);
+                const [rows] = await connection.execute("SELECT ac.id, ac.name, ac.avatar, ac.email, ac.role, ac.credits, COUNT(ps.id) AS count_post"+
+                        " FROM account ac"+
+                        " LEFT JOIN post ps ON ac.id = ps.user_id"+
+                        " WHERE ac.role <> 1 AND ac.name LIKE ?"+
+                        " GROUP BY ac.id, ac.name, ac.email, ac.role;"
+                    , [`%${searchQuery}%`]);
                 await connection.end();
 
-                return NextResponse.json({ status: "success", message: "Get list user successfully", users: rows }, { status: 200 });
+                return NextResponse.json({ status: "success", message: "Get list user successfully", users: rows.sort((a, b) => a.name.localeCompare(b.name)) }, { status: 200 });
             } else {
                 return NextResponse.json({ status: "error", message: "Forbidden" }, { status: 403 });
             }

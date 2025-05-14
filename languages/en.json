@@ -101,7 +101,9 @@
         "img": "Image",
         "upload_post": "Upload",
         "like":"Like",
-        "comment": "Comment"
+        "comment": "Comment",
+        "noti_blacklist": "Content containing prohibited words is: ",
+        "noti_character": "Content maximum 500 characters"
     },
     "content_generator": {
         "social_media": "Select Social Media Platform ",
@@ -189,7 +191,9 @@
         "btn_update": "Update",
         "btn_cancel": "Cancel",
         "error_internet":"Error sending code, please check your internet connection!",
-        "exist_email": "Email already exists!"
+        "exist_email": "Email already exists!",  
+        "message1": "Email successfully updated with account with account:",
+        "message2":" and password: "
     },
     "forgot_password":{
         "enter_full": "Please enter full field!",
@@ -222,7 +226,8 @@
         "email_wrong": "Email does not exist!",
         "subtitle_forgot": "Enter your registered email to receive a password reset link",
         "code_success": "Code sent successfully!",
-        "error_internet": "Error sending code, please check your internet connection!"
+        "error_internet": "Error sending code, please check your internet connection!",
+        "invalid_email": "Invalid email!"
     },
     "list_post_user":{
         "title_page": "List Post",
@@ -281,6 +286,7 @@
         "send_email_fail": "Send email failed!"
     },
     "detail_post": {
+        "minutes":"minutes ago",
         "hours":"hours ago",
         "days":"days ago",
         "months":"months ago",

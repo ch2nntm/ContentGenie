@@ -30,8 +30,8 @@ function EditProfilePage() {
     const [enterCode, setEnterCode] = useState("");
     const [isSend, setIsSend] = useState(false);
 
-    const message1="Đã cập nhật email thành công với tài khoản có username: ";
-    const message2="password: ";
+    const message1=t("message1");
+    const message2=t("message2");
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -44,7 +44,6 @@ function EditProfilePage() {
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
-            // const cloudinaryUrl = process.env.CLOUDINARY_URL;
             const uploadPreset = "demo-upload";
             const form = new FormData();
             form.append("file", file);
@@ -77,7 +76,7 @@ function EditProfilePage() {
 
     const auth = useAuth() as {
         setUser(arg0: () => { name: string; avatar: string; }): unknown; user: User 
-};
+    };
 
     const fetchUserData = () => {
         if (auth?.user?.name) {
@@ -246,17 +245,6 @@ function EditProfilePage() {
         <div className={styles.container}>
             <NavbarComponent />
             <div className={styles.content}>
-                {/* <div className={styles.sidebar}>
-                    <p className={styles.sidebar_name_user}>{t("hi")} {nameUser} !</p>
-                    <div className={styles.sidebar_account_manage}>
-                        <div className={styles.icon_account_manage}>
-                            <ManageAccountsIcon></ManageAccountsIcon>
-                        </div>
-                        <p className={styles.text_account_manage}>{t("account_manage")}</p>
-                    </div>
-                    <Link href="" className={styles.sidebar_edit_profile}>{t("edit_profile")}</Link>
-                    <Link href="/component/account_user/change_password" className={styles.sidebar_change_password}>{t("change_password")}</Link>
-                </div> */}
                 <div className={styles.section_body}>
                     <p className={styles.title_section}>{t("account_manage")}</p>
                     <div className={styles.section}>

@@ -100,8 +100,10 @@
         "btn_save": "Lưu",
         "img": "Hình ảnh",
         "upload_post": "Đăng bài",
-         "like": "Thích",
-        "comment": "Bình luận"
+        "like": "Thích",
+        "comment": "Bình luận",
+        "noti_blacklist": "Nội dung chứa các từ bị cấm là: ",
+        "noti_character": "Nội dung tối đa 500 ký tự"
     },
     "content_generator": {
         "social_media": "Chọn Nền Tảng Truyền Thông Xã Hội ",
@@ -143,10 +145,10 @@
         "delete_fail": "Xoá người dùng thất bại!",
         "cancel_delete": "Huỷ bỏ xoá!",
         "error_load": "Lỗi tải người dùng...",
-        "rate_post_increase": "Tỷ lệ bài đăng trong tháng này so với tháng trước đã giảm: ",
-        "rate_post_reduce": "Tỷ lệ bài đăng trong tháng này so với tháng trước đã tăng: ",
-        "rate_credit_increase": "Tỷ lệ sử dụng thẻ trong tháng này so với tháng trước đã giảm: ",
-        "rate_credit_reduce": "Tỷ lệ sử dụng thẻ trong tháng này so với tháng trước đã tăng: "
+        "rate_post_increase": "Tỷ lệ bài đăng trong tháng này so với tháng trước đã tăng: ",
+        "rate_post_reduce": "Tỷ lệ bài đăng trong tháng này so với tháng trước đã giảm: ",
+        "rate_credit_increase": "Tỷ lệ sử dụng thẻ trong tháng này so với tháng trước đã tăng: ",
+        "rate_credit_reduce": "Tỷ lệ sử dụng thẻ trong tháng này so với tháng trước đã giảm: "
     },
     "change_password":{
         "hi": "Xin chào",
@@ -190,7 +192,9 @@
         "btn_update": "Cập nhật",
         "btn_cancel":"Hủy bỏ",
         "error_internet":"Lỗi kết nối mạng!",
-        "exist_email":"Email đã tồn tại!"
+        "exist_email":"Email đã tồn tại!",
+        "message1": "Đã cập nhật email thành công với tài khoản có tài khoản:",
+        "message2":" và mật khẩu: "
     },
     "forgot_password":{
         "enter_full": "Vui lòng điền đầy đủ các trường!",
@@ -223,7 +227,8 @@
         "email_wrong": "Email không tồn tại!",
         "subtitle_forgot": "Nhập email đã đăng ký của bạn để nhận liên kết đặt lại mật khẩu",
         "code_success": "Mã đã được gửi thành công!",
-        "error_internet": "Lỗi kết nối mạng!"
+        "error_internet": "Lỗi kết nối mạng!",
+        "invalid_email": "Email không hợp lệ!"
     },
     "list_post_user":{
         "title_page": "Danh sách bài đăng",
@@ -281,6 +286,7 @@
         "exist_account": "Tài khoản đã tồn tại!"
     },
     "detail_post": {
+        "minutes":"phút trước",
         "hours":"giờ trước",
         "days":"ngày trước",
         "months":"tháng trước",

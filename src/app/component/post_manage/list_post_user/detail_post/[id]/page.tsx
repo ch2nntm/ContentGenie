@@ -301,57 +301,59 @@ const handleClickBtnCloseImg = () => {
       <Link href="/component/post_manage/list_post_user">
         <ArrowBackIosNewIcon className={styles.arrowback} />
       </Link>
-      <div ref={slidesRef} className={styles.inf_post_container}>
-        <div className={styles.title}>
-          {detailPost && detailPost.platform === "Mastodon" && (
-            <>
-              <img className={styles.icon_platform} src="/icon_mastodon.png" />
-              <h1 className={styles.title_text}>{t("social_mastodon")}</h1>
-            </>
-          )}
-          {detailPost && detailPost.platform === "LinkedIn" && (
-            <>
-              <img className={styles.icon_platform} src="/icon_linkedin.webp" />
-              <h1 className={styles.title_text}>{t("social_linkedin")}</h1>
-            </>
-          )}
-        </div>
-        <div className={styles.navbar_post}>
-          <div className={styles.inf_user}>
-            <img className={styles.avt_user} src={detailPost && detailPost.avatar || "/icon_circle_user.png"} />
-            <div className={styles.inf_detail_user}>
-              <p className={styles.name_user}>{detailPost && detailPost.name}</p>
-              <p className={styles.email_user}>@ {detailPost && detailPost.email}</p>
+      <div className={styles.inf_post_container}>
+        <div ref={slidesRef}>
+          <div className={styles.title}>
+            {detailPost && detailPost.platform === "Mastodon" && (
+              <>
+                <img className={styles.icon_platform} src="/icon_mastodon.png" />
+                <h1 className={styles.title_text}>{t("social_mastodon")}</h1>
+              </>
+            )}
+            {detailPost && detailPost.platform === "LinkedIn" && (
+              <>
+                <img className={styles.icon_platform} src="/icon_linkedin.webp" />
+                <h1 className={styles.title_text}>{t("social_linkedin")}</h1>
+              </>
+            )}
+          </div>
+          <div className={styles.navbar_post}>
+            <div className={styles.inf_user}>
+              <img className={styles.avt_user} src={detailPost && detailPost.avatar || "/icon_circle_user.png"} />
+              <div className={styles.inf_detail_user}>
+                <p className={styles.name_user}>{detailPost && detailPost.name}</p>
+                <p className={styles.email_user}>@ {detailPost && detailPost.email}</p>
+              </div>
+            </div>
+            <div className={styles.navbar_detail_post}>
+              <div className={styles.audience_post}>
+                {detailPost &&  detailPost.audience === "public" && <PublicIcon />}
+                {detailPost &&  detailPost.audience !== "public" && <HttpsIcon />}
+                <p className={styles.time_post}>{detailPost && convertDay(detailPost.posttime)}</p>
+              </div>
+              {detailPost &&  detailPost.status === 0 && <p className={styles.status_post}>{t("status_pending")}</p>}
+              {detailPost &&  detailPost.status === 1 && <p className={styles.status_post}>{t("status_posted")}</p>}
             </div>
           </div>
-          <div className={styles.navbar_detail_post}>
-            <div className={styles.audience_post}>
-              {detailPost &&  detailPost.audience === "public" && <PublicIcon />}
-              {detailPost &&  detailPost.audience !== "public" && <HttpsIcon />}
-              <p className={styles.time_post}>{detailPost && convertDay(detailPost.posttime)}</p>
-            </div>
-            {detailPost &&  detailPost.status === 0 && <p className={styles.status_post}>{t("status_pending")}</p>}
-            {detailPost &&  detailPost.status === 1 && <p className={styles.status_post}>{t("status_posted")}</p>}
+          <div className={styles.inf_post}>
+            <p>{detailPost && detailPost.content}</p>
+            {detailPost && detailPost.image && !detailPost.image.startsWith(process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "") && !detailPost.image.startsWith(process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "") && <img src={detailPost.image} className={styles.img} />}
+            {detailPost && detailPost.image && detailPost.image.startsWith(process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "") && <iframe className={styles.img} src={detailPost.image} />}
+            {detailPost && detailPost.image && detailPost.image.startsWith(process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "") && (
+              <>
+                <a className={styles.is_spotify} href={detailPost.image.split(",")[0]}>
+                  <div className={styles.img_spotify}>
+                    <Image className={styles.img_spotify} src={detailPost.image.split(",")[3]} alt="Spotify artist image" width={150} height={150} />
+                  </div>
+                  <div className={styles.sing_spotify}>
+                    <p>Spotify</p>
+                    <p className={styles.name_spotify}>{detailPost.image.split(",")[1]}</p>
+                    <p className={styles.name_artist}>{detailPost.image.split(",")[2]}</p>
+                  </div>
+                </a>
+              </>
+            )}
           </div>
-        </div>
-        <div className={styles.inf_post}>
-          <p>{detailPost && detailPost.content}</p>
-          {detailPost && detailPost.image && !detailPost.image.startsWith(process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "") && !detailPost.image.startsWith(process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "") && <img src={detailPost.image} className={styles.img} />}
-          {detailPost && detailPost.image && detailPost.image.startsWith(process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "") && <iframe className={styles.img} src={detailPost.image} />}
-          {detailPost && detailPost.image && detailPost.image.startsWith(process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "") && (
-            <>
-              <a className={styles.is_spotify} href={detailPost.image.split(",")[0]}>
-                <div className={styles.img_spotify}>
-                  <Image className={styles.img_spotify} src={detailPost.image.split(",")[3]} alt="Spotify artist image" width={150} height={150} />
-                </div>
-                <div className={styles.sing_spotify}>
-                  <p>Spotify</p>
-                  <p className={styles.name_spotify}>{detailPost.image.split(",")[1]}</p>
-                  <p className={styles.name_artist}>{detailPost.image.split(",")[2]}</p>
-                </div>
-              </a>
-            </>
-          )}
         </div>
         <div className={styles.interact_post}>
           <div className={styles.back}>

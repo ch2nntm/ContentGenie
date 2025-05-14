@@ -386,7 +386,8 @@
     height: 500px;
     top: 0;
     margin: auto;
-    margin-top: -480px;
+    margin-top: -550px;
+    margin-left: 400px;
 }
 
 .button_close{

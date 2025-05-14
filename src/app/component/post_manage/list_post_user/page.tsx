@@ -118,9 +118,8 @@ function ListPostUser() {
                                         </div>
                                         <a href={`/component/post_manage/list_post_user/detail_post/${item.id}`} className={styles.content_post}>
                                             <p className={styles.item_title}>{item.title}</p>
-                                            {item.audience==="public" && <p className={styles.item_time}>Published on {convertDay(item.posttime)}</p>}
-                                            {item.audience==="private" && <p className={styles.item_time}>Pending on {convertDay(item.posttime)}</p>}
-                                            
+                                            {item.status===1 && <p className={styles.item_time}>Published on {convertDay(item.posttime)}</p>}
+                                            {item.status===0 && <p className={styles.item_time}>Pending on {convertDay(item.posttime)}</p>}
                                             <p className={styles.item_content}>{item.content}</p>
                                         </a>
                                     </div>

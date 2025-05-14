@@ -24,7 +24,6 @@ const sendEmail = async (email, otp) => {
         subject: "Mã OTP của bạn",
         text: `Mã OTP của bạn là: ${otp} (Hết hạn sau 5 phút).`,
     });
-
 };
 
 export async function POST(req) {
@@ -43,7 +42,7 @@ export async function POST(req) {
 
         await sendEmail(email, otp);
 
-        return NextResponse.json({ status: "success", message: "OTP sent successfully" }, { status: 200 });
+        return NextResponse.json({ status: "success", message: "OTP sent successfully" }, { status: 300 });
     } catch (error) {
         console.log("Error sending OTP:", error);
         return NextResponse.json({ status: "error", message: error  }, { status: 500 });

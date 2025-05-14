@@ -20,6 +20,7 @@ function Login() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleGoogleSignIn = async () => {
         signIn("google", { callbackUrl: "/component/auth/redirect_after_login" });
@@ -39,6 +40,7 @@ function Login() {
             toast.error(t("invalid_password"));
             return;
         }
+        setIsLoading(true);
         fetch("/api/manage_account/login", {
             method: "POST",
             headers: {
@@ -73,6 +75,8 @@ function Login() {
                 else if(data.error === "Wrong password!")
                     toast.error(noti_toast("wrong_account"));
             }
+        }).finally(() => {
+            setIsLoading(false);
         });
     };
 
@@ -118,6 +122,12 @@ function Login() {
                         </button>
                         <Link className={styles.forgot_password} href="/component/account_user/forgot_password">{t("forgot_password")}</Link>
                         <button type="submit" className={styles.buttonLogin}>
+                            {isLoading 
+                            ? 
+                                <div className={styles.loading}>
+                                    <div className={styles.spinner}></div>
+                                </div> 
+                            : ''}
                             {t("signin")}
                         </button>
                     </form>

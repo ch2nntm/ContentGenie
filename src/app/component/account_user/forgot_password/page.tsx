@@ -17,6 +17,9 @@ function ForgotPassword(){
     const [isClickSendCode, setIsClickSendCode] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [isLoadingSendEmail, setIsLoadingSendEmail] = useState(false);
+    const [isLoadingSendCode, setIsLoadingSendCode] = useState(false);
+    const [isLoadingResetPassword, setIsLoadingResetPassword] = useState(false);
 
     const router = useRouter();
 
@@ -41,10 +44,14 @@ function ForgotPassword(){
             toast.error(t("code_not_full"));
             return;
         }
+        setIsLoadingSendCode(true);
         const response = await fetch("/api/verify_otp",{
             method: "POST",
             body: JSON.stringify({email, otp: code, password: "check", message1: t("message1"), message2: t("message2"), checkOnly: true})
         })
+        .finally(() => {
+            setIsLoadingSendCode(false);
+        });
         if(response.ok){
             setIsClickSendCode(true);
             toast.success(t("code_success"));
@@ -67,7 +74,12 @@ function ForgotPassword(){
             toast.error(t("enter_full"));
             return;
         }
+        else if(!/^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+            toast.error(t("invalid_email"));
+            return;
+        }
         try{
+            setIsLoadingSendEmail(true);
             fetch("/api/manage_account/forgot_password",{
                 method: "POST",
                 headers:{
@@ -100,6 +112,9 @@ function ForgotPassword(){
                     toast.error(t("email_wrong"));
                 }
             })
+            .finally(() => {
+                setIsLoadingSendEmail(false);
+            });
         } catch (error) {
             console.error(t("error_register"), error);
         }
@@ -112,14 +127,13 @@ function ForgotPassword(){
             toast.error(t("password_not_match"));
             return;
         }
-
         else if (!passwordRegex.test(password)) {
             toast.error(t("password_not_format"));
             return;
-        } 
-
+        }
         else{
             try{
+                setIsLoadingResetPassword(true);
                 fetch("/api/manage_account/forgot_password",{
                     method: "PUT",
                     headers:{
@@ -130,17 +144,20 @@ function ForgotPassword(){
                 })
                 .then((res) => res.json())
                 .then((res) => {
-                    if(res.message){
+                    if(res.status === "success"){
                         fetch("/api/verify_otp",{
                             method: "PUT",
                             body: JSON.stringify({oldEmail: "Check", newEmail: email, password, message1: t("message1"), message2: t("message2")})
                         })
                         router.push("/component/account_user/login_user");
                     }
-                    else if(res.status === 202){
+                    else if(res.status === "error"){
                         toast.error(t("password_match"));
                     }
                 })
+                .finally(() => {
+                    setIsLoadingResetPassword(false);
+                });
             } catch (error) {
                 console.error(t("error_register"), error);
             }
@@ -159,7 +176,15 @@ function ForgotPassword(){
                         <input id="email" placeholder={t("input_email")} onChange={(e) => setEmail(e.target.value)} value={email} type="text" className={styles.input} />
                     </div>
                     <div className={styles.div_btn}>
-                        <button onClick={handleForgotPassword} type="button" className={styles.btn_forgot_password}>{t("send_reset_link")}</button>
+                        <button onClick={handleForgotPassword} type="button" className={styles.btn_forgot_password}>
+                            {isLoadingSendEmail 
+                                ? 
+                                    <div className={styles.loading}>
+                                        <div className={styles.spinner}></div>
+                                    </div> 
+                            : ''}
+                            {t("send_reset_link")}
+                        </button>
                         <button onClick={hanldeCancelForgotPassword} type="button" className={styles.btn_cancel}>{t("back_siginin")}</button>
                     </div>
                 </div>
@@ -175,7 +200,15 @@ function ForgotPassword(){
                         <input id="code" placeholder={t("code")} onChange={(e) => setCode(e.target.value)} value={code} type="text" className={styles.input} />
                     </div>
                     <div className={styles.div_btn}>
-                        <button onClick={handleSendCode} type="button" className={styles.btn_verify}>{t("send_code")}</button>
+                        <button onClick={handleSendCode} type="button" className={styles.btn_verify}>
+                            {isLoadingSendCode 
+                                ? 
+                                    <div className={styles.loading}>
+                                        <div className={styles.spinner}></div>
+                                    </div> 
+                            : ''}
+                            {t("send_code")}
+                        </button>
                     </div>
                     <div className={styles.link_verify}>
                         <button onClick={hanldeCancelSendCode} type="button" className={styles.btn_cancel_verify}>{t("btn_cancel_verify")}</button>
@@ -219,7 +252,15 @@ function ForgotPassword(){
                             </button>
                         </div>
                         <div className={styles.div_btn}>
-                            <button onClick={handleResetPassword} type="button" className={styles.btn_reset_password}>{t("btn_reset_password")}</button>
+                            <button onClick={handleResetPassword} type="button" className={styles.btn_reset_password}>
+                                {isLoadingResetPassword 
+                                    ? 
+                                        <div className={styles.loading}>
+                                            <div className={styles.spinner}></div>
+                                        </div> 
+                                : ''}
+                                {t("btn_reset_password")}
+                            </button>
                             <button onClick={hanldeCancelResetPassword} type="button" className={styles.btn_cancel_reset}>{t("btn_cancel_verify")}</button>
                         </div>
                 </div>

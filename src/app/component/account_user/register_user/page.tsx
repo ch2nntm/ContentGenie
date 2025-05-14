@@ -16,6 +16,7 @@ function Register() {
     const [confirmPassword, setConfirmPassword] = useState<string>("");
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const router = useRouter();
     const t = useTranslations("register");
@@ -46,10 +47,15 @@ function Register() {
                 return;
             } 
         }
+        setIsLoading(true);
         const responseEmail = await fetch(`/api/manage_account/register?email=${email}`,{
             method: "GET",
+        })
+        .finally(()=>{
+            setIsLoading(false);
         });
         
+        setIsLoading(true);
         if(responseEmail.ok){
             fetch("/api/send_otp",{
                 method: "POST",
@@ -62,6 +68,9 @@ function Register() {
                 }
                 else
                     toast.error(t("send_code_failed"));
+            })
+            .finally(()=>{
+                setIsLoading(false);
             });
         }
         else{
@@ -185,6 +194,12 @@ function Register() {
                                 </div>
                             </button>
                             <button type="button" onClick={sendEmail} className={styles.buttonRegister}>
+                                {isLoading 
+                                ? 
+                                    <div className={styles.loading}>
+                                        <div className={styles.spinner}></div>
+                                    </div> 
+                                : ''}
                                 {t("create_account")}
                             </button>
                         </form>

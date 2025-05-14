@@ -215,71 +215,69 @@ function PreviewPage() {
         }
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-            if (e.target.files && e.target.files.length > 0) {
-                const file = e.target.files[0];
-                const imageUrlTest = URL.createObjectURL(file);
-                setImgUrlTest(imageUrlTest);
-                console.log("Image Test: ", imageUrlTest);
-            }
-        };
-
-        const hanldeUpload = async () => {
-            try {
-                let uploadedImgUrl = imgUrl; 
-                if (imgUrl !== "/upload_avt.png" && imgUrl) {
-                    uploadedImgUrl = await uploadToCloudinary(imgUrl);
-                    setImgUrl(uploadedImgUrl);
-                }
-    
-                const token = Cookies.get("token");
-    
-                const id_post = Math.floor(1000 + Math.random() * 9000).toString();
-    
-                const userId = auth?.user?.id || null; 
-                const formattedPostTime = postTime instanceof Date 
-                ? postTime.toLocaleString("en-CA", { timeZone: "Asia/Ho_Chi_Minh" }) 
-                : postTime 
-                    ? new Date(postTime).toLocaleString("en-CA", { timeZone: "Asia/Ho_Chi_Minh", hour12: false}) 
-                    : null;
-    
-                fetch("/api/post_manage/upload_post", {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        Accept: "application/json, text/plain,*/*",
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        id: id_post,
-                        keyword,
-                        content,
-                        imgUrl,
-                        posttime: formattedPostTime,
-                        user_id: userId,
-                        platform,
-                        status: 0,
-                        audience,
-                        set_daily,
-                        nameSpotify,
-                        nameArtist,
-                        resultImage
-                    }),
-                })
-                .then((res) => res.json())
-                .then((res) => {
-                    if (res.message) {
-                        setOpenModal(false);
-                        toast.success("Successful");
-                        router.push("/component/post_manage/list_post_user");
-                    } else if (res.error) {
-                        console.log("Res: ", res);
-                    }
-                });
-            } catch (error) {
-                console.error(error);
-            }
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const file = e.target.files[0];
+            setImgUrlTest(await uploadToCloudinary(file));
+            console.log("Image Test: ", imgUrlTest);
         }
+    };
+
+    const hanldeUpload = async () => {
+        try {
+            const token = Cookies.get("token");
+
+            const id_post = Math.floor(1000 + Math.random() * 9000).toString();
+
+            const userId = auth?.user?.id || null; 
+            const formattedPostTime = postTime instanceof Date 
+            ? postTime.toLocaleString("en-CA", { timeZone: "Asia/Ho_Chi_Minh" }) 
+            : postTime 
+                ? new Date(postTime).toLocaleString("en-CA", { timeZone: "Asia/Ho_Chi_Minh", hour12: false}) 
+                : null;
+
+            fetch("/api/post_manage/upload_post", {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: "application/json, text/plain,*/*",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    id: id_post,
+                    keyword,
+                    content,
+                    imgUrl,
+                    posttime: formattedPostTime,
+                    user_id: userId,
+                    platform,
+                    status: 0,
+                    audience,
+                    set_daily,
+                    nameSpotify,
+                    nameArtist,
+                    resultImage
+                }),
+            })
+            .then((res) => res.json())
+            .then((res) => {
+                if (res.status === "success") {
+                    setOpenModal(false);
+                    toast.success("Successful");
+                    router.push("/component/post_manage/list_post_user");
+                } else if (res.status === "error") {
+                    if(res.message === "Contain blacklist") {
+                        toast.error(`${t('noti_blacklist')} ${res.data.join(", ")}`);
+                    }
+                    else{
+                        toast.error(`${t('noti_character')}`);
+                    }
+                }
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     const handleDateChange = (event: { target: { value: string | number | Date; }; }) => {
         setPostTime(new Date(event.target.value));
