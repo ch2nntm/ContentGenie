@@ -42,6 +42,7 @@ function NavbarUser() {
     const user = data?.user?.name || null;
     const roleUser = data?.user?.role || 0;
     const password = data?.user?.password || null;
+    
 
     useEffect(() => {
         const token = Cookies.get("token");
@@ -63,7 +64,7 @@ function NavbarUser() {
             Cookies.remove("token");
             router.push("/component/account_user/login_user");
         }
-    }, []);
+    }, [data?.user, router]);
 
     const handleSubmitSignout = async () => {
         try {

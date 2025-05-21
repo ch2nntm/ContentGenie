@@ -32,6 +32,9 @@ function EditProfilePage() {
 
     const message1=t("message1");
     const message2=t("message2");
+    const subject=t("subject");
+    const text=t("text");
+    const ex = t("ex");
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -168,7 +171,7 @@ function EditProfilePage() {
             });
             fetch("/api/send_otp",{
                 method: "POST",
-                body: JSON.stringify({email: inputEmail})
+                body: JSON.stringify({email: inputEmail, subject, text, ex})
             })
             .then((res) => res.json())
             .then((res) => {

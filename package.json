@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node scheduler.js & next dev --turbopack",
+    "dev": "concurrently \"node scheduler.js\" \"next dev --turbopack\"",
     "build": "prisma generate && next build",
-    "start": "node cron.js & next start",
+    "start": "concurrently \"node scheduler.js\" \"next start\"",
     "lint": "next lint",
     "postbuild": "next-sitemap",
     "start-cron": "node scheduler.js"
@@ -23,6 +23,7 @@
     "axios": "^1.8.2",
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.8",
+    "concurrently": "^9.1.2",
     "cookie": "^1.0.2",
     "date-fns": "^4.1.0",
     "dotenv": "^16.5.0",

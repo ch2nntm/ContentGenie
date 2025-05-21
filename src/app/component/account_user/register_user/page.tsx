@@ -26,6 +26,9 @@ function Register() {
     const [enterCode, setEnterCode]=useState("");
     const message1 = t("message1");
     const message2 = t("message2");
+    const subject=t("subject");
+    const text=t("text");
+    const ex = t("ex");
 
     const sendEmail = async () => {
         const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -37,6 +40,10 @@ function Register() {
             toast.error(t("invalid_email"));
             return;
         }
+        else if(email.length > 50){
+            toast.error(t("email_too_long"));
+            return;
+        }
         else{
             if(password != confirmPassword){
                 toast.error(noti_toast('password_not_match'));
@@ -46,6 +53,10 @@ function Register() {
                 toast.error(t("password_not_format"));
                 return;
             } 
+            else if(password.length > 20){
+                toast.error(t("password_too_long"));
+                return;
+            }
         }
         setIsLoading(true);
         const responseEmail = await fetch(`/api/manage_account/register?email=${email}`,{
@@ -59,7 +70,7 @@ function Register() {
         if(responseEmail.ok){
             fetch("/api/send_otp",{
                 method: "POST",
-                body: JSON.stringify({email})
+                body: JSON.stringify({email, subject, text, ex})
             })
             .then((data)=>{
                 if(data.status === 200){

@@ -87,7 +87,12 @@
         "resend_code": "Gửi lại mã",
         "resend_code_again": "Đã gửi lại mã",
         "send_code_failed": "Gửi mã thất bại",
-        "resend_code_failed": "Gửi lại mã thất bại"
+        "resend_code_failed": "Gửi lại mã thất bại",
+        "subject": "Mã OTP của bạn",
+        "text": "Mã OTP của bạn là:",
+        "ex": "Hết hạn sau 5 phút",
+        "email_too_long": "Email quá dài! Tối đa 50 kí tự",
+        "password_too_long": "Mật khẩu quá dài! Tối đa 20 kí tự"
     },
     "preview": {
         "time": "giờ trước",
@@ -194,7 +199,10 @@
         "error_internet":"Lỗi kết nối mạng!",
         "exist_email":"Email đã tồn tại!",
         "message1": "Đã cập nhật email thành công với tài khoản có tài khoản:",
-        "message2":" và mật khẩu: "
+        "message2":" và mật khẩu: ",
+        "subject": "Mã OTP của bạn",
+        "text": "Mã OTP của bạn là:",
+        "ex": "Hết hạn sau 5 phút"
     },
     "forgot_password":{
         "enter_full": "Vui lòng điền đầy đủ các trường!",

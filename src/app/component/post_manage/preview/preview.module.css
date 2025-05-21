@@ -359,11 +359,11 @@
 }
 
 .btn_upload{
-    background-color: red;
+    background-color: var(--primary-color);
 }
 
 .btn_upload:hover{
-    background-color: #f55b5b;
+    background-color: var(--second-color);
 }
 
 .btn_container{

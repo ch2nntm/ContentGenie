@@ -87,7 +87,12 @@
         "resend_code_again": "Code sent again",
         "exist_account": "Account already exists!",
         "send_code_failed": "Send code failed",
-        "resend_code_failed": "Resend code failed"
+        "resend_code_failed": "Resend code failed",
+        "subject": "Your OTP code",
+        "text": "Your OTP code is:",
+        "ex": "Expires in 5 minutes",
+        "email_too_long": "Email too long! Maximum 50 characters",
+        "password_too_long": "Password too long! Maximum 20 characters"
     },
     "preview": {
         "time": "hours ago",
@@ -193,7 +198,10 @@
         "error_internet":"Error sending code, please check your internet connection!",
         "exist_email": "Email already exists!",  
         "message1": "Email successfully updated with account with account:",
-        "message2":" and password: "
+        "message2":" and password: ",
+        "subject": "Your OTP code",
+        "text": "Your OTP code is:",
+        "ex": "Expires in 5 minutes"
     },
     "forgot_password":{
         "enter_full": "Please enter full field!",

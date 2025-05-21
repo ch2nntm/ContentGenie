@@ -9,7 +9,7 @@ const redis = new Redis({
 
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
-const sendEmail = async (email, otp) => {
+const sendEmail = async (email, otp, subject, text, ex) => {
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -21,15 +21,16 @@ const sendEmail = async (email, otp) => {
     await transporter.sendMail({
         from: process.env.EMAIL_USER,
         to: email,
-        subject: "Mã OTP của bạn",
-        text: `Mã OTP của bạn là: ${otp} (Hết hạn sau 5 phút).`,
+        subject: subject,
+        text: text + ` ${otp}. ` + ex,
     });
 };
 
 export async function POST(req) {
     try {
-        const { email } = await req.json();
-        if (!email) return NextResponse.json({ status: "error", message: "Email is required" }, { status: 400 });
+        const { email, subject, text, ex } = await req.json();
+        if (!email || !subject || !text || !ex ) 
+            return NextResponse.json({ status: "error", message: "Fields is required" }, { status: 400 });
 
         const otp = generateOTP();
 
@@ -40,9 +41,9 @@ export async function POST(req) {
 
         await redis.set(`otp:${email}`, otp, { ex: 300 });
 
-        await sendEmail(email, otp);
+        await sendEmail(email, otp, subject, text, ex);
 
-        return NextResponse.json({ status: "success", message: "OTP sent successfully" }, { status: 300 });
+        return NextResponse.json({ status: "success", message: "OTP sent successfully" }, { status: 200 });
     } catch (error) {
         console.log("Error sending OTP:", error);
         return NextResponse.json({ status: "error", message: error  }, { status: 500 });

@@ -8,76 +8,74 @@ datasource db {
 }
 
 model account {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
-  name     String?
-  avatar   String?
-  password String?
-  role     Int     @default(0)
-  credits  Int     @default(0)
+  id              Int                    @id @default(autoincrement())
+  email           String?                @unique @db.VarChar(50)
+  name            String?                @db.VarChar(100)
+  avatar          String?
+  password        String?                @db.VarChar(20)
+  role            Int                    @default(0)
+  credits         Int                    @default(0)
   expiration_date DateTime?
-
-  posts    post[]   @relation("AccountPosts")
-
-  creditUsages credits[] @relation("AccountCredits")
-
-  packageUser user_upgrade[] @relation("PackageUser")
-
-  historyUser conversation_history[] @relation("HistoryUser")
+  historyUser     conversation_history[] @relation("HistoryUser")
+  creditUsages    credits[]              @relation("AccountCredits")
+  posts           post[]                 @relation("AccountPosts")
+  packageUser     user_upgrade[]         @relation("PackageUser")
 }
 
 model post {
-  id       String       @id
-  title    String
-  content  String?   @db.VarChar(1000)
-  image    String?   @db.VarChar(500)
-  posttime DateTime?
-  user_id  Int
-  platform String
-  status   Boolean
-  audience String
-  set_daily Boolean @default(false)
-
+  id        String    @id
+  title     String
+  content   String?   @db.Text
+  image     String?
+  posttime  DateTime?
+  user_id   Int
+  platform  String?   @db.VarChar(10)
+  status    Boolean
+  audience  String?   @db.VarChar(10)
+  set_daily Boolean   @default(false)
   author    account   @relation("AccountPosts", fields: [user_id], references: [id])
+
+  @@index([user_id], map: "post_user_id_fkey")
 }
 
-model credits{
-  id Int @id @default(autoincrement()) 
-  user_id Int
-  date DateTime
+model credits {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  date       DateTime @db.DateTime(0)
   credit_use Int
+  user       account  @relation("AccountCredits", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_1")
 
-  user    account   @relation("AccountCredits", fields: [user_id], references: [id])
+  @@index([user_id], map: "fk_1")
 }
 
-model dashboard{
-  id Int @id @default(autoincrement()) 
-  year Int?
-  month Int?
+model dashboard {
+  id                  Int  @id @default(autoincrement())
+  year                Int?
+  month               Int?
   total_posts_paiding Int
-  total_posts_posted Int
-  total_credits Int
+  total_posts_posted  Int
+  total_credits       Int
 }
 
-model user_upgrade{
-  id Int @id @default(autoincrement()) 
-  user_id Int
-  package_buy String
-  price Int
+model user_upgrade {
+  id            Int      @id @default(autoincrement())
+  user_id       Int
+  package_buy   String?  @db.VarChar(15)
+  price         Int
   purchase_date DateTime @default(now())
+  package       account  @relation("PackageUser", fields: [user_id], references: [id])
 
-  package    account   @relation("PackageUser", fields: [user_id], references: [id]) 
+  @@index([user_id], map: "user_upgrade_user_id_fkey")
 }
 
-model conversation_history{
-  id Int @id @default(autoincrement())
-  user_id Int
-  topic_name String
-  role String
-  message String @db.Text
-  timestamp DateTime @default(now())
+model conversation_history {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  topic_name String?  @db.VarChar(20)
+  role       String?  @db.VarChar(10)
+  message    String   @db.Text
+  timestamp  DateTime @default(now())
+  history    account  @relation("HistoryUser", fields: [user_id], references: [id])
 
-  history    account   @relation("HistoryUser", fields: [user_id], references: [id]) 
+  @@index([user_id], map: "conversation_history_user_id_fkey")
 }
-
-

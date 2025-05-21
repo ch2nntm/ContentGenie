@@ -5,7 +5,6 @@ import React, { useState, useEffect } from 'react';
 
 const Topbar = () => {
   const [language, setLanguage] = useState('en');
-
   useEffect(() => {
     setLanguageValue(language);
   }, [language]);

@@ -80,6 +80,8 @@ export default function ViewUserDetail(props : { params: PageProps }) {
     }
   };
 
+  
+
   const getPostDetail = async (post_id: string) => {
     try {
       const BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_AUTH_URL;
@@ -343,7 +345,7 @@ const handleClickBtnCloseImg = () => {
               <>
                 <a className={styles.is_spotify} href={detailPost.image.split(",")[0]}>
                   <div className={styles.img_spotify}>
-                    <Image className={styles.img_spotify} src={detailPost.image.split(",")[3]} alt="Spotify artist image" width={150} height={150} />
+                    <img className={styles.img_spotify} src={detailPost.image.split(",")[3]} alt="Spotify artist image" width={150} height={150} />
                   </div>
                   <div className={styles.sing_spotify}>
                     <p>Spotify</p>

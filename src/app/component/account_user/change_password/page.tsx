@@ -54,7 +54,7 @@ function ChangePassword(){
 
     useEffect(() => {
         fetchUserData();
-      }, []);
+    }, []);
 
       const handleSubmitRefresh = () => {
         setOldPassword("");
