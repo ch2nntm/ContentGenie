@@ -264,7 +264,10 @@
         "cancel_delete": "Canceled delete!",
         "export_pdf": "Export PDF",
         "miss_token_mastondon": "Not logged in Mastodon",
-        "miss_token_linkedin": "Not logged in LinkedIn"
+        "miss_token_linkedin": "Not logged in LinkedIn",
+        "create_new": "Create New Post",
+        "pending": "Pending on",
+        "posted": "Posted on"
     },
     "new_user":{
         "btn_add_new": "Add New User",

@@ -246,34 +246,66 @@ export default function ViewUserDetail(props : { params: PageProps }) {
     }
 };
 
-  if (loading) return <div>Loading...</div>;
+  // if (loading) return 
+  // <div className={styles.loading}>
+  //   <div className={styles.spinner}></div>
+  //   Loading...
+  // </div>;;
+
+  // const convertDay = (day: Date) => {
+  //   const postDate = new Date(day);
+  //   const currentDate = new Date();
+  //   const timeDiff = Math.abs(currentDate.getTime() - postDate.getTime());
+  //   const daysAgo = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+
+  //   if (postDate.getTime() > currentDate.getTime()) {
+  //     return `${postDate.getDate()}-${postDate.getMonth() + 1}-${postDate.getFullYear()}`;
+  //   }
+
+  //   if (daysAgo === 0) {
+  //     return `${Math.floor(timeDiff / (1000 * 60))} ${t("minutes")}`;
+  //   }
+  //   if (daysAgo < 1) {
+  //     return `${Math.floor(timeDiff / (1000 * 60 * 60))} ${t("hours")}`;
+  //   }
+  //   if (daysAgo < 30) {
+  //     return `${daysAgo} ${t("days")}`;
+  //   } else if (daysAgo < 365) {
+  //     const monthsAgo = Math.floor(daysAgo / 30);
+  //     return `${monthsAgo} ${t("months")}`;
+  //   } else {
+  //     const yearsAgo = Math.floor(daysAgo / 365);
+  //     return `${yearsAgo} ${t("years")}`;
+  //   }
+  // };
 
   const convertDay = (day: Date) => {
     const postDate = new Date(day);
     const currentDate = new Date();
     const timeDiff = Math.abs(currentDate.getTime() - postDate.getTime());
-    const daysAgo = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+    const daysAgo = Math.floor(timeDiff / (1000 * 60 * 60));
 
-    if (postDate.getTime() > currentDate.getTime()) {
-      return `${postDate.getDate()}-${postDate.getMonth() + 1}-${postDate.getFullYear()}`;
+    if(postDate.getTime() > currentDate.getTime())
+        return `${postDate.getDate()}-${postDate.getMonth()+1}-${postDate.getFullYear()}`;
+    if(daysAgo===0){
+        return `${Math.floor(timeDiff / (1000 * 60))} ${t("minutes")}`;
     }
-
-    if (daysAgo === 0) {
-      return `${Math.floor(timeDiff / (1000 * 60))} ${t("minutes")}`;
+    if(daysAgo<24)
+        return `${daysAgo} ${t("hours")}`;
+    else if(daysAgo<720){
+        return `${Math.floor(daysAgo/24)} ${t("days")}`;
     }
-    if (daysAgo < 1) {
-      return `${Math.floor(timeDiff / (1000 * 60 * 60))} ${t("hours")}`;
-    }
-    if (daysAgo < 30) {
-      return `${daysAgo} ${t("days")}`;
-    } else if (daysAgo < 365) {
-      const monthsAgo = Math.floor(daysAgo / 30);
-      return `${monthsAgo} ${t("months")}`;
-    } else {
-      const yearsAgo = Math.floor(daysAgo / 365);
-      return `${yearsAgo} ${t("years")}`;
-    }
-  };
+    else{
+        if(daysAgo>720 && daysAgo<8760){
+            const monthsAgo = Math.floor(daysAgo/720);
+            return `${monthsAgo} ${t("months")}`;
+        }
+        else{
+            const monthsAgo = Math.floor(daysAgo/8760);
+            return `${monthsAgo} ${t("years")}`;
+        }
+    } 
+};   
 
   const handleCancel = () => {
     setIsClickBtnEdit(false);
@@ -300,6 +332,12 @@ const handleClickBtnCloseImg = () => {
   return (
     <div className={styles.container}>
       <NavbarComponent />
+      {loading ? (
+                    <div className={styles.loading}>
+                        <div className={styles.spinner}></div>
+                        Loading...
+                    </div>
+                ) : (<>
       <Link href="/component/post_manage/list_post_user">
         <ArrowBackIosNewIcon className={styles.arrowback} />
       </Link>
@@ -451,6 +489,8 @@ const handleClickBtnCloseImg = () => {
         </Modal>
       )}
       </div>
+      </>
+      )}
     </div>
   );
 }

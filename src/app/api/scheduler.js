@@ -6,6 +6,14 @@ import { error } from 'console';
 import dotenv from 'dotenv';
 dotenv.config(); // Call process.env
 import { Redis } from "@upstash/redis";
+import { fetch, Agent } from 'undici';
+
+const agent = new Agent({
+  connect: {
+    timeout: 60000 // 30 giây
+  }
+});
+
 
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL,
@@ -65,7 +73,8 @@ async function postToMastodon(post, token_mastodon) {
                 headers: {
                     "Authorization": `Bearer ${token_mastodon}`,
                 },
-                body: mediaFormData
+                body: mediaFormData,
+                dispatcher: agent
             });
 
             if (!mediaResponse.ok) {
@@ -89,7 +98,8 @@ async function postToMastodon(post, token_mastodon) {
                 "Authorization": `Bearer ${token_mastodon}`,
                 "Content-Type": "application/x-www-form-urlencoded",
             },
-            body: statusFormData
+            body: statusFormData,
+            dispatcher: agent
         });
 
         if (!statusResponse.ok) {

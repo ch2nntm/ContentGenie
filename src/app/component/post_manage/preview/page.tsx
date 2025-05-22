@@ -192,10 +192,15 @@ function PreviewPage() {
     const hanldeSave = async () => {
         setContent(updateContent);
         setOpenModal(false);
-        if(imgUrlTest !== "/upload_avt.png")
-            setImgUrl(imgUrlTest);
-        else
-            setImgUrl("");
+        if(imgUrlTest==="" && imgUrl!==""){
+            setImgUrlTest(imgUrl);
+        }
+        else{
+            if(imgUrlTest !== "/upload_avt.png")
+                setImgUrl(imgUrlTest);
+            else if(imgUrlTest)
+                setImgUrl("");
+        }
         setIsVideo(false);
     };
 
@@ -231,6 +236,11 @@ function PreviewPage() {
             : postTime 
                 ? new Date(postTime).toLocaleString("en-CA", { timeZone: "Asia/Ho_Chi_Minh", hour12: false}) 
                 : null;
+
+            if(content.length > 500){
+                toast.error(`${t('noti_character')}`);
+                return;
+            }
 
             fetch("/api/post_manage/upload_post", {
                 method: "POST",

@@ -108,7 +108,7 @@ function ListPostUser() {
                         </div>
                     ) : ( 
                         <>
-                        <Link href="/component/post_manage/content_generator" className={styles.btn_create}><p>Create New Post</p></Link> 
+                        <Link href="/component/post_manage/content_generator" className={styles.btn_create}><p>{t("create_new")}</p></Link> 
                         {posts.length > 0 ? (
                         posts.map((item) => (
                             <div key={item.id} className={styles.item_post}>
@@ -118,8 +118,8 @@ function ListPostUser() {
                                         </div>
                                         <a href={`/component/post_manage/list_post_user/detail_post/${item.id}`} className={styles.content_post}>
                                             <p className={styles.item_title}>{item.title}</p>
-                                            {item.status===1 && <p className={styles.item_time}>Published on {convertDay(item.posttime)}</p>}
-                                            {item.status===0 && <p className={styles.item_time}>Pending on {convertDay(item.posttime)}</p>}
+                                            {item.status===1 && <p className={styles.item_time}>{t("posted")} {convertDay(item.posttime)}</p>}
+                                            {item.status===0 && <p className={styles.item_time}>{t("pending")} {convertDay(item.posttime)}</p>}
                                             <p className={styles.item_content}>{item.content}</p>
                                         </a>
                                     </div>

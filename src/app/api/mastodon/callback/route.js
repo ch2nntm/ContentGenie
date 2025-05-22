@@ -2,6 +2,7 @@ import  {cookies} from "next/headers";
 import { Redis } from "@upstash/redis";
 import { NextResponse } from "next/server";
 
+
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL,
   token: process.env.UPSTASH_REDIS_REST_TOKEN,
@@ -21,10 +22,10 @@ export async function GET(req) {
     const CLIENT_SECRET = process.env.MASTODON_CLIENT_SECRET;
     const REDIRECT_URI = process.env.MASTODON_REDIRECT_URI;
 
-    console.log("MASTODON_INSTANCE: ",MASTODON_INSTANCE," - CLIENT_ID: ",CLIENT_ID," - CLIENT_SECRET: ",CLIENT_SECRET," - REDIRECT_URI: ",REDIRECT_URI);
+    console.log("code: ", code,"- MASTODON_INSTANCE: ",MASTODON_INSTANCE," - CLIENT_ID: ",CLIENT_ID," - CLIENT_SECRET: ",CLIENT_SECRET," - REDIRECT_URI: ",REDIRECT_URI);
   
     try {
-      const tokenResponse = await fetch(`https://mastodon.social/oauth/token`, {
+      const tokenResponse = await fetch(`${MASTODON_INSTANCE}/oauth/token`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({

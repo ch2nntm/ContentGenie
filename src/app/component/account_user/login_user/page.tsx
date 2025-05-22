@@ -70,9 +70,9 @@ function Login() {
                     }
                 });
             } else {
-                if(data.error === "Email not found!")
+                if(data.message === "Email not found!")
                     toast.error(noti_toast("email_not_found"));
-                else if(data.error === "Wrong password!")
+                else if(data.message === "Wrong password!")
                     toast.error(noti_toast("wrong_account"));
             }
         }).finally(() => {

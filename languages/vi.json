@@ -265,7 +265,10 @@
         "cancel_delete": "Hủy xóa!",
         "export_pdf": "Xuất file PDF",
         "miss_token_mastondon": "Chưa đăng nhập Mastodon",
-        "miss_token_linkedin": "Chưa đăng nhập LinkedIn"
+        "miss_token_linkedin": "Chưa đăng nhập LinkedIn",
+        "create_new": "Tạo bài viết mới",
+        "pending": "Chưa đăng vào",
+        "posted": "Đã đăng vào"
     },
     "new_user":{
         "btn_add_new": "Thêm Người Dùng Mới",

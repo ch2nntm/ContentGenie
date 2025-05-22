@@ -202,10 +202,15 @@ function PreviewPage() {
     const hanldeSave = async () => {
         setContent(updateContent);
         setOpenModal(false);
-        if(imgUrlTest !== "/upload_avt.png")
-            setImgUrl(imgUrlTest);
-        else
-            setImgUrl("");
+        if(imgUrlTest==="" && imgUrl!==""){
+            setImgUrlTest(imgUrl);
+        }
+        else{
+            if(imgUrlTest !== "/upload_avt.png")
+                setImgUrl(imgUrlTest);
+            else if(imgUrlTest)
+                setImgUrl("");
+        }
         setIsVideo(false);
     };
 

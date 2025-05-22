@@ -138,13 +138,14 @@ export async function PUT(req, {params}) {
                 const mediaResponse = await fetch(`${process.env.MASTODON_INSTANCE}/api/v1/media`,{
                     method: "POST",
                     headers:{
-                    "Authorization": `Bearer ${token_mastodon}`,
+                        "Authorization": `Bearer ${token_mastodon}`,
                     },
                     body: mediaFormData,
                 });
             
                 if(!mediaResponse.ok){
                     const errorData = await mediaResponse.json();
+                    console.log("Error: ",errorData);
                     throw new Error(errorData.error || "Failed to upload media");
                 }
             
