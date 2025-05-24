@@ -627,7 +627,7 @@ async function postLinkedinDaily(post, token_linkedin, sub_ID) {
 }
 
 
-export default async function GET() {
+export const GET = async () => {
     let token_linkedin = await redis.get(`linkedin_token:`);
     let token_mastodon = await redis.get(`mastodon_token:`);
     console.log("token_mastodon: ", token_mastodon);
