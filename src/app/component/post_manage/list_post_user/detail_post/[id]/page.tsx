@@ -22,6 +22,7 @@ import Modal from "react-bootstrap/Modal";
 import { Button } from "@mui/material";
 import Form from "react-bootstrap/esm/Form";
 import CloseIcon from '@mui/icons-material/Close';
+import { format, toZonedTime } from 'date-fns-tz';
 
 type PageProps = Promise<{ 
   id: string 
@@ -52,6 +53,25 @@ export default function ViewUserDetail(props : { params: PageProps }) {
   const [isClickBtnEdit, setIsClickBtnEdit] = useState(false); 
   const [activeEdit, setActiveEdit] = useState(false); 
 
+  let formattedDate;
+  let formattedTime;
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDate = e.target.value;
+    setSelectedDate(newDate);
+    setSelectedTime("");
+};
+
+  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const time = new Date(`1970-01-01T${e.target.value}:00`);
+      setSelectedTime(time.toLocaleTimeString("en-GB", { 
+          timeZone: "Asia/Ho_Chi_Minh", 
+          hour12: false 
+      }));
+  }
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageClick = () => {
@@ -65,7 +85,7 @@ export default function ViewUserDetail(props : { params: PageProps }) {
     setActiveEdit(true);
     setIsClickBtnEdit(true);
     setUpdateContent(content); 
-};
+  };
 
   const handleGeneratePdf = (id: string) => {
     const opt = {
@@ -79,8 +99,6 @@ export default function ViewUserDetail(props : { params: PageProps }) {
       html2pdf().from(slidesRef.current).set(opt).save();
     }
   };
-
-  
 
   const getPostDetail = async (post_id: string) => {
     try {
@@ -108,6 +126,17 @@ export default function ViewUserDetail(props : { params: PageProps }) {
       if (data) {
         setDetailPost(data);
         setLoading(false);
+          const postDate = new Date(data.posttime);
+          formattedDate = postDate.toISOString().split("T")[0];
+          formattedTime = postDate.getHours().toString().padStart(2, "0") +
+                                ":" +
+                                postDate.getMinutes().toString().padStart(2, "0");
+      
+          setSelectedDate(formattedDate);
+          setSelectedTime(formattedTime);
+          console.log("formattedDate: ", formattedDate);
+          console.log("formattedTime: ", formattedTime);
+        
       } else {
         notFound();
       }
@@ -188,6 +217,10 @@ export default function ViewUserDetail(props : { params: PageProps }) {
     formData.append("image", uploadedImageUrl);
     formData.append("content", updateContent);
     formData.append("status", status.toString());
+    const formattedPostTime = `${selectedDate}T${selectedTime}`
+                ? format(toZonedTime(new Date(`${selectedDate}T${selectedTime}`), 'Asia/Ho_Chi_Minh'), 'yyyy-MM-dd HH:mm:ss')
+                : null;
+    formData.append("posttime", formattedPostTime!);
     try {
         const response = await fetch(`/api/mastodon/${id}`, {
             method: "PUT",
@@ -421,7 +454,7 @@ const handleClickBtnCloseImg = () => {
           }
         </div>
       {activeEdit && (
-        <Modal className={styles.modal_container} show={isClickBtnEdit}>
+        <Modal className={detailPost?.status === 1 ? styles.modal_container : styles.modal_container_datetime} show={isClickBtnEdit}>
           <div>
             <Modal.Header className={styles.modal_header}>
               <Button className={styles.button_close} onClick={() => { setIsClickBtnEdit(false); setImage(""); }}>
@@ -475,6 +508,26 @@ const handleClickBtnCloseImg = () => {
                     <CloseIcon className={styles.icon_close_img}></CloseIcon>
                   </Button>
                 </Form.Group>
+                {detailPost?.status === 0 && 
+                <Form.Group controlId="formDate" className={styles.date_time}>
+                  <Form.Label>{t("post_time")}</Form.Label>
+                  <Form.Control
+                    type="date"
+                    min={new Date().toISOString().split("T")[0]}
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                    className={styles.input_date}
+                  />
+                
+                  <Form.Control
+                    type="time"
+                    value={selectedTime}
+                    onChange={handleTimeChange}
+                    min={selectedDate === formattedDate ? formattedTime : "00:00"}
+                    className={styles.input_time}
+                  />
+                </Form.Group>
+                }
               </Form>
             </Modal.Body>
             <Modal.Footer className={styles.modal_footer}>

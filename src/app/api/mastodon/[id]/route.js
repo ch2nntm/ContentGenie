@@ -96,8 +96,9 @@ export async function PUT(req, {params}) {
     try{
         const formData = await req.formData();
         const content = formData.get("content");
-        const imageUrl = formData.get("image");
+        const imageUrl = formData.get("image") ? formData.get("image") : "";
         const status = formData.get("status");
+        const posttime = formData.get("posttime");
         const body = await params;
         const statusId = body?.id;
 
@@ -110,7 +111,8 @@ export async function PUT(req, {params}) {
         }
 
         console.log("Content: ",content);
-        console.log("Image: ",imageUrl);
+        console.log("Posttime: ",posttime);
+        console.log("Type: ",typeof posttime);
 
         const statusFormData = new URLSearchParams();
 
@@ -175,8 +177,8 @@ export async function PUT(req, {params}) {
 
         const connection = await mysql.createConnection(dbConfig);
         const [result] = await connection.execute(
-            "UPDATE post SET content = ?, image = ? WHERE id = ?",
-            [content, imageUrl, statusId]
+            "UPDATE post SET content = ?, image = ?, posttime = ? WHERE id = ?",
+            [content, imageUrl, posttime, statusId]
         );
 
         if (result.affectedRows === 0) {

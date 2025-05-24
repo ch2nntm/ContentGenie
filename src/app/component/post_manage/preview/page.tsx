@@ -12,7 +12,6 @@ import Form from "react-bootstrap/Form";
 import { Button } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { toast, ToastContainer } from "react-toastify";
-import { format } from "date-fns";
 import PublicIcon from '@mui/icons-material/Public';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import TurnedInNotIcon from '@mui/icons-material/TurnedInNot';
@@ -21,6 +20,7 @@ import RepeatIcon from '@mui/icons-material/Repeat';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import HttpsIcon from '@mui/icons-material/Https';
 import { useRouter } from "next/navigation";
+import { format, toZonedTime } from 'date-fns-tz';
 
 interface User {
     id: string;
@@ -176,6 +176,7 @@ function PreviewPage() {
     };
 
     useEffect(() => {
+        console.log("Post time: ", postTime);
         if (!hasFetched.current) {  
             fetchData(keyword);
             hasFetched.current = true;
@@ -231,12 +232,11 @@ function PreviewPage() {
             const id_post = Math.floor(1000 + Math.random() * 9000).toString();
 
             const userId = auth?.user?.id || null; 
-            const formattedPostTime = postTime instanceof Date 
-            ? postTime.toLocaleString("en-CA", { timeZone: "Asia/Ho_Chi_Minh" }) 
-            : postTime 
-                ? new Date(postTime).toLocaleString("en-CA", { timeZone: "Asia/Ho_Chi_Minh", hour12: false}) 
-                : null;
-
+            
+            const formattedPostTime = postTime
+            ? format(toZonedTime(new Date(postTime), 'Asia/Ho_Chi_Minh'), 'yyyy-MM-dd HH:mm:ss')
+            : null;
+            
             if(content.length > 500){
                 toast.error(`${t('noti_character')}`);
                 return;

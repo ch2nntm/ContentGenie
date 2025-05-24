@@ -176,7 +176,8 @@
 }
 
 
-.modal_container{
+.modal_container,
+.modal_container_datetime{
     position: fixed;
     z-index: 999;
     background-color: #fbfbfb;
@@ -185,8 +186,12 @@
     width: 60%;
     height: 500px;
     margin: auto;
-    top: 25%;
+    top: 15%;
     left: 28%;
+}
+
+.modal_container_datetime{
+    height: 550px;
 }
 
 .button_close{
@@ -376,4 +381,33 @@
 .name_spotify{
     font-size: 18px;
     font-weight: 600;
+}
+
+.input_date,
+.input_time{
+    width: 150px;
+    height: 40px;
+    padding: 0px 8px;
+    border: 1px solid #8c8c8c;
+    box-sizing: border-box;
+    border-radius: 6px;
+    background-color: #ffffff;
+    text-transform: uppercase;
+    color: #94a3b8;
+    font-size: 14px;
+    font-family: "Open Sans";
+    line-height: 40px;
+    outline: none;
+}
+
+.input_date{
+    margin-left: 50px;
+}
+
+.input_time{
+    margin-left: 20px;
+}
+
+.date_time{
+    margin-bottom: 30px;
 }

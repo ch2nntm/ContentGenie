@@ -315,7 +315,8 @@
         "btn_save": "Lưu",
         "btn_edit": "Sửa bài đăng",
         "image": "Hình Ảnh",
-        "confirm_delete": "Bạn có chắc chắn muốn xóa bài viết này không?"
+        "confirm_delete": "Bạn có chắc chắn muốn xóa bài viết này không?",
+        "post_time": "Chọn Thời Gian Đăng Bài "
     },
     "detail_user": {
         "user_detail": "Thông tin chi tiết người dùng!",
