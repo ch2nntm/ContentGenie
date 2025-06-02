@@ -1,7 +1,7 @@
 "use client"
 import styles from "../upgrade_package/upgrade_package.module.css";
 import NavbarUser from "@/app/component/navbar_user/page";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -23,8 +23,11 @@ export default function UpgradePackagePage(){
     const t = useTranslations("upgrade_package");
     const [loading, setLoading] = useState(true);
 
+    const hasFetched = useRef(false);
     useEffect(()=>{
         const fetchData = async() => {
+            if (hasFetched.current) return;
+            hasFetched.current = true;
             try{
                 const token = Cookies.get("token");
                 if(!token){
@@ -110,8 +113,7 @@ export default function UpgradePackagePage(){
                 setLoading(false);
             }
         };
-        fetchData();
-        
+        fetchData();  
     },[]);
 
     const handleUpgradeCredits = async () => {
@@ -145,7 +147,7 @@ export default function UpgradePackagePage(){
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    amount: 30000,
+                    amount: 1,
                     description: "Upgrade month",
                     cancelUrl: "/component/upgrade_package",
                     returnUrl: "/component/upgrade_package"

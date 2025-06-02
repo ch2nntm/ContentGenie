@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import mysql from "mysql2/promise";
 import dbConfig from "../../../../../dbConfig.js";
+import { checkBlacklist } from '../../../../../lib/checkBlackList';
 
 export async function PUT(req) {
     const authHeader = req.headers.get("authorization"); 
@@ -24,6 +25,11 @@ export async function PUT(req) {
         if (checkExist.length === 0) {
             await connection.end();
             return NextResponse.json({ status: "error", message: "Post not found" }, { status: 404 });
+        }
+
+        const violations = checkBlacklist(content);
+        if (Object.keys(violations).length > 0) {
+            return NextResponse.json({ status: "error", message: "Contain blacklist", data: violations}, {status: 400});
         }
         
         const [result] = await connection.execute(

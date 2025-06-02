@@ -17,7 +17,7 @@ import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import NavbarComponent from "@/app/component/navbar_user/page";
 import { useTranslations } from "next-intl";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import Modal from "react-bootstrap/Modal";
 import { Button } from "@mui/material";
 import Form from "react-bootstrap/esm/Form";
@@ -192,7 +192,7 @@ export default function ViewUserDetail(props : { params: PageProps }) {
 }
 
   const [image, setImage] = useState("");
-  const handleSave = async (id: string, img: string, status: number) => {
+  const handleSave = async (id: string, content: string, img: string, status: number, platform: string) => {
     const token_mastodon = Cookies.get("mastodon_token");
 
     if(!token_mastodon && status === 1){
@@ -212,6 +212,14 @@ export default function ViewUserDetail(props : { params: PageProps }) {
         const imgUrlTest = await uploadToCloudinary(image);
         uploadedImageUrl = imgUrlTest;
     }
+    console.log("Platform: ", platform);
+    if(platform === "Mastodon"){
+      console.log("Length: ", content.length);  
+      if(content.length > 500){
+        toast.error(`${t('noti_character')}`);
+        return;
+      }
+    }
 
     const formData = new FormData();
     formData.append("image", uploadedImageUrl);
@@ -222,19 +230,25 @@ export default function ViewUserDetail(props : { params: PageProps }) {
                 : null;
     formData.append("posttime", formattedPostTime!);
     try {
-        const response = await fetch(`/api/mastodon/${id}`, {
+        fetch(`/api/mastodon/${id}`, {
             method: "PUT",
             body: formData
+        })
+        .then((res) => res.json())
+        .then((res) => {
+            if (res.status === "success") {
+              toast.success("Update successful");
+              setActiveEdit(false);
+              window.location.reload();
+            } else if (res.status === "error") {
+                if(res.message === "Contain blacklist") {
+                    toast.error(`${t('noti_blacklist')} ${res.data.join(", ")}`);
+                }
+                else{
+                    toast.error(`${t('noti_error')}`);
+                }
+            }
         });
-
-        if (!response.ok) {
-            throw new Error(`t("error_http") ${response.status}`);
-        }
-        else{
-            toast.success("Update successful");
-            setActiveEdit(false);
-            window.location.reload();
-        }
     }catch (error) {
         console.error(error);
     }
@@ -534,7 +548,7 @@ const handleClickBtnCloseImg = () => {
               <Button className={styles.btn_close} onClick={handleCancel}>
                 <span className={styles.text_close}>{t("btn_close")}</span>
               </Button>
-              <Button className={styles.btn_save} onClick={() => detailPost && handleSave(detailPost.post_id, detailPost.image, detailPost.status)}>
+              <Button className={styles.btn_save} onClick={() => detailPost && handleSave(detailPost.post_id, detailPost.content, detailPost.image, detailPost.status, detailPost.platform)}>
                 <span className={styles.text_save}>{t("btn_save")}</span>
               </Button>
             </Modal.Footer>
@@ -544,6 +558,7 @@ const handleClickBtnCloseImg = () => {
       </div>
       </>
       )}
+      <ToastContainer/>
     </div>
   );
 }

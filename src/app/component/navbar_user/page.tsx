@@ -38,7 +38,10 @@ function NavbarUser() {
     const router = useRouter();
     const pathname = usePathname();  
 
-    const { data } = useSWR("/api/manage_account/login", fetcher);
+    const { data } = useSWR("/api/manage_account/login", fetcher,{
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+    });
     const user = data?.user?.name || null;
     const roleUser = data?.user?.role || 0;
     const password = data?.user?.password || null;
@@ -46,7 +49,7 @@ function NavbarUser() {
 
     useEffect(() => {
         const token = Cookies.get("token");
-
+        console.log("Loading NavbarUser component...");
         if (!token) {
             router.push("/component/account_user/login_user");
             return;
@@ -64,7 +67,7 @@ function NavbarUser() {
             Cookies.remove("token");
             router.push("/component/account_user/login_user");
         }
-    }, [data?.user, router]);
+    }, []);
 
     const handleSubmitSignout = async () => {
         try {

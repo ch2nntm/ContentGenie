@@ -67,27 +67,44 @@ export async function PUT(req) {
             return NextResponse.json({ status: "success", message: "Update package credit success" }, { status: 200 });
         }
         else{
-            const expiration_date = resultCheck[0].expiration_date;
-            if(amount === 30000){
-                const oneMonthLater = expiration_date;
-                oneMonthLater.setMonth(expiration_date.getMonth() + 1);
+            const expiration_date = new Date(resultCheck[0].expiration_date);
+            if(amount === 1){
+                let oneMonthLater;
+                const now = new Date();
+                if(expiration_date < now){
+                    oneMonthLater = new Date(now);
+                    oneMonthLater.setMonth(now.getMonth() + 1);
+                }
+                else{
+                    oneMonthLater = new Date(expiration_date);
+                    oneMonthLater.setMonth(expiration_date.getMonth() + 1);
+                }
                 await connection.execute(
                     "UPDATE account set expiration_date = ? WHERE id = ?",[oneMonthLater, user_id]
                 );
                 await connection.execute("INSERT INTO user_upgrade(user_id, package_buy, price, purchase_date) VALUES"
-                 +" (?, 'Goi Thang', ?, ?)", [user_id, amount, new Date()]);
+                 +" (?, 'Goi Thang', ?, ?)", [user_id, amount, now]);
 
                 await connection.end();
                 return NextResponse.json({ status: "success", message: "Update package month success" }, { status: 200 });
             }
             else if(amount === 250000){
-                const oneYearLater = expiration_date;
-                oneYearLater.setFullYear(expiration_date.getFullYear() + 1);
+                let oneYearLater;
+                const now = new Date();
+                if(expiration_date < now){
+                    oneYearLater = new Date(now);
+                    oneYearLater.setFullYear(now.getFullYear() + 1);
+                }
+                else{
+                    oneYearLater = new Date(expiration_date);
+                    oneYearLater.setFullYear(expiration_date.getFullYear() + 1);
+                }
+                
                 await connection.execute(
                     "UPDATE account set expiration_date = ? WHERE id = ?",[oneYearLater, user_id]
                 );
                 await connection.execute("INSERT INTO user_upgrade(user_id, package_buy, price, purchase_date) VALUES"
-                 +" (?, 'Goi Nam', ?, ?)", [user_id, amount, new Date()]);
+                 +" (?, 'Goi Nam', ?, ?)", [user_id, amount, now]);
 
                 await connection.end();
                 return NextResponse.json({ status: "success", message: "Update package year success" }, { status: 200 });

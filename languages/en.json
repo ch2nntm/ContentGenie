@@ -316,7 +316,10 @@
         "btn_close": "Close",
         "btn_save": "Save",
         "confirm_delete": "Are you sure you want to delete this post?",
-        "post_time": "Choose Posting Time "
+        "post_time": "Choose Posting Time ",
+        "noti_blacklist": "Content containing prohibited words is: ",
+        "noti_character": "Content maximum 500 characters",
+        "noti_error": "An error occurred while saving post details!"
     },
     "detail_user": {
         "user_detail": "User details!",

@@ -316,7 +316,10 @@
         "btn_edit": "Sửa bài đăng",
         "image": "Hình Ảnh",
         "confirm_delete": "Bạn có chắc chắn muốn xóa bài viết này không?",
-        "post_time": "Chọn Thời Gian Đăng Bài "
+        "post_time": "Chọn Thời Gian Đăng Bài ",
+        "noti_blacklist": "Nội dung chứa các từ bị cấm là: ",
+        "noti_character": "Nội dung tối đa 500 ký tự",
+        "noti_error": "Đã xảy ra lỗi khi lưu thông tin chi tiết bài đăng!"
     },
     "detail_user": {
         "user_detail": "Thông tin chi tiết người dùng!",

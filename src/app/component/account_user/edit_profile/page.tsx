@@ -5,7 +5,7 @@ import { useRef, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify";
-import dynamic from "next/dynamic";
+import NavbarUser from "../../navbar_user/page";
 import { useAuth } from "../../authProvider"; 
 import { Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -96,6 +96,7 @@ function EditProfilePage() {
         if(!token){
             window.location.href = "/component/account_user/login_user";
         }
+        else
        fetchUserData();
     },[auth?.user]);
 
@@ -243,10 +244,9 @@ function EditProfilePage() {
         setAvatar("");
     }
 
-    const NavbarComponent = dynamic(() => import("@/app/component/navbar_user/page"), {ssr: false});
     return (
         <div className={styles.container}>
-            <NavbarComponent />
+            <NavbarUser></NavbarUser>
             <div className={styles.content}>
                 <div className={styles.section_body}>
                     <p className={styles.title_section}>{t("account_manage")}</p>
