@@ -8,12 +8,29 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
+
 export default function Home() {
   const router = useRouter();
   const [user, setUser] = useState<string | null>(null);
   const t = useTranslations("homepage");
 
   useEffect(() => {
+    if (process.env.NODE_ENV === "development") {
+      const originalConsoleError = console.error;
+      console.error = (...args) => {
+        if (
+          typeof args[0] === "string" &&
+          args[0].includes("Hydration failed because the server rendered HTML didn't match the client")
+        ) {
+          return;
+        }
+        originalConsoleError(...args);
+      };
+      return () => {
+        console.error = originalConsoleError;
+      };
+    }
+
     const token = Cookies.get("token");
     if (token) {
         fetch("/api/manage_account/login", {

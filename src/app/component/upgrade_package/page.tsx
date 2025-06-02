@@ -219,7 +219,7 @@ export default function UpgradePackagePage(){
                                     <p className={styles.text_credits}><AddCardIcon/>{t("text_credits")}<span className={styles.highlight} style={{fontWeight: "bolder"}}>{credits}</span></p>
                                 </div>
                                 <div className={styles.form_check_expiration_date}>
-                                    <p className={styles.text_expiration_date}><CalendarMonthIcon/>{t("text_expiration_date")}<span className={styles.highlight} style={{fontWeight: "bolder"}}>{expirationDate ? <p>{expirationDate}</p> : <p>{t("not_purchase")}</p>}</span></p>
+                                    <p className={styles.text_expiration_date}><CalendarMonthIcon/>{t("text_expiration_date")}<span className={styles.highlight} style={{fontWeight: "bolder"}}>{expirationDate ? <span>{expirationDate}</span> : <p>{t("not_purchase")}</p>}</span></p>
                                 </div>
                             </>
                         }

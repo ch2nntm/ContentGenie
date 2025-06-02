@@ -26,8 +26,8 @@ function ListPostDashboard() {
     const t = useTranslations("list_post_dashboard");
     const [data, setData] = useState<post[]>([]);
     const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
-    const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth() + 1);
-    const [selectedWeek, setSelectedWeek] = useState<number>(new Date().getDate() / 7);
+    const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth() - 1);
+    const [selectedWeek, setSelectedWeek] = useState<number>(Math.ceil(new Date().getDate() / 7));
 
     useEffect(() => {
         const fetchData = async () => {
@@ -106,17 +106,17 @@ function ListPostDashboard() {
                 </div> */}
                 <div className={styles.section}>
                     <div className={styles.btn_time_group}>
-                        <select className={styles.select_year} onChange={(e) => setSelectedYear(Number(e.target.value))}>
+                        <select className={styles.select_year} value={selectedYear} onChange={(e) => setSelectedYear(Number(e.target.value))}>
                             {Array.from({ length: 10 }, (_, i) => 2020 + i).map((year) => (
                                 <option key={year} value={year}>{t("year")} {year}</option>
                             ))}
                         </select>
-                        <select className={styles.select_month} onChange={(e) => setSelectedMonth(Number(e.target.value))}>
+                        <select className={styles.select_month} value={selectedMonth} onChange={(e) => setSelectedMonth(Number(e.target.value))}>
                             {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
                                 <option key={month} value={month}>{t("month")} {month}</option>
                             ))}
                         </select>
-                        <select className={styles.select_week} onChange={(e) => setSelectedWeek(Number(e.target.value))}>
+                        <select className={styles.select_week} value={selectedWeek} onChange={(e) => setSelectedWeek(Number(e.target.value))}>
                             {Array.from({ length: 5 }, (_, i) => i + 1).map((week) => (
                                 <option key={week} value={week}>{t("week")} {week}</option>
                             ))}
