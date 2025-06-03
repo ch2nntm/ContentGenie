@@ -26,7 +26,7 @@ function ListPostDashboard() {
     const t = useTranslations("list_post_dashboard");
     const [data, setData] = useState<post[]>([]);
     const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
-    const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth() - 1);
+    const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth() + 1);
     const [selectedWeek, setSelectedWeek] = useState<number>(Math.ceil(new Date().getDate() / 7));
 
     useEffect(() => {

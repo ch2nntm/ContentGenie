@@ -192,7 +192,7 @@ export default function ViewUserDetail(props : { params: PageProps }) {
 }
 
   const [image, setImage] = useState("");
-  const handleSave = async (id: string, content: string, img: string, status: number, platform: string) => {
+  const handleSave = async (id: string, img: string, status: number, platform: string) => {
     const token_mastodon = Cookies.get("mastodon_token");
 
     if(!token_mastodon && status === 1){
@@ -214,8 +214,8 @@ export default function ViewUserDetail(props : { params: PageProps }) {
     }
     console.log("Platform: ", platform);
     if(platform === "Mastodon"){
-      console.log("Length: ", content.length);  
-      if(content.length > 500){
+      console.log("Length: ", updateContent.length);  
+      if(updateContent.length > 500){
         toast.error(`${t('noti_character')}`);
         return;
       }
@@ -548,7 +548,7 @@ const handleClickBtnCloseImg = () => {
               <Button className={styles.btn_close} onClick={handleCancel}>
                 <span className={styles.text_close}>{t("btn_close")}</span>
               </Button>
-              <Button className={styles.btn_save} onClick={() => detailPost && handleSave(detailPost.post_id, detailPost.content, detailPost.image, detailPost.status, detailPost.platform)}>
+              <Button className={styles.btn_save} onClick={() => detailPost && handleSave(detailPost.post_id, detailPost.image, detailPost.status, detailPost.platform)}>
                 <span className={styles.text_save}>{t("btn_save")}</span>
               </Button>
             </Modal.Footer>

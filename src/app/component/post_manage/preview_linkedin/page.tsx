@@ -65,7 +65,7 @@ function PreviewPage() {
             return file; 
         }
     
-        const cloudinaryUrl = process.env.CLOUDINARY_URL;
+        const cloudinaryUrl = process.env.NEXT_PUBLIC_CLOUDINARY_URL;
         const uploadPreset = "demo-upload";
         const form = new FormData();
         form.append("upload_preset", uploadPreset);
