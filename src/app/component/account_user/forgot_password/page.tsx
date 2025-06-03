@@ -9,6 +9,10 @@ import { useTranslations } from "next-intl";
 
 function ForgotPassword(){
     const t = useTranslations("forgot_password");
+    const subject=t("subject");
+    const text=t("text");
+    const ex = t("ex");
+
     const [email, setEmail] = useState<string>("");
     const [code, setCode] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -64,7 +68,7 @@ function ForgotPassword(){
     const handleResendCode = () => {
         fetch("/api/send_otp",{
             method: "POST",
-            body: JSON.stringify({email})
+            body: JSON.stringify({email, subject, text, ex})
         });
         toast.success(t("resend_code_again"));
     }
@@ -93,7 +97,7 @@ function ForgotPassword(){
                 if(res.status === "success"){
                     fetch("/api/send_otp",{
                         method: "POST",
-                        body: JSON.stringify({email})
+                        body: JSON.stringify({email, subject, text, ex})
                     })
                     .then((res) => res.json())
                     .then((res) => {

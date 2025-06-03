@@ -236,7 +236,10 @@
         "subtitle_forgot": "Nhập email đã đăng ký của bạn để nhận liên kết đặt lại mật khẩu",
         "code_success": "Mã đã được gửi thành công!",
         "error_internet": "Lỗi kết nối mạng!",
-        "invalid_email": "Email không hợp lệ!"
+        "invalid_email": "Email không hợp lệ!",
+        "subject": "Mã OTP của bạn",
+        "text": "Mã OTP của bạn là:",
+        "ex": "Hết hạn sau 5 phút"
     },
     "list_post_user":{
         "title_page": "Danh sách bài đăng",

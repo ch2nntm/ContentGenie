@@ -235,7 +235,10 @@
         "subtitle_forgot": "Enter your registered email to receive a password reset link",
         "code_success": "Code sent successfully!",
         "error_internet": "Error sending code, please check your internet connection!",
-        "invalid_email": "Invalid email!"
+        "invalid_email": "Invalid email!",
+        "subject": "Your OTP code",
+        "text": "Your OTP code is:",
+        "ex": "Expires in 5 minutes"
     },
     "list_post_user":{
         "title_page": "List Post",

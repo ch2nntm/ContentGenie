@@ -29,6 +29,7 @@ const sendEmail = async (email, otp, subject, text, ex) => {
 export async function POST(req) {
     try {
         const { email, subject, text, ex } = await req.json();
+        console.log("Received data:", { email, subject, text, ex });
         if (!email || !subject || !text || !ex ) 
             return NextResponse.json({ status: "error", message: "Fields is required" }, { status: 400 });
 

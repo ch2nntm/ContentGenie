@@ -126,7 +126,7 @@ function Register() {
     const handleResendCode = () => {
         fetch("/api/send_otp",{
             method: "POST",
-            body: JSON.stringify({email})
+            body: JSON.stringify({email, subject, text, ex})
         }).then((data)=>{
             if(data.status === 200){
                 toast.success(t("resend_code_again"));
