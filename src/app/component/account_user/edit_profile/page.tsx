@@ -169,22 +169,22 @@ function EditProfilePage() {
                     toast.success(t("exist_email"));
                     return;
                 }
+                fetch("/api/send_otp",{
+                    method: "POST",
+                    body: JSON.stringify({email: inputEmail, subject, text, ex})
+                })
+                .then((res) => res.json())
+                .then((res) => {
+                    if(res.status === "success"){
+                        setIsSend(true);
+                        toast.success(t("send_code"));
+                    }
+                    else{
+                        toast.error(t("error_internet"));
+                    }
+                }
+                );
             });
-            fetch("/api/send_otp",{
-                method: "POST",
-                body: JSON.stringify({email: inputEmail, subject, text, ex})
-            })
-            .then((res) => res.json())
-            .then((res) => {
-                if(res.status === "success"){
-                    setIsSend(true);
-                    toast.success(t("send_code"));
-                }
-                else{
-                    toast.error(t("error_internet"));
-                }
-            }
-            );
         }
     };
 
