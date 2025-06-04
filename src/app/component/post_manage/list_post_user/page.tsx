@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import dynamic from "next/dynamic";
 import { Link } from "@mui/material";
 import { ToastContainer } from "react-toastify";
+import Image from "next/image";
 
 const NavbarComponent = dynamic(() => import("@/app/component/navbar_user/page"));
 
@@ -113,16 +114,23 @@ function ListPostUser() {
                         posts.map((item) => (
                             <div key={item.id} className={styles.item_post}>
                                 <div className={styles.mastodon_platform}>
-                                    <div>
-                                        <div className={styles.navbar_user}>
-                                        </div>
                                         <a href={`/component/post_manage/list_post_user/detail_post/${item.id}`} className={styles.content_post}>
-                                            <p className={styles.item_title}>{item.title}</p>
-                                            {item.status===1 && <p className={styles.item_time}>{t("posted")} {convertDay(item.posttime)}</p>}
-                                            {item.status===0 && <p className={styles.item_time}>{t("pending")} {convertDay(item.posttime)}</p>}
+                                            <div className={styles.navbar_item}>
+                                                <div className={styles.time_title}>
+                                                    <p className={styles.item_title}>{item.title}</p>
+                                                    {item.status===1 && <p className={styles.item_time}>{t("posted")} {convertDay(item.posttime)}</p>}
+                                                    {item.status===0 && <p className={styles.item_time}>{t("pending")} {convertDay(item.posttime)}</p>}    
+                                                </div>
+                                                <Image
+                                                    src={item.platform === "Mastodon" ? "/icon_mastodon.png" : "/icon_linkedin.webp"}
+                                                    alt={item.title}
+                                                    width={30}
+                                                    height={30}
+                                                    className={styles.item_image}
+                                                />
+                                            </div>
                                             <p className={styles.item_content}>{item.content}</p>
                                         </a>
-                                    </div>
                                     </div>
                             </div>
                             

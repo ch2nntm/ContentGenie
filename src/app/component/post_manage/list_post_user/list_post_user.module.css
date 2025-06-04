@@ -37,6 +37,13 @@
     padding-bottom: 20px;
 }
 
+.navbar_item{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-right: 50px;
+}
+
 .time_user{
     display: flex;
     margin-top: 30px;
@@ -54,6 +61,7 @@
     margin-top: -10px;
     margin-left: 20px;
 }
+
 
 .status_post{
     margin-top: -20px;
@@ -326,3 +334,4 @@
 .btn_create p{
     color: #fff;
 }
+
