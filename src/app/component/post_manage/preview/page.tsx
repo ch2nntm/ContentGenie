@@ -197,12 +197,15 @@ function PreviewPage() {
             setImgUrlTest(imgUrl);
         }
         else{
-            if(imgUrlTest !== "/upload_avt.png")
+            if(imgUrlTest !== "/upload_avt.png" && imgUrlTest !== "")
                 setImgUrl(imgUrlTest);
-            else if(imgUrlTest)
+            if((imgUrlTest === "" && imgUrl === "") || imgUrlTest === "/upload_avt.png")
                 setImgUrl("");
         }
+        if(!imgUrl.startsWith("https://www.youtube.com"))
         setIsVideo(false);
+        console.log("ImgUrl: ", imgUrl);
+        console.log("ImgUrlTest: ", imgUrlTest);
     };
 
     const handleImageClick = () => {

@@ -116,7 +116,7 @@ export async function POST(req) {
                 ).toString("base64")}`,
             },
             body: new URLSearchParams({
-                grant_type: "client_credentials", // No personal accounts allowed
+                grant_type: "client_credentials", 
             }),
           });
 
