@@ -35,50 +35,33 @@ function ListPostUser() {
         }
     }, []);
 
-    const convertDay = (day: Date | string) => {
+    const convertDay = (day: Date) => {
         const postDate = new Date(day);
         const currentDate = new Date();
-    
-        if (isNaN(postDate.getTime())) {
-            return "Invalid date";
+        const timeDiff = Math.abs(currentDate.getTime() - postDate.getTime());
+        const daysAgo = Math.floor(timeDiff / (1000 * 60 * 60));
+
+        if(postDate.getTime() > currentDate.getTime())
+            return `${postDate.getDate()}-${postDate.getMonth()+1}-${postDate.getFullYear()}`;
+        if(daysAgo===0){
+            return `${Math.floor(timeDiff / (1000 * 60))} ${t("minutes")}`;
         }
-    
-        const diffMs = currentDate.getTime() - postDate.getTime();
-        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-        const diffMinutes = Math.floor(diffMs / (1000 * 60));
-    
-        if (postDate.getTime() > currentDate.getTime()) {
-            return new Intl.DateTimeFormat('vi-VN', {
-                timeZone: 'Asia/Ho_Chi_Minh',
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            }).format(postDate);
+        if(daysAgo<24)
+            return `${daysAgo} ${t("hours")}`;
+        else if(daysAgo<720){
+            return `${Math.floor(daysAgo/24)} ${t("days")}`;
         }
-    
-        if (diffHours === 0) {
-            return `${diffMinutes} ${t("minutes")}`;
-        }
-    
-        if (diffHours < 24) {
-            return `${diffHours} ${t("hours")}`;
-        }
-    
-        const diffDays = Math.floor(diffHours / 24);
-    
-        if (diffDays < 30) {
-            return `${diffDays} ${t("days")}`;
-        }
-    
-        const diffMonths = Math.floor(diffDays / 30);
-    
-        if (diffMonths < 12) {
-            return `${diffMonths} ${t("months")}`;
-        }
-    
-        const diffYears = Math.floor(diffDays / 365);
-        return `${diffYears} ${t("years")}`;
-    };
+        else{
+            if(daysAgo>720 && daysAgo<8760){
+                const monthsAgo = Math.floor(daysAgo/720);
+                return `${monthsAgo} ${t("months")}`;
+            }
+            else{
+                const monthsAgo = Math.floor(daysAgo/8760);
+                return `${monthsAgo} ${t("years")}`;
+            }
+        } 
+    };   
     
     useEffect(() => {
         const fetchPosts = async () => {
