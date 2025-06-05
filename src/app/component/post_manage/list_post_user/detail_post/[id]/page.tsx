@@ -154,31 +154,34 @@ export default function ViewUserDetail(props : { params: PageProps }) {
                 toast.error(t("miss_token_mastondon"));
                 window.location.href = "/api/mastodon/auth";
               }
-              const res_mastodon = await fetch(`/api/mastodon/${id}`, {
+              else{
+                const res_mastodon = await fetch(`/api/mastodon/${id}`, {
                   method: "DELETE",
                   body: JSON.stringify({ status }),
-              });
-              const result = await res_mastodon.json();
-              if (result.status === "success") {  
-                toast.success(t("post_delete"));
-                router.push("/component/post_manage/list_post_user");
+                });
+                const result = await res_mastodon.json();
+                if (result.status === "success") {  
+                  toast.success(t("post_delete"));
+                  router.push("/component/post_manage/list_post_user");
+                }
               }
             }
             else{
-              const linkedin_token = Cookies.get("linkedin_token");
+              const linkedin_token = Cookies.get("linkedin_access_token");
               if(!linkedin_token){
                 toast.error(t("miss_token_linkedin"));
                 window.location.href = "/api/linkedin/auth";
               }
-
-              const res_linkedin = await fetch(`/api/post_linkedin/${id}`, {
+              else{
+                const res_linkedin = await fetch(`/api/post_linkedin/${id}`, {
                   method: "DELETE",
                   body: JSON.stringify({ status }),
-              });
-              const result = await res_linkedin.json();
-              if (result.status === "success") {  
-                toast.success(t("post_delete"));
-                router.push("/component/post_manage/list_post_user");
+                });
+                const result = await res_linkedin.json();
+                if (result.status === "success") {  
+                  toast.success(t("post_delete"));
+                  router.push("/component/post_manage/list_post_user");
+                }
               }
             }
         }catch (error) {
