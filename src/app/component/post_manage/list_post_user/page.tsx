@@ -36,7 +36,9 @@ function ListPostUser() {
     }, []);
 
     const convertDay = (day: Date) => {
-        const postDate = new Date(day);
+        const postDate = new Date(day.toLocaleString('vi-VN', {
+            timeZone: 'Asia/Ho_Chi_Minh'
+          }));
         const currentDate = new Date();
         const timeDiff = Math.abs(currentDate.getTime() - postDate.getTime());
         const daysAgo = Math.floor(timeDiff / (1000 * 60 * 60));
