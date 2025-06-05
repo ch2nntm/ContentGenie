@@ -147,7 +147,7 @@ export default function UpgradePackagePage(){
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    amount: 1,
+                    amount: 30000,
                     description: "Upgrade month",
                     cancelUrl: "/component/upgrade_package",
                     returnUrl: "/component/upgrade_package"
