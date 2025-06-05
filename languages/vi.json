@@ -322,7 +322,9 @@
         "post_time": "Chọn Thời Gian Đăng Bài ",
         "noti_blacklist": "Nội dung chứa các từ bị cấm là: ",
         "noti_character": "Nội dung tối đa 500 ký tự",
-        "noti_error": "Đã xảy ra lỗi khi lưu thông tin chi tiết bài đăng!"
+        "noti_error": "Đã xảy ra lỗi khi lưu thông tin chi tiết bài đăng!",
+        "miss_token_mastondon": "Chưa đăng nhập Mastodon",
+        "miss_token_linkedin": "Chưa đăng nhập LinkedIn"
     },
     "detail_user": {
         "user_detail": "Thông tin chi tiết người dùng!",
@@ -334,6 +336,7 @@
         "no_package": "Chưa mua gói nào cả",
         "package_month": "Gói tháng",
         "package_year": "Gói năm",
+        "package_credit": "Gói thẻ",
         "package_name": "Tên gói",
         "package_price": "Giá gói",
         "date_purchase": "Ngày mua"

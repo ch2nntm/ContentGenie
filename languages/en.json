@@ -322,7 +322,9 @@
         "post_time": "Choose Posting Time ",
         "noti_blacklist": "Content containing prohibited words is: ",
         "noti_character": "Content maximum 500 characters",
-        "noti_error": "An error occurred while saving post details!"
+        "noti_error": "An error occurred while saving post details!",
+        "miss_token_mastondon": "Not logged in Mastodon",
+        "miss_token_linkedin": "Not logged in LinkedIn"
     },
     "detail_user": {
         "user_detail": "User details!",
@@ -334,6 +336,7 @@
         "no_package": "No packages purchased yet",
         "package_month": "Month package",
         "package_year": "Year package",
+        "package_credit": "Credit package",
         "package_name": "Package name",
         "package_price": "Package price",
         "date_purchase": "Date of purchase"

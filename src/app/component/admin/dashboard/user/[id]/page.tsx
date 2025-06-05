@@ -47,6 +47,7 @@ export default async function ViewUserDetail(props: { params: PageProps}) {
   const t = getTranslations("detail_user");
   const monthPackage = (await t)("package_month");
   const yearPackage = (await t)("package_year");
+  const creditPackage = (await t)("package_credit");
 
   if (!detailUser) return notFound();
 
@@ -78,8 +79,8 @@ export default async function ViewUserDetail(props: { params: PageProps}) {
                       item.package_buy && (
                         <div className={styles.tbody} key={index}>
                           <p className={styles.item_td}>{index+1}</p>
-                          <p className={styles.item_td}>{item.package_buy==="Goi Thang" ? monthPackage : yearPackage}</p>
-                          <p className={styles.item_td}>{item.price}đ</p>
+                          <p className={styles.item_td}>{item.package_buy==="Goi Thang" ? monthPackage : item.package_buy==="Goi The" ? creditPackage : yearPackage}</p>
+                          <p className={styles.item_td}>{item.price.toLocaleString('vi-VN')} VND</p>
                           <p className={styles.item_td}>{new Date(item.purchase_date).getDate()}/{new Date(item.purchase_date).getMonth() + 1}/{new Date(item.purchase_date).getFullYear()}</p>
                         </div>
                       )
