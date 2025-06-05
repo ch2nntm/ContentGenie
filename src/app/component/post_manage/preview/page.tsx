@@ -204,8 +204,6 @@ function PreviewPage() {
         }
         if(!imgUrl.startsWith("https://www.youtube.com"))
         setIsVideo(false);
-        console.log("ImgUrl: ", imgUrl);
-        console.log("ImgUrlTest: ", imgUrlTest);
     };
 
     const handleImageClick = () => {
